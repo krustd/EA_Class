@@ -78,7 +78,6 @@ In conclusion, Luckin Coffee is a strong case for enterprise architecture becaus
 Luckin Coffee is well-suited for this project because its business model connects digital ordering, store operations, customer data, supply chain management, and financial performance. It therefore provides ample material for subsequent analysis of enterprise architecture and database design.
 
 
-
 ## Key Sources
 
 - Seminar 1 PDF: project proposal requirements, Enterprise Architecture and Database Programming (IK2015).
