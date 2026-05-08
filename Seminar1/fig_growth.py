@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["matplotlib", "seaborn", "numpy"]
 # ///
-"""Generate growth trend chart for Luckin Coffee (2020–2025)."""
+"""Generate growth trend chart for Luckin Coffee (2020-2025)."""
 
 import matplotlib
 
@@ -12,11 +12,17 @@ import numpy as np
 import seaborn as sns
 
 # ---- Seaborn style ----
-sns.set_theme(style="whitegrid", context="paper", font_scale=1.1)
+sns.set_theme(style="whitegrid", context="paper", font_scale=1.0)
 plt.rcParams.update(
     {
         "font.family": "serif",
         "text.usetex": False,
+        "axes.edgecolor": "#444444",
+        "axes.labelcolor": "#222222",
+        "xtick.color": "#222222",
+        "ytick.color": "#222222",
+        "grid.color": "#d9d9d9",
+        "grid.linewidth": 0.7,
     }
 )
 
@@ -26,96 +32,115 @@ stores = np.array([4803, 6024, 8214, 16248, 22340, 31048])  # total stores
 revenue = np.array([4.03, 7.97, 13.29, 24.90, 34.46, 49.30])  # RMB billions
 
 # ---- Figure ----
-fig, ax1 = plt.subplots(figsize=(6.5, 4.0))
-
-palette = sns.color_palette("muted", 3)
-color_stores = palette[0]
-color_revenue = palette[2]
-
-# Bars: store count
-bars = ax1.bar(
-    years - 0.15,
-    stores,
-    width=0.3,
-    color=color_stores,
-    alpha=0.85,
-    edgecolor="white",
-    linewidth=0.6,
-    label="Store Count",
-    zorder=3,
+fig, (ax_stores, ax_revenue) = plt.subplots(
+    2,
+    1,
+    figsize=(6.6, 4.6),
+    sharex=True,
+    constrained_layout=True,
+    gridspec_kw={"height_ratios": [1, 1], "hspace": 0.18},
 )
-ax1.set_ylabel("Number of Stores", fontsize=12, labelpad=8, color=color_stores)
-ax1.tick_params(axis="y", labelcolor=color_stores, labelsize=9)
-ax1.set_ylim(0, 38000)
 
-# Annotate bars
-for bar, val in zip(bars, stores):
-    ax1.text(
-        bar.get_x() + bar.get_width() / 2,
-        bar.get_height() + 400,
-        f"{val:,}",
-        ha="center",
-        va="bottom",
-        fontsize=7.5,
-        color=color_stores,
-    )
+store_color = "#3f6fb5"
+revenue_color = "#2e8b57"
 
-# Line: revenue
-ax2 = ax1.twinx()
-(line,) = ax2.plot(
+ax_stores.bar(
+    years,
+    stores / 1000,
+    width=0.48,
+    color=store_color,
+    alpha=0.82,
+    edgecolor="#ffffff",
+    linewidth=0.6,
+)
+ax_stores.set_ylabel("Stores\n(thousand)", fontsize=9)
+ax_stores.set_ylim(0, 35)
+ax_stores.set_yticks([0, 10, 20, 30])
+ax_stores.text(
+    0.01,
+    0.9,
+    "Store count",
+    transform=ax_stores.transAxes,
+    fontsize=9.5,
+    fontweight="bold",
+    color=store_color,
+)
+
+ax_revenue.plot(
     years,
     revenue,
-    color=color_revenue,
+    color=revenue_color,
     marker="o",
-    linewidth=2.2,
-    markersize=7,
-    markerfacecolor="white",
-    markeredgewidth=1.8,
-    markeredgecolor=color_revenue,
-    label="Total Net Revenue",
-    zorder=4,
+    linewidth=2.0,
+    markersize=4.8,
 )
-ax2.set_ylabel("Revenue (RMB billions)", fontsize=12, labelpad=10, color=color_revenue)
-ax2.tick_params(axis="y", labelcolor=color_revenue, labelsize=9)
-ax2.set_ylim(0, 60)
-
-# Annotate line points
-for x, y in zip(years, revenue):
-    ax2.annotate(
-        f"{y:.1f}",
-        (x, y),
-        textcoords="offset points",
-        xytext=(0, 12),
-        ha="center",
-        fontsize=8.5,
-        fontweight="semibold",
-        color=color_revenue,
-    )
-
-# Combined legend
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-ax1.legend(
-    lines1 + [line],
-    labels1 + labels2,
-    loc="upper left",
-    frameon=True,
-    fontsize=9,
-    framealpha=0.9,
-)
-
-ax1.set_title(
-    "Luckin Coffee: Store Count and Revenue Growth (2020–2025)",
-    fontsize=14,
+ax_revenue.set_ylabel("Revenue\n(RMB bn)", fontsize=9)
+ax_revenue.set_ylim(0, 55)
+ax_revenue.set_yticks([0, 15, 30, 45])
+ax_revenue.text(
+    0.01,
+    0.9,
+    "Total net revenue",
+    transform=ax_revenue.transAxes,
+    fontsize=9.5,
     fontweight="bold",
-    pad=14,
+    color=revenue_color,
 )
-ax1.set_xticks(years)
-ax1.set_xticklabels([str(y) for y in years], fontsize=10)
-ax1.set_xlim(2019.5, 2025.5)
 
-sns.despine(left=True, bottom=False, right=False)
-fig.tight_layout()
+# Label only the endpoints to keep the figure readable in the report.
+ax_stores.annotate(
+    f"{stores[0] / 1000:.1f}k",
+    (years[0], stores[0] / 1000),
+    textcoords="offset points",
+    xytext=(0, 6),
+    ha="center",
+    fontsize=8,
+    color="#333333",
+)
+ax_stores.annotate(
+    f"{stores[-1] / 1000:.1f}k",
+    (years[-1], stores[-1] / 1000),
+    textcoords="offset points",
+    xytext=(0, 6),
+    ha="center",
+    fontsize=8,
+    color="#333333",
+)
+ax_revenue.annotate(
+    f"{revenue[0]:.1f}",
+    (years[0], revenue[0]),
+    textcoords="offset points",
+    xytext=(0, 7),
+    ha="center",
+    fontsize=8,
+    color="#333333",
+)
+ax_revenue.annotate(
+    f"{revenue[-1]:.1f}",
+    (years[-1], revenue[-1]),
+    textcoords="offset points",
+    xytext=(0, 7),
+    ha="center",
+    fontsize=8,
+    color="#333333",
+)
+
+for ax in (ax_stores, ax_revenue):
+    ax.set_xlim(2019.55, 2025.45)
+    ax.grid(True, axis="y")
+    ax.grid(False, axis="x")
+    ax.tick_params(axis="both", labelsize=8.5)
+
+ax_revenue.set_xticks(years)
+ax_revenue.set_xticklabels([str(y) for y in years], fontsize=8.5)
+
+fig.suptitle(
+    "Luckin Coffee: Store Count and Revenue Growth, 2020-2025",
+    fontsize=11,
+    fontweight="bold",
+)
+
+sns.despine()
 
 fig.savefig("Seminar1/fig_growth.png", dpi=300, bbox_inches="tight")
 print("Saved: Seminar1/fig_growth.png")
