@@ -75,6 +75,11 @@
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
 \newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 \renewcommand{\arraystretch}{1.28}
+\newcommand{\portraitlandscapepagenumber}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[rotate=90] at ($(current page.east)+(-0.22in,0)$) {\thepage};
+  \end{tikzpicture}%
+}
 
 % =================== TITLE AREA ===================
 \title{}
@@ -202,8 +207,9 @@ The Balanced Scorecard translates strategy into a structured set of missions, ob
 \subsection{Balanced Scorecard Table}
 
 \begin{landscape}
-\thispagestyle{fancy}
+\thispagestyle{empty}
 \begin{table}[H]
+\portraitlandscapepagenumber
 \centering
 \scriptsize
 \renewcommand{\arraystretch}{1.12}
@@ -284,8 +290,9 @@ The heatmap shows that financial performance is most strongly associated with re
 The Business Model Canvas provides a compact view of how Luckin Coffee creates, delivers, and captures value. The central value proposition extends beyond the coffee product itself: customers choose products, receive promotions, pay, and decide between pickup and delivery through a mobile interface — convenience is the core offering, with coffee as the carrier. The canvas below maps this logic into the nine standard components.
 
 \begin{landscape}
-\thispagestyle{fancy}
+\thispagestyle{empty}
 \begin{figure}[H]
+\portraitlandscapepagenumber
 \centering
 \footnotesize
 \resizebox{0.985\linewidth}{!}{%
