@@ -211,7 +211,7 @@ The Balanced Scorecard translates strategy into a structured set of missions, ob
 \caption{Balanced Scorecard for Luckin Coffee.}
 \begin{tabularx}{\linewidth}{P{2.7cm}P{5.1cm}P{8.2cm}Y}
 \toprule
-\textbf{Perspective} & \textbf{Mission} & \textbf{Objectives} & \textbf{Measures} \\
+\textbf{Perspective} & \textbf{Mission} & \textbf{Objectives} & \textbf{Directly Related Measures} \\
 \midrule
 \textbf{Financial} &
 Build a scalable and profitable coffee retail platform while maintaining affordability for mass-market customers. &
@@ -221,10 +221,9 @@ Build a scalable and profitable coffee retail platform while maintaining afforda
   \item Maintain cost discipline in raw materials, rent, labour, logistics, and promotional spending.
 \end{enumerate} &
 \begin{enumerate}[leftmargin=*,nosep]
-  \item Total net revenue and year-on-year revenue growth rate.
-  \item Operating income and operating margin.
-  \item Same-store sales growth and average order value.
-  \item Revenue split between self-operated stores, partnership stores, delivery, and packaged products.
+  \item Total net revenue, year-on-year revenue growth rate, same-store sales growth, and packaged coffee sales revenue.
+  \item Store-level operating margin, average order value, and revenue split between self-operated stores and partnership stores.
+  \item Raw material cost ratio, rent and labour cost ratio, logistics cost per order, and promotional expense ratio.
 \end{enumerate} \\
 \midrule
 \textbf{Customer} &
@@ -235,10 +234,9 @@ Make coffee a convenient, affordable, and habitual part of everyday life for urb
   \item Strengthen brand trust by ensuring stable taste, quality, hygiene, and service consistency.
 \end{enumerate} &
 \begin{enumerate}[leftmargin=*,nosep]
-  \item Monthly average transacting customers and active membership users.
-  \item Repeat purchase rate and customer lifetime value.
-  \item Average pickup time, delivery completion time, and order cancellation rate.
-  \item Customer rating, complaint rate, and net promoter score.
+  \item Monthly average transacting customers, active membership users, repeat purchase rate, and customer lifetime value.
+  \item Average pickup time, delivery completion time, nearby-store coverage, and order cancellation rate.
+  \item Customer rating, complaint rate, product quality complaint rate, and net promoter score.
 \end{enumerate} \\
 \midrule
 \textbf{Internal Processes} &
@@ -249,10 +247,9 @@ Operate a tightly integrated digital-to-physical value chain from demand forecas
   \item Reduce operational friction in app ordering, payment, order routing, and after-sales feedback.
 \end{enumerate} &
 \begin{enumerate}[leftmargin=*,nosep]
-  \item Inventory turnover, stockout rate, and raw material wastage rate.
-  \item Order fulfilment accuracy and average preparation time.
-  \item Store audit pass rate and product quality consistency indicators.
-  \item System uptime, app transaction success rate, and order-routing error rate.
+  \item Store audit pass rate, recipe compliance rate, order fulfilment accuracy, and product quality consistency indicators.
+  \item Forecast accuracy, inventory turnover, stockout rate, raw material wastage rate, and labour utilisation rate.
+  \item System uptime, app transaction success rate, order-routing error rate, and average response time for customer feedback.
 \end{enumerate} \\
 \midrule
 \textbf{Learning and Growth} &
@@ -263,10 +260,9 @@ Develop organisational capabilities that support rapid innovation, digital opera
   \item Strengthen data governance, analytics capability, and technology platform resilience.
 \end{enumerate} &
 \begin{enumerate}[leftmargin=*,nosep]
-  \item Training completion rate, employee productivity, and employee turnover rate.
-  \item Number of new products launched, new-product success rate, and product iteration cycle time.
-  \item Data accuracy, dashboard adoption, and analytics-supported decision rate.
-  \item IT investment intensity and critical incident resolution time.
+  \item Training completion rate, employee productivity, employee turnover rate, and store-manager assessment results.
+  \item Number of new products launched, new-product success rate, product iteration cycle time, and customer feedback adoption rate.
+  \item Data accuracy, dashboard adoption, analytics-supported decision rate, IT investment intensity, and critical incident resolution time.
 \end{enumerate} \\
 \bottomrule
 \end{tabularx}
@@ -274,7 +270,7 @@ Develop organisational capabilities that support rapid innovation, digital opera
 \landscapepagenumber
 \end{landscape}
 
-The proposed indicators are designed to be measurable, operationally meaningful, and strategically aligned. Monthly transacting customers and repeat purchase rate, for instance, belong to the customer perspective but also shape financial outcomes. App uptime and order-routing accuracy sit within internal processes, yet failures in these areas would immediately degrade customer experience and revenue conversion. Performance management, as the Balanced Scorecard framework argues, should connect financial results to the operational drivers that produce them rather than defaulting to short-term financial accounting.
+The proposed indicators are organised so that each measure directly tests the objective with the same number. For example, the third financial objective concerns cost discipline, so its related measures focus on raw material cost ratio, rent and labour cost ratio, logistics cost per order, and promotional expense ratio. This structure makes the link between mission, objectives, and measures clearer: the mission states the strategic intention, the objectives describe what must be achieved, and the measures show how achievement can be checked. Performance management, as the Balanced Scorecard framework argues, should connect financial results to the operational drivers that produce them rather than defaulting to short-term financial accounting.
 
 \begin{figure}[H]
   \centering
@@ -315,10 +311,11 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
 
   \node[smallbox=lkorange, right=0.24cm of partners.north east, anchor=north west] (activities) {\textbf{Key Activities}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
-      \item Product development.
-      \item Digital ordering and marketing.
-      \item Supply chain and inventory control.
-      \item Store operations and fulfilment.
+      \item Develop seasonal drinks and test new products with sales data.
+      \item Operate app ordering, payment, coupons, and membership campaigns.
+      \item Forecast demand and replenish beans, milk, packaging, and ingredients.
+      \item Prepare orders, manage pickup and delivery, and handle after-sales feedback.
+      \item Train store staff and audit recipe, hygiene, and service standards.
     \end{itemize}};
 
   \node[smallbox=lkgreen, below=0.24cm of activities] (resources) {\textbf{Key Resources}\par\vspace{2pt}
