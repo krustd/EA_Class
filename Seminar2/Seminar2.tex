@@ -13,12 +13,14 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{setspace}
+\usepackage[final,nopatch=footnote]{microtype}
 \usepackage{newtxtext}
 \usepackage{parskip}
 \usepackage[nottoc]{tocbibind}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric, backgrounds, calc, fit, matrix}
 \usepackage{caption}
+\captionsetup{font=small, labelfont=bf, margin=0.5cm}
 \usepackage{float}
 \usepackage{xcolor}
 \usepackage{pdflscape}
@@ -31,9 +33,11 @@
   bottom=1in,
   left=1.05in,
   right=1.05in,
-  headheight=14pt
+  headheight=14pt,
+  headsep=18pt
 }
-\setstretch{1.15}
+\setstretch{1.12}
+\setlength{\emergencystretch}{2em}
 
 % =================== COLOURS ===================
 \definecolor{lkblue}{HTML}{1F5B8F}
@@ -63,7 +67,8 @@
   colorlinks=true,
   linkcolor=black,
   citecolor=black,
-  urlcolor=lkblue
+  urlcolor=lkblue,
+  pageanchor=false
 }
 
 % =================== TABLE HELPERS ===================
@@ -106,7 +111,9 @@
 \end{center}
 
 \newpage
+\hypersetup{pageanchor=true}
 \setcounter{page}{1}
+\pagenumbering{arabic}
 \pagestyle{fancy}
 
 % =================== BASIC INFORMATION ===================
@@ -122,7 +129,7 @@
 Selected enterprise / business & Luckin Coffee Inc.; technology-enabled coffee retail, pickup, delivery, and packaged coffee business. \\
 Course and seminar & IK2015 Enterprise Architecture and Database Programming; Seminar 2. \\
 Group number & Group 4. \\
-Group members & Zhe-Kai Yang~(Krust), Shi-Hang Chen~(Sean), Wei-Yu Cai~(Nosta), Huan-Wen Chen~(Evan), Yuan-Yong Liao~(Foreve). \\
+Group members & \parbox[t]{\hsize}{\raggedright Zhe-Kai Yang~(Krust), Shi-Hang Chen~(Sean), Wei-Yu Cai~(Nosta),\\ Huan-Wen Chen~(Evan), Yuan-Yong Liao~(Foreve).} \\
 Analytical frameworks & Balanced Scorecard and Business Model Canvas. \\
 \bottomrule
 \end{tabularx}
@@ -195,12 +202,13 @@ The Balanced Scorecard translates strategy into a structured set of missions, ob
 \subsection{Balanced Scorecard Table}
 
 \begin{landscape}
+\thispagestyle{plain}
 \begin{table}[H]
 \centering
 \scriptsize
 \renewcommand{\arraystretch}{1.12}
 \caption{Balanced Scorecard for Luckin Coffee.}
-\begin{tabularx}{\linewidth}{P{2.8cm}P{5.2cm}P{8.4cm}Y}
+\begin{tabularx}{\linewidth}{P{2.7cm}P{5.1cm}P{8.2cm}Y}
 \toprule
 \textbf{Perspective} & \textbf{Mission} & \textbf{Objectives} & \textbf{Measures} \\
 \midrule
@@ -268,7 +276,7 @@ The proposed indicators are designed to be measurable, operationally meaningful,
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.95\textwidth]{fig_bsc_heatmap.pdf}
+  \includegraphics[width=0.90\textwidth]{fig_bsc_heatmap.pdf}
   \caption{Analytical heatmap of strategic emphasis across the Balanced Scorecard. Scores are qualitative assessments derived from the Luckin Coffee case analysis.}
 \end{figure}
 
@@ -280,17 +288,18 @@ The heatmap makes the strategic pattern more visible. Financial performance is m
 The Business Model Canvas provides a compact view of how Luckin Coffee creates, delivers, and captures value. In this case, the central value proposition is not merely ``coffee,'' but digitally enabled convenience: customers can choose products, receive promotions, pay, and decide between pickup and delivery through a mobile interface. The canvas below maps this logic into the nine standard components.
 
 \begin{landscape}
+\thispagestyle{plain}
 \begin{figure}[H]
 \centering
-\scriptsize
-\resizebox{0.96\linewidth}{!}{%
+\footnotesize
+\resizebox{0.985\linewidth}{!}{%
 \begin{tikzpicture}[
   canvasbox/.style={rectangle, draw=#1!70!black, fill=#1!9, rounded corners=4pt,
-                    text width=4.55cm, minimum height=4.85cm, align=left, inner sep=5pt, line width=0.65pt},
+                    text width=4.55cm, minimum height=6.0cm, align=left, inner sep=6pt, line width=0.65pt},
   smallbox/.style={rectangle, draw=#1!70!black, fill=#1!9, rounded corners=4pt,
-                   text width=4.55cm, minimum height=2.32cm, align=left, inner sep=5pt, line width=0.65pt},
+                   text width=4.55cm, minimum height=2.9cm, align=left, inner sep=6pt, line width=0.65pt},
   widebox/.style={rectangle, draw=#1!70!black, fill=#1!9, rounded corners=4pt,
-                  text width=11.6cm, minimum height=2.45cm, align=left, inner sep=5pt, line width=0.65pt},
+                  text width=11.6cm, minimum height=3.0cm, align=left, inner sep=6pt, line width=0.65pt},
   title/.style={font=\bfseries\color{darkgray}}
 ]
   \node[canvasbox=lkblue] (partners) at (0,0) {\textbf{Key Partners}\par\vspace{2pt}
@@ -302,7 +311,7 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Landlords and logistics providers.
     \end{itemize}};
 
-  \node[smallbox=lkorange, right=0.18cm of partners.north east, anchor=north west] (activities) {\textbf{Key Activities}\par\vspace{2pt}
+  \node[smallbox=lkorange, right=0.24cm of partners.north east, anchor=north west] (activities) {\textbf{Key Activities}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
       \item Product development.
       \item Digital ordering and marketing.
@@ -310,7 +319,7 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Store operations and fulfilment.
     \end{itemize}};
 
-  \node[smallbox=lkgreen, below=0.18cm of activities] (resources) {\textbf{Key Resources}\par\vspace{2pt}
+  \node[smallbox=lkgreen, below=0.24cm of activities] (resources) {\textbf{Key Resources}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
       \item Brand and customer data.
       \item Mobile app and mini-program ecosystem.
@@ -318,7 +327,7 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Supply chain and roasting capacity.
     \end{itemize}};
 
-  \node[canvasbox=lkpurple, right=0.18cm of activities.north east, anchor=north west] (value) {\textbf{Value Propositions}\par\vspace{2pt}
+  \node[canvasbox=lkpurple, right=0.24cm of activities.north east, anchor=north west] (value) {\textbf{Value Propositions}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
       \item Affordable freshly made coffee and tea beverages.
       \item Fast pickup and delivery supported by mobile ordering.
@@ -327,7 +336,7 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Daily-use convenience rather than occasional caf\'{e} consumption.
     \end{itemize}};
 
-  \node[smallbox=lkorange, right=0.18cm of value.north east, anchor=north west] (relationships) {\textbf{Customer Relationships}\par\vspace{2pt}
+  \node[smallbox=lkorange, right=0.24cm of value.north east, anchor=north west] (relationships) {\textbf{Customer Relationships}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
       \item App-based membership.
       \item Personalised coupons and push campaigns.
@@ -335,7 +344,7 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Social-media brand engagement.
     \end{itemize}};
 
-  \node[smallbox=lkgreen, below=0.18cm of relationships] (channels) {\textbf{Channels}\par\vspace{2pt}
+  \node[smallbox=lkgreen, below=0.24cm of relationships] (channels) {\textbf{Channels}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
       \item Luckin mobile app.
       \item WeChat mini-program.
@@ -343,7 +352,7 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Delivery platforms and e-commerce channels.
     \end{itemize}};
 
-  \node[canvasbox=lkblue, right=0.18cm of relationships.north east, anchor=north west] (segments) {\textbf{Customer Segments}\par\vspace{2pt}
+  \node[canvasbox=lkblue, right=0.24cm of relationships.north east, anchor=north west] (segments) {\textbf{Customer Segments}\par\vspace{2pt}
     \begin{itemize}[leftmargin=*,nosep]
       \item Office workers and commuters.
       \item University students and young urban consumers.
@@ -352,10 +361,10 @@ The Business Model Canvas provides a compact view of how Luckin Coffee creates, 
       \item Consumers seeking delivery or quick pickup.
     \end{itemize}};
 
-  \node[widebox=lkpurple, below=0.28cm of resources.south west, anchor=north west, text width=12.0cm] (costs) {\textbf{Cost Structure}\par\vspace{2pt}
+  \node[widebox=lkpurple, below=0.36cm of resources.south west, anchor=north west, text width=12.0cm] (costs) {\textbf{Cost Structure}\par\vspace{2pt}
     Raw materials and ingredients; store rent and utilities; labour and training; delivery and logistics; marketing promotions; technology development; equipment depreciation; franchise support; general and administrative expenses.};
 
-  \node[widebox=lkgreen, right=0.22cm of costs, text width=12.0cm] (revenues) {\textbf{Revenue Streams}\par\vspace{2pt}
+  \node[widebox=lkgreen, right=0.28cm of costs, text width=12.0cm] (revenues) {\textbf{Revenue Streams}\par\vspace{2pt}
     Fresh beverage and food sales from self-operated stores; partnership-store material and equipment sales; franchise-related service fees and profit sharing; delivery service charges; packaged coffee and merchandise sales; corporate account purchases.};
 \end{tikzpicture}%
 }
@@ -371,13 +380,13 @@ The canvas also reveals several strategic tensions. First, affordability and fre
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.82\textwidth]{fig_revenue_structure.pdf}
+  \includegraphics[width=0.78\textwidth]{fig_revenue_structure.pdf}
   \caption{Luckin Coffee FY2025 revenue structure. Source: Luckin Coffee FY2025 public disclosures~\cite{luckin2025annual,luckin2025results}.}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.68\textwidth]{fig_cost_pressure.pdf}
+  \includegraphics[width=0.64\textwidth]{fig_cost_pressure.pdf}
   \caption{Relative cost-pressure profile of Luckin Coffee's business model. Scores are qualitative assessments derived from case analysis.}
 \end{figure}
 
