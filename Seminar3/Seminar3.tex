@@ -25,6 +25,7 @@
 \usepackage{xcolor}
 \usepackage{pdflscape}
 \usepackage{ragged2e}
+\graphicspath{{/Users/krust/Documents/eaClass/Seminar3/}}
 
 % =================== PAGE LAYOUT ===================
 \geometry{
@@ -72,6 +73,16 @@
   pageanchor=false
 }
 
+% =================== TABLE HELPERS ===================
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.28}
+\newcommand{\portraitlandscapepagenumber}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[rotate=90] at ($(current page.east)+(-0.22in,0)$) {\thepage};
+  \end{tikzpicture}%
+}
+
 % =================== TITLE AREA ===================
 \title{}
 \author{}
@@ -116,10 +127,44 @@
 \section{EFQM Quality Management Approach}
 The EFQM Excellence Model provides a comprehensive framework for assessing organisational performance across nine criteria: five `Enablers' (what an organisation does) and four `Results' (what it achieves). This section applies these criteria to Luckin Coffee's technology-driven operations.
 
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.9cm,
+    group/.style={rectangle, rounded corners=8pt, draw=#1!75!black, fill=#1!9,
+                  text width=5.3cm, minimum height=0.95cm, align=center,
+                  font=\small\bfseries, line width=0.7pt},
+    criterion/.style={rectangle, rounded corners=5pt, draw=#1!70!black, fill=#1!12,
+                      text width=4.9cm, minimum height=0.72cm, align=center,
+                      font=\footnotesize, line width=0.6pt},
+    arrow/.style={-{Stealth[round]}, line width=0.9pt, black!58}
+  ]
+    \node[group=lkblue] (enablers) {Enablers: what Luckin does};
+    \node[criterion=lkblue, below=0.35cm of enablers] (leadership) {Leadership};
+    \node[criterion=lkgreen, below=0.18cm of leadership] (people) {People};
+    \node[criterion=lkorange, below=0.18cm of people] (strategy) {Policy \& Strategy};
+    \node[criterion=lkpurple, below=0.18cm of strategy] (resources) {Partnerships \& Resources};
+    \node[criterion=lkblue, below=0.18cm of resources] (processes) {Processes};
+
+    \node[group=lkpurple, right=2.4cm of enablers] (results) {Results: what Luckin achieves};
+    \node[criterion=lkblue, below=0.35cm of results] (customer) {Customer Results};
+    \node[criterion=lkgreen, below=0.18cm of customer] (peopleres) {People Results};
+    \node[criterion=lkorange, below=0.18cm of peopleres] (society) {Society Results};
+    \node[criterion=lkpurple, below=0.18cm of society] (keyres) {Key Performance Results};
+
+    \draw[arrow] (enablers) -- node[above, font=\footnotesize\bfseries, text=darkgray] {drive} (results);
+    \draw[arrow] (processes.east) -- (customer.west);
+    \draw[arrow] (resources.east) -- (keyres.west);
+  \end{tikzpicture}
+  \caption{EFQM logic applied to Luckin Coffee's technology-enabled retail system.}
+\end{figure}
+
+The core analytical question is whether Luckin's digital operating model only creates short-term growth, or whether it also creates repeatable excellence across leadership, people, strategy, resources, processes, and stakeholder results.
+
 \subsection{Enablers}
 
 \subsubsection*{1. Leadership}
-Leadership is embodied by the executive team (notably CEO Dr. Jinyi Guo), who drove the post-2020 turnaround with a tech-startup mindset. They enforce a mobile-first vision by standardising operations across 31,048 stores entirely through algorithmic decision-making. Strategy is reviewed via rigorous data analytics on store profitability, supported by strict corporate governance and compliance auditing to maintain a 10.3\% operating margin.
+Leadership is embodied by the executive team (notably CEO Dr. Jinyi Guo), who drove the post-2020 turnaround with a tech-startup mindset. They enforce a mobile-first vision by standardising operations across 31,048 stores with support from algorithmic decision-making. Strategy is reviewed via rigorous data analytics on store profitability, supported by strict corporate governance and compliance auditing to maintain a 10.3\% operating margin.
 
 \subsubsection*{2. People}
 Store staff and IT developers are critical to Luckin's highly standardised model. Management is system-driven: staff use digital app modules for training and SOPs, while workforce scheduling relies on predictive demand models. Rewards and recognition are tied to objective system metrics like order fulfilment times, creating a tight feedback loop that swiftly corrects inefficiencies.
@@ -145,6 +190,68 @@ High employee compliance is essential for product consistency. The company measu
 To rebuild trust post-2020, societal and governance impacts are transparently communicated through SEC Form 20-F filings and ESG reports. Initiatives include sweeping internal control reforms and the direct procurement of sustainable coffee beans from Yunnan, supporting local agriculture while reducing import carbon footprints.
 
 \subsubsection*{9. Key Performance Results}
-Key financial and operational outcomes are seamlessly captured via the central ERP. In FY2025, Luckin achieved RMB 49.3 billion in net revenue and RMB 5.1 billion in operating income across 31,048 stores. Managers track specific P\&L and KPIs daily, deploying algorithms to close underperforming locations and optimise supply chains.
+Key financial and operational outcomes are captured via the central ERP. In FY2025, Luckin achieved RMB 49.3 billion in net revenue and RMB 5.1 billion in operating income across 31,048 stores. Managers track specific P\&L and KPIs daily, using data to identify underperforming locations and optimise supply chains.
+
+\begin{landscape}
+\thispagestyle{empty}
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.13}
+\caption{EFQM-based evaluation of Luckin Coffee.}
+\begin{tabularx}{\linewidth}{P{3.0cm}P{6.6cm}P{6.6cm}Y}
+\toprule
+\textbf{EFQM Criterion} & \textbf{Evidence in Luckin Coffee} & \textbf{Evaluation} & \textbf{Improvement Focus} \\
+\midrule
+\textbf{Leadership} & Post-2020 governance reform, mobile-first strategic direction, and data-based operating reviews led by the executive team. & Strong: leadership clearly connects digital strategy with growth, standardisation, and financial control. & Continue strengthening transparency and board-level risk oversight. \\
+\midrule
+\textbf{People} & App-based training, digital SOPs, algorithmic scheduling, and performance evaluation through fulfilment and compliance indicators. & Good: employees are tightly integrated into the operating system, but work may become overly metric-driven. & Balance efficiency metrics with employee engagement and retention indicators. \\
+\midrule
+\textbf{Policy \& Strategy} & Expansion decisions, product launches, pricing, and promotions are supported by customer data, A/B testing, and regional performance dashboards. & Very strong: strategy is directly embedded into digital systems rather than remaining a separate planning document. & Make long-term brand trust and sustainability goals as measurable as growth targets. \\
+\midrule
+\textbf{Partnerships \& Resources} & Cooperation with platform partners, delivery services, coffee-bean suppliers, roasting facilities, IoT equipment, and partnership-store operators. & Strong: the company combines owned digital resources with external partners to scale quickly. & Reduce quality variation risk across partnership stores and suppliers. \\
+\midrule
+\textbf{Processes} & Mobile ordering, order routing, demand forecasting, inventory replenishment, quality audits, and store fulfilment are systematised. & Very strong: process excellence is the centre of Luckin's competitive advantage. & Improve resilience against system outages, data errors, and local execution gaps. \\
+\midrule
+\textbf{Customer Results} & Monthly transacting customers, app ratings, pickup speed, delivery time, complaints, and repeat-purchase behaviour are continuously monitored. & Strong: convenience and affordability are clearly reflected in measurable customer behaviour. & Track whether promotion-driven purchases translate into durable loyalty. \\
+\midrule
+\textbf{People Results} & Training completion, SOP audit scores, productivity per hour, and store-manager performance are measured digitally. & Moderate to strong: operational compliance is measurable, but human-development outcomes are less visible. & Add indicators for turnover, satisfaction, career development, and safety. \\
+\midrule
+\textbf{Society Results} & ESG reports, SEC filings, internal-control reforms, and Yunnan coffee sourcing communicate governance and social contribution. & Moderate: public reporting is improving, but trust recovery remains a long-term process after the 2020 scandal. & Provide clearer targets for sustainability, farmer support, and responsible data use. \\
+\midrule
+\textbf{Key Performance Results} & Revenue, operating income, store count, store-level P\&L, and supply-chain KPIs are tracked through centralised systems. & Very strong: financial and operational results show that digital scale can support profitability. & Avoid sacrificing quality, compliance, or brand reputation for expansion speed. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+
+\subsection{Overall EFQM Assessment}
+Overall, Luckin Coffee shows a strong EFQM profile in process design, digital strategy, and key performance results. Its main strength is the close connection between strategic objectives and daily operating systems: customer ordering, store fulfilment, staff training, supply-chain decisions, and performance monitoring are all supported by digital platforms. However, the model also creates management risks. Strong operational data does not automatically prove long-term stakeholder excellence, so the company should place more emphasis on people development, social responsibility, trust recovery, and system resilience.
+
+\section{Conclusion}
+Luckin Coffee demonstrates a strong fit with the EFQM Excellence Model because its competitive advantage is built on systematic enablers: data-driven leadership, standardised people management, digitally embedded strategy, scalable partnerships and resources, and automated processes. These enablers produce clear results in customer convenience, operational productivity, governance improvement, and financial growth. The main weakness is not the absence of measurement, but the risk of over-relying on efficiency indicators while under-measuring softer factors such as employee engagement, long-term trust, social impact, and system resilience. Therefore, Luckin's EFQM profile can be summarised as strong in digital process excellence and key performance results, but still developing in society results and broader people outcomes.
+
+\begingroup
+\small
+\setlength{\itemsep}{0pt}
+\begin{thebibliography}{9}
+
+\bibitem{luckin2025results}
+Luckin Coffee Inc. (2026).
+\emph{Luckin Coffee Announces Fourth Quarter and Fiscal Year 2025 Financial Results}.
+\href{https://investor.luckincoffee.com/news-releases/news-release-details/luckin-coffee-announces-fourth-quarter-and-fiscal-year-2025/}{Luckin Coffee Investor Relations}.
+
+\bibitem{luckin2025annual}
+Luckin Coffee Inc. (2026).
+\emph{Form 20-F Annual Report for the Fiscal Year Ended December 31, 2025}.
+\href{https://www.sec.gov/Archives/edgar/data/1767582/000110465926035712/lk-20251231x20f.htm}{U.S. Securities and Exchange Commission}.
+
+\bibitem{efqm2025}
+EFQM. (2025).
+\emph{The EFQM Model}.
+\href{https://efqm.org/the-efqm-model/}{European Foundation for Quality Management}.
+
+\end{thebibliography}
+\endgroup
 
 \end{document}
