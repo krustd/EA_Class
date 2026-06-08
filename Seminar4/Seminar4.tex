@@ -148,12 +148,12 @@ Main deliverable & A conceptual model for the Luckin Coffee case study and a wri
 \end{tabularx}
 \end{table}
 
-The report develops a conceptual model for Luckin Coffee by identifying the key business objects, their relationships, and the variables needed for measurement and decision-making. This is appropriate for Luckin because its business operates as a digital-to-physical retail system: customers order through mobile channels, stores fulfil orders, delivery partners support logistics, and management systems monitor revenue, quality, inventory, and customer behaviour.
+The report develops a conceptual model for Luckin Coffee by identifying key business objects, their relationships, and the variables required for measurement and decision-making. This focus fits Luckin because its operations connect mobile ordering, store fulfilment, delivery support, supply resources, and performance monitoring.
 
 % =================== MODELLING SCOPE ===================
 \section{Modelling Scope and Design Logic}
 
-The conceptual model focuses on Luckin Coffee's daily operating logic, from customer demand to order fulfilment and performance feedback. It covers six domains: customer and membership management, digital ordering, store fulfilment, product and recipe management, supply-chain resources, and performance analytics. These domains directly support Luckin's value proposition of convenient, affordable, and reliable coffee consumption.
+The conceptual model focuses on Luckin Coffee's daily operating logic, from customer demand to order fulfilment and performance feedback. It covers six domains: customer and membership management, digital ordering, store fulfilment, product and recipe management, supply-chain resources, and performance analytics. Together, these domains explain how Luckin converts digital demand into standardised retail service.
 
 \begin{figure}[H]
   \centering
@@ -191,7 +191,7 @@ The conceptual model focuses on Luckin Coffee's daily operating logic, from cust
   \caption{Scope of the conceptual model for Luckin Coffee.}
 \end{figure}
 
-The diagram uses business object boxes rather than database tables, so it remains readable for both business and technical stakeholders. The diagram presents the core objects and relationship IDs, while the following object table lists representative class variables, sum variables, count variables, and attributes in the notation used by the Seminar 4 examples. The relationships can later be translated into database entities, process models, or system architecture components.
+The diagram uses business object boxes rather than database tables, so it remains readable for both business and technical stakeholders. The main conceptual model shows core objects, relationship IDs, and variable categories; the following tables then define representative variables and multiplicities. The relationships can later be translated into database entities, process models, or system architecture components.
 
 % =================== NOTATION ===================
 \section{Notation Used in the Conceptual Model}
@@ -205,10 +205,11 @@ The model follows the spirit of the examples in the Seminar 4 instruction sheet.
 \toprule
 \textbf{Notation} & \textbf{Meaning in this report} \\
 \midrule
-\textcolor{lkblue}{Class variables} & Variables used to classify an object, such as customer segment, store type, order channel, payment method, or product category. \\
-\textcolor{lkorange}{Sum variables} & Quantitative values that can be summarised, such as order amount, discount amount, material cost, preparation time, or delivery fee. \\
-\textcolor{lkgreen}{Count variables} & Numbers of objects or events, such as order count, item count, complaint count, stockout count, or visit count. \\
-Additional attributes & Descriptive properties needed to identify or manage the object, such as customer ID, store ID, product name, recipe version, or supplier name. \\
+\textcolor{lkblue}{ClassVariables} & Variables used to classify an object, such as customer segment, store type, order channel, payment method, or product category. \\
+\textcolor{lkorange}{SumVariables} & Quantitative values that can be summarised, such as order amount, discount amount, material cost, preparation time, or delivery fee. \\
+\textcolor{lkgreen}{AdjVariables} & Context or adjustment variables used to interpret measures, such as city tier, season, channel type, queue status, or supplier lead time. \\
+\textcolor{lkpurple}{EstParameters} & Estimated or derived indicators used for analysis, such as average order value, conversion rate, margin, stockout rate, or customer lifetime value. \\
+Additional identifiers & Descriptive properties needed to identify or manage the object, such as customer ID, store ID, product name, recipe version, or supplier name. \\
 Relationship arrows & Reading direction for the business relationship. For example, ``Customer places Order'' and ``Order is prepared by Store''. \\
 Multiplicity & 1:N means one object can connect to many objects; M:N means many objects can connect to many objects; 1:1 means each object connects to one counterpart. \\
 \bottomrule
@@ -220,92 +221,11 @@ Multiplicity & 1:N means one object can connect to many objects; M:N means many 
 
 \begin{landscape}
 \thispagestyle{empty}
-\begin{figure}[H]
+\begin{figure}[p]
 \portraitlandscapepagenumber
 \centering
-\footnotesize
-\resizebox{0.965\linewidth}{!}{%
-\begin{tikzpicture}[
-  obj/.style={rectangle, rounded corners=6pt, draw=#1!75!black, fill=#1!10,
-              text width=3.0cm, minimum height=0.88cm, align=center,
-              font=\small\bfseries, line width=0.65pt},
-  core/.style={rectangle, rounded corners=7pt, draw=#1!85!black, fill=#1!16,
-               text width=3.15cm, minimum height=1.0cm, align=center,
-               font=\small\bfseries, line width=0.85pt},
-  group/.style={rectangle, rounded corners=10pt, draw=#1!48!black, fill=#1!4,
-                inner sep=10pt, line width=0.55pt},
-  rel/.style={-{Stealth[length=2.35mm]}, line width=0.8pt, black!72},
-  feedback/.style={-{Stealth[length=2.35mm]}, line width=0.75pt, dashed, black!62},
-  rtag/.style={circle, draw=black!55, fill=white, inner sep=1.15pt,
-               font=\tiny\bfseries, text=darkgray},
-  layerlabel/.style={font=\scriptsize\bfseries, text=darkgray},
-  note/.style={rectangle, rounded corners=5pt, draw=black!35, fill=lkgray,
-               text width=5.2cm, align=left, inner sep=5pt, font=\scriptsize}
-]
-
-% Customer and demand objects
-\node[obj=lkblue] (channel) at (0,7.0) {Digital Channel};
-\node[obj=lkblue] (customer) at (4.0,7.0) {Customer};
-\node[obj=lkblue] (membership) at (8.0,7.0) {Membership Account};
-\node[obj=lkorange] (promotion) at (12.0,7.0) {Promotion Campaign};
-
-% Transaction and fulfilment objects
-\node[core=lkpurple] (order) at (4.0,4.25) {Digital Order};
-\node[obj=lkpurple] (orderitem) at (4.0,2.75) {Order Item};
-\node[core=lkgreen] (task) at (8.0,4.25) {Fulfilment Task};
-\node[obj=lkgreen] (store) at (12.0,4.25) {Store};
-\node[obj=lkgreen] (staff) at (12.0,2.75) {Store Staff};
-\node[obj=lkorange] (delivery) at (16.0,4.25) {Delivery Partner};
-
-% Product, supply, and analytical objects
-\node[obj=lkblue] (product) at (0,0.9) {Product};
-\node[obj=lkblue] (recipe) at (4.0,0.9) {Recipe Standard};
-\node[obj=lkorange] (material) at (8.0,0.9) {Raw Material};
-\node[obj=lkorange] (supplier) at (12.0,0.9) {Supplier};
-\node[core=lkpurple] (performance) at (16.0,0.9) {Performance Result};
-
-% Background groups
-\begin{scope}[on background layer]
-  \node[group=lkblue, fit=(channel)(customer)(membership)(promotion)] (g1) {};
-  \node[group=lkgreen, fit=(order)(orderitem)(task)(store)(staff)(delivery)] (g2) {};
-  \node[group=lkorange, fit=(product)(recipe)(material)(supplier)(performance)] (g3) {};
-\end{scope}
-
-\node[layerlabel, above=0.08cm of g1.north west, anchor=west] {Demand and customer relationship layer};
-\node[layerlabel, above=0.08cm of g2.north west, anchor=west] {Transaction and fulfilment layer};
-\node[layerlabel, above=0.08cm of g3.north west, anchor=west] {Product, resource, and analytics layer};
-
-% Main operational relationships
-\draw[rel] (channel) -- node[rtag, midway, above] {R1} (customer);
-\draw[rel] (customer) -- node[rtag, midway, above] {R2} (membership);
-\draw[rel] (membership) -- node[rtag, midway, left] {R3} (order);
-\draw[rel] (promotion) -- node[rtag, midway, above] {R4} (membership);
-\draw[rel] (promotion) |- node[rtag, pos=0.28, right] {R5} (order);
-
-\draw[rel] (order) -- node[rtag, midway, left] {R6} (orderitem);
-\draw[rel] (order) -- node[rtag, midway, above] {R7} (task);
-\draw[rel] (task) -- node[rtag, midway, above] {R8} (store);
-\draw[rel] (store) -- node[rtag, midway, right] {R9} (staff);
-\draw[rel] (task) .. controls (10.2,5.25) and (13.9,5.25) .. node[rtag, midway, above] {R10} (delivery);
-
-\draw[rel] (orderitem) -| node[rtag, pos=0.28, below] {R11} (product);
-\draw[rel] (product) -- node[rtag, midway, above] {R12} (recipe);
-\draw[rel] (recipe) -- node[rtag, midway, above] {R13} (material);
-\draw[rel] (supplier) -- node[rtag, midway, above] {R14} (material);
-\draw[rel] (material) |- node[rtag, pos=0.35, right] {R15} (store);
-
-% Analytical feedback relationships
-\draw[feedback] (order) .. controls (7.0,2.35) and (12.0,1.6) .. node[rtag, pos=0.60, above] {R16} (performance);
-\draw[feedback] (store) .. controls (14.6,3.4) and (15.7,2.2) .. node[rtag, pos=0.48, right] {R17} (performance);
-\draw[feedback] (delivery) -- node[rtag, midway, right] {R18} (performance);
-\draw[feedback] (performance) .. controls (18.2,3.3) and (16.6,6.7) .. node[rtag, pos=0.48, right] {R19} (promotion);
-
-% Legend
-\node[note, below=0.35cm of g3.south west, anchor=north west] {\textbf{Legend:} solid arrows show operational relationships; dashed arrows show analytical feedback. Relationship IDs R1--R19 are explained in Tables 4 and 5.};
-
-\end{tikzpicture}%
-}
-\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. The diagram separates demand, fulfilment, resource, and analytics objects so that the main relationships remain readable; representative variables are listed in Table 3, and relationship meanings are explained in Tables 4 and 5.}
+\includegraphics[width=\linewidth,height=0.86\textheight,keepaspectratio]{fig2_conceptual_model_clean.pdf}
+\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. The diagram follows the seminar notation by showing business objects, variable categories, colour-coded object types, grouped relationship identifiers, and analytical feedback links.}
 \end{figure}
 \end{landscape}
 
@@ -318,16 +238,16 @@ The diagram shows Luckin Coffee as an integrated retail platform rather than a s
 \caption{Representative variables in the conceptual model.}
 \begin{tabularx}{\textwidth}{P{3.0cm}Y Y Y Y}
 \toprule
-\textbf{Object} & \textbf{Class variables} & \textbf{Sum variables} & \textbf{Count variables} & \textbf{Attributes} \\
+\textbf{Object} & \textbf{ClassVariables} & \textbf{SumVariables} & \textbf{AdjVariables} & \textbf{EstParameters / identifiers} \\
 \midrule
-Customer / Membership & Segment, city, age band, member tier & Points balance, coupon value & Visit count, order count & Customer ID, account ID \\
-Digital Channel & Channel type, access device & Payment amount, discount value & Session count, redemption count & Channel ID, app version \\
-Promotion Campaign & Campaign type, target segment & Budget, subsidy amount & Exposure count, redemption count & Campaign ID, valid period \\
-Digital Order / Order Item & Order channel, payment method, product category & Order amount, item price, delivery fee & Item count, order count & Order ID, order time, status \\
-Product / Recipe Standard & Category, season, launch region, quality grade & Standard cost, material dosage & Recipe version count & Product ID, recipe version \\
-Store / Store Staff & Ownership type, city tier, staff role & Revenue, rent, labour cost, working hours & Order count, staff count & Store ID, staff ID \\
-Raw Material / Supplier & Material type, origin, supplier type & Purchase cost, inventory value, contract amount & Batch count, delivery count, stockout count & Material ID, supplier ID \\
-Fulfilment / Delivery / Performance & Task type, queue status, partner type, KPI type & Preparation time, waiting time, delivery fee, margin & Retry count, complaint count, delivery count & Task ID, partner ID, period \\
+Customer / Membership & Segment, city, age band, member tier & Points balance, coupon value & Registration channel, activity status & Repeat-purchase rate, CLV, customer ID \\
+Digital Channel & Channel type, access device & Payment amount, discount value & App version, traffic source & Conversion rate, session value, channel ID \\
+Promotion Campaign & Campaign type, target segment & Budget, subsidy amount & Valid period, season, region & Redemption rate, incremental sales, campaign ID \\
+Digital Order / Order Item & Order channel, payment method, product category & Order amount, item price, delivery fee & Order time, queue status, fulfilment mode & AOV, item share, order ID \\
+Product / Recipe Standard & Category, season, launch region, quality grade & Standard cost, material dosage & Recipe version, SOP status & Gross margin, defect rate, product ID \\
+Store / Store Staff & Ownership type, city tier, staff role & Revenue, rent, labour cost, working hours & Location type, training status & Productivity, utilisation rate, store ID \\
+Raw Material / Supplier & Material type, origin, supplier type & Purchase cost, inventory value, contract amount & Batch status, lead time, certification status & Stockout rate, quality-pass rate, supplier ID \\
+Fulfilment / Delivery / Performance & Task type, partner type, KPI type & Preparation time, waiting time, delivery fee, margin & Service area, period, weather or peak status & Completion rate, complaint rate, KPI period \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -383,16 +303,16 @@ The main relationships in the model can be grouped into three layers. The first 
 \toprule
 \textbf{ID} & \textbf{Relationship} & \textbf{Type} & \textbf{Business meaning and measures enabled} \\
 \midrule
-R1 & Digital Channel -- Customer & 1:N & Channels such as the app and mini-program capture customer visits, sessions, and campaign exposure. \\
-R2 & Customer -- Membership Account & 1:1 & Customer identity is connected with points, coupons, and order history; this supports active-member and repeat-purchase analysis. \\
-R3 & Membership Account -- Digital Order & 1:N & One member may place many orders across time, stores, and channels; this enables order-frequency, AOV, and customer-lifetime-value analysis. \\
-R4 & Promotion Campaign -- Membership Account & M:N & Campaigns target many members, while members may receive many campaigns; this supports targeting and redemption analysis. \\
-R5 & Promotion Campaign -- Digital Order & M:N & Campaigns influence orders, and one order may use more than one promotional mechanism; this enables subsidy and conversion-rate tracking. \\
-R6 & Digital Order -- Order Item & 1:N & Order-level payment and fulfilment status are separated from product-level quantity, customisation, and item discount information. \\
-R7 & Digital Order -- Fulfilment Task & 1:N & A customer order can create preparation, pickup, delivery, or exception-handling tasks; this supports preparation-time and completion-rate monitoring. \\
-R8 & Fulfilment Task -- Store & N:1 & Many fulfilment tasks are prepared by one store, making store capacity, labour utilisation, and queue delay measurable. \\
-R9 & Store -- Store Staff & 1:N & Stores employ staff whose training status and productivity affect service consistency and operating efficiency. \\
-R10 & Fulfilment Task -- Delivery Partner & N:1 & Delivery tasks are assigned to logistics partners, allowing delivery time, delivery fee, and completion rate to be evaluated. \\
+D1 & Digital Channel -- Customer & 1:N & Channels such as the app and mini-program capture customer visits, sessions, and campaign exposure. \\
+D2 & Customer -- Membership Account & 1:1 & Customer identity is connected with points, coupons, and order history; this supports active-member and repeat-purchase analysis. \\
+D3 & Membership Account -- Digital Order & 1:N & One member may place many orders across time, stores, and channels; this enables order-frequency, AOV, and customer-lifetime-value analysis. \\
+D4 & Membership Account -- Promotion Campaign & M:N & Campaigns target many members, while members may receive many campaigns; this supports targeting and redemption analysis. \\
+D5 & Promotion Campaign -- Digital Order & M:N & Campaigns influence orders, and one order may use more than one promotional mechanism; this enables subsidy and conversion-rate tracking. \\
+F1 & Digital Order -- Order Item & 1:N & Order-level payment and fulfilment status are separated from product-level quantity, customisation, and item discount information. \\
+F2 & Digital Order -- Fulfilment Task & 1:N & A customer order can create preparation, pickup, delivery, or exception-handling tasks; this supports preparation-time and completion-rate monitoring. \\
+F3 & Fulfilment Task -- Store & N:1 & Many fulfilment tasks are prepared by one store, making store capacity, labour utilisation, and queue delay measurable. \\
+F4 & Store -- Store Staff & 1:N & Stores employ staff whose training status and productivity affect service consistency and operating efficiency. \\
+F5 & Fulfilment Task -- Delivery Partner & N:1 & Delivery tasks are assigned to logistics partners, allowing delivery time, delivery fee, and completion rate to be evaluated. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -406,15 +326,15 @@ R10 & Fulfilment Task -- Delivery Partner & N:1 & Delivery tasks are assigned to
 \toprule
 \textbf{ID} & \textbf{Relationship} & \textbf{Type} & \textbf{Business meaning and measures enabled} \\
 \midrule
-R11 & Order Item -- Product & N:1 & Many order lines can refer to the same product; this enables product sales, gross margin, and new-product success analysis. \\
-R12 & Product -- Recipe Standard & 1:N & A product may have recipe versions across time or regions, supporting controlled innovation and operational standardisation. \\
-R13 & Recipe Standard -- Raw Material & M:N & Recipes consume multiple materials and materials may support multiple recipes; this supports ingredient-use, cost-ratio, and wastage analysis. \\
-R14 & Supplier -- Raw Material & 1:N & Suppliers provide material batches or categories for store replenishment; this enables lead-time, delivery-count, and quality-pass-rate evaluation. \\
-R15 & Raw Material -- Store & M:N & Stores consume and hold materials from multiple batches, supporting inventory turnover, stockout, and replenishment analysis. \\
-R16 & Digital Order -- Performance Result & 1:N & Orders feed analytical results such as revenue, discount amount, order value, and transaction success rate. \\
-R17 & Store -- Performance Result & 1:N & Store operations generate periodic financial and service KPIs, including daily revenue, margin, complaints, and stockouts. \\
-R18 & Delivery Partner -- Performance Result & 1:N & Delivery partners generate service KPIs such as delivery completion time, delivery success rate, and logistics cost per order. \\
-R19 & Performance Result -- Promotion Campaign & 1:N & Analytical feedback improves future promotion design by showing which campaigns produce durable loyalty rather than only short-term discount purchases. \\
+S1 & Order Item -- Product & N:1 & Many order lines can refer to the same product; this enables product sales, gross margin, and new-product success analysis. \\
+S2 & Product -- Recipe Standard & 1:N & A product may have recipe versions across time or regions, supporting controlled innovation and operational standardisation. \\
+S3 & Recipe Standard -- Raw Material & M:N & Recipes consume multiple materials and materials may support multiple recipes; this supports ingredient-use, cost-ratio, and wastage analysis. \\
+S4 & Supplier -- Raw Material & 1:N & Suppliers provide material batches or categories for store replenishment; this enables lead-time, delivery-count, and quality-pass-rate evaluation. \\
+S5 & Raw Material -- Store & M:N & Stores consume and hold materials from multiple batches, supporting inventory turnover, stockout, and replenishment analysis. \\
+A1 & Digital Order -- Performance Result & 1:N & Orders feed analytical results such as revenue, discount amount, order value, and transaction success rate. \\
+A2 & Store -- Performance Result & 1:N & Store operations generate periodic financial and service KPIs, including daily revenue, margin, complaints, and stockouts. \\
+A3 & Delivery Partner -- Performance Result & 1:N & Delivery partners generate service KPIs such as delivery completion time, delivery success rate, and logistics cost per order. \\
+A4 & Performance Result -- Promotion Campaign & 1:N & Analytical feedback improves future promotion design by showing which campaigns produce durable loyalty rather than only short-term discount purchases. \\
 \bottomrule
 \end{tabularx}
 \end{table}
