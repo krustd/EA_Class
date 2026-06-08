@@ -1,0 +1,572 @@
+% !TEX program = xelatex
+\documentclass[12pt,a4paper]{article}
+
+% =================== PACKAGES ===================
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{setspace}
+\usepackage[final,nopatch=footnote]{microtype}
+\usepackage{newtxtext}
+\usepackage{parskip}
+\usepackage[nottoc]{tocbibind}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, backgrounds, calc, fit, matrix}
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf, margin=0.5cm}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{pdflscape}
+\usepackage{ragged2e}
+\graphicspath{{/Users/krust/Documents/eaClass/Seminar4/}}
+
+% =================== PAGE LAYOUT ===================
+\geometry{
+  top=1in,
+  bottom=1in,
+  left=1.05in,
+  right=1.05in,
+  headheight=14pt,
+  headsep=18pt
+}
+\setstretch{1.12}
+\setlength{\emergencystretch}{2em}
+
+% =================== COLOURS ===================
+\definecolor{lkblue}{HTML}{1F5B8F}
+\definecolor{lkcyan}{HTML}{E9F4FB}
+\definecolor{lkgreen}{HTML}{2E7D32}
+\definecolor{lkorange}{HTML}{C46A1A}
+\definecolor{lkpurple}{HTML}{6A4C93}
+\definecolor{lkgray}{HTML}{F4F6F8}
+\definecolor{darkgray}{HTML}{333333}
+\definecolor{modelyellow}{HTML}{FFF4A3}
+\definecolor{modelborder}{HTML}{2B2B2B}
+
+% =================== HEADER / FOOTER ===================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small IK2015 Enterprise Architecture}
+\fancyhead[R]{\small Seminar 4: Conceptual Model}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% =================== SECTION FORMATTING ===================
+\titleformat{\section}[hang]{\Large\bfseries\color{darkgray}}{\thesection}{1em}{}
+\titleformat{\subsection}[hang]{\large\bfseries\color{darkgray}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[hang]{\normalsize\bfseries\color{darkgray}}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% =================== HYPERLINK SETUP ===================
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=lkblue,
+  pageanchor=false
+}
+
+% =================== TABLE HELPERS ===================
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.28}
+\newcommand{\portraitlandscapepagenumber}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[rotate=90] at ($(current page.east)+(-0.22in,0)$) {\thepage};
+  \end{tikzpicture}%
+}
+
+% =================== MODEL MACROS ===================
+\newcommand{\modelitem}[1]{\item \scriptsize #1}
+\newcommand{\roleitem}[2]{\item \scriptsize \textcolor{#1}{#2}}
+
+% =================== TITLE AREA ===================
+\title{}
+\author{}
+\date{}
+
+\begin{document}
+
+% ---- Custom Title Page ----
+\thispagestyle{empty}
+\vspace*{1.8cm}
+
+\begin{center}
+  {\normalsize Jiangxi University of Finance and Economics} \\[2.1cm]
+
+  {\LARGE\bfseries Conceptual Model Report} \\[1.0cm]
+
+  {\Large Luckin Coffee Inc.} \\[0.25cm]
+  {\normalsize\itshape A Technology-Driven New Retail Coffee Enterprise} \\[2.0cm]
+
+  {\normalsize IK2015: Enterprise Architecture and Database Programming} \\[0.2cm]
+  {\normalsize Seminar 4} \\[2.2cm]
+
+  {\normalsize\textbf{Group 4}} \\[0.45cm]
+  {\normalsize
+    Zhe-Kai Yang~(Krust),\quad
+    Shi-Hang Chen~(Sean),\quad
+    Wei-Yu Cai~(Nosta), \\[0.2cm]
+    Huan-Wen Chen~(Evan),\quad
+    Yuan-Yong Liao~(Foreve)
+  } \\[1.8cm]
+
+  {\normalsize \today}
+\end{center}
+
+\newpage
+\hypersetup{pageanchor=true}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+% =================== BASIC INFORMATION ===================
+\section{Report Basic Information}
+
+\begin{table}[H]
+\centering
+\caption{Basic information of the conceptual modelling report.}
+\begin{tabularx}{\textwidth}{P{4.2cm}Y}
+\toprule
+\textbf{Item} & \textbf{Information} \\
+\midrule
+Selected enterprise / business & Luckin Coffee Inc.; mobile-first coffee retail, pickup, delivery, partnership-store operation, and packaged coffee business. \\
+Course and seminar & IK2015 Enterprise Architecture and Database Programming; Seminar 4. \\
+Group number & Group 4. \\
+Group members & \parbox[t]{\hsize}{\raggedright Zhe-Kai Yang~(Krust), Shi-Hang Chen~(Sean), Wei-Yu Cai~(Nosta),\\ Huan-Wen Chen~(Evan), Yuan-Yong Liao~(Foreve).} \\
+Main deliverable & A conceptual model for the Luckin Coffee case study and a written explanation of its objects, relationships, attributes, and business meaning. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The purpose of this report is to transform the previous strategic analysis of Luckin Coffee into a conceptual model. A conceptual model does not begin with database tables, software screens, or implementation details. Instead, it identifies the key business objects in the case enterprise, clarifies how these objects relate to one another, and shows which variables are important for measurement and decision-making. For Luckin Coffee, this is especially useful because the company operates as a digital-to-physical retail system: customers place orders through mobile channels, stores prepare products, delivery partners complete logistics, and management systems continuously monitor revenue, quality, inventory, and customer behaviour.
+
+% =================== MODELLING SCOPE ===================
+\section{Modelling Scope and Design Logic}
+
+The conceptual model focuses on the daily operating logic of Luckin Coffee's new retail model. It covers the path from customer demand to order fulfilment and then to performance feedback. The model therefore includes six major domains: customer and membership management, digital ordering, store fulfilment, product and recipe management, supply chain resources, and performance analytics. These domains are selected because they directly support Luckin's value proposition of convenient, affordable, and reliable coffee consumption.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    domain/.style={rectangle, rounded corners=7pt, draw=#1!75!black, fill=#1!10,
+                   text width=3.2cm, minimum height=1.15cm, align=center,
+                   font=\small\bfseries, line width=0.7pt},
+    arrow/.style={-{Stealth[round]}, line width=0.85pt, black!60},
+    note/.style={rectangle, rounded corners=5pt, draw=black!35, fill=lkgray,
+                 text width=10.8cm, align=center, font=\footnotesize}
+  ]
+    \node[domain=lkblue] (customer) {Customer\\and Membership};
+    \node[domain=lkorange, right=0.7cm of customer] (order) {Digital\\Ordering};
+    \node[domain=lkgreen, right=0.7cm of order] (store) {Store\\Fulfilment};
+    \node[domain=lkpurple, below=0.85cm of order] (analytics) {Performance\\Analytics};
+    \node[domain=lkblue, below=0.85cm of customer] (product) {Product\\and Recipe};
+    \node[domain=lkorange, below=0.85cm of store] (supply) {Supply Chain\\Resources};
+
+    \draw[arrow] (customer) -- node[above, font=\scriptsize] {places demand} (order);
+    \draw[arrow] (order) -- node[above, font=\scriptsize] {routes tasks} (store);
+    \draw[arrow] (product) -- node[left, font=\scriptsize] {defines menu} (customer);
+    \draw[arrow] (product) -- node[below, font=\scriptsize] {requires materials} (supply);
+    \draw[arrow] (supply) -- node[right, font=\scriptsize] {replenishes} (store);
+    \draw[arrow] (store) -- node[right, font=\scriptsize] {reports results} (analytics);
+    \draw[arrow] (analytics) -- node[left, font=\scriptsize] {improves offers} (customer);
+    \draw[arrow] (analytics) -- node[below, font=\scriptsize] {optimises stock} (supply);
+
+    \node[note, below=0.85cm of analytics] {The model is designed around operational flow: customer demand is captured digitally, translated into store fulfilment, supported by products and supplies, and evaluated through performance data.};
+  \end{tikzpicture}
+  \caption{Scope of the conceptual model for Luckin Coffee.}
+\end{figure}
+
+A good conceptual model should be readable by both business and technical stakeholders. For this reason, the diagram uses object boxes rather than database tables. Each box lists examples of classifying variables, measurable sum variables, count variables, and additional attributes. The relationships between boxes show business meaning, such as ``places'', ``contains'', ``prepared by'', and ``evaluated by''. These relationships can later be translated into database entities, process models, or system architecture components.
+
+% =================== NOTATION ===================
+\section{Notation Used in the Conceptual Model}
+
+The model follows the spirit of the examples in the Seminar 4 instruction sheet. Business objects are represented as boxes. Yellow boxes show core transactional or analytical objects; white boxes show supporting actor or resource objects. Arrows indicate relationship direction, while multiplicity labels describe whether the relationship is one-to-one, one-to-many, or many-to-many.
+
+\begin{table}[H]
+\centering
+\caption{Notation used in the conceptual model.}
+\begin{tabularx}{\textwidth}{P{4.2cm}Y}
+\toprule
+\textbf{Notation} & \textbf{Meaning in this report} \\
+\midrule
+\textcolor{lkblue}{Class variables} & Variables used to classify an object, such as customer segment, store type, order channel, payment method, or product category. \\
+\textcolor{lkorange}{Sum variables} & Quantitative values that can be summarised, such as order amount, discount amount, material cost, preparation time, or delivery fee. \\
+\textcolor{lkgreen}{Count variables} & Numbers of objects or events, such as order count, item count, complaint count, stockout count, or visit count. \\
+Additional attributes & Descriptive properties needed to identify or manage the object, such as customer ID, store ID, product name, recipe version, or supplier name. \\
+Relationship arrows & Reading direction for the business relationship. For example, ``Customer places Order'' and ``Order is prepared by Store''. \\
+Multiplicity & 1:N means one object can connect to many objects; M:N means many objects can connect to many objects; 1:1 means each object connects to one counterpart. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =================== MAIN CONCEPTUAL MODEL ===================
+\section{Conceptual Model for Luckin Coffee}
+
+\begin{landscape}
+\thispagestyle{empty}
+\begin{figure}[H]
+\portraitlandscapepagenumber
+\centering
+\scriptsize
+\resizebox{0.985\linewidth}{!}{%
+\begin{tikzpicture}[
+  entity/.style={rectangle, draw=modelborder, fill=modelyellow, minimum width=3.55cm,
+                 text width=3.35cm, minimum height=2.35cm, align=left, inner sep=4pt, line width=0.55pt},
+  actor/.style={rectangle, draw=modelborder, fill=white, minimum width=3.55cm,
+                text width=3.35cm, minimum height=2.15cm, align=left, inner sep=4pt, line width=0.55pt},
+  smallentity/.style={rectangle, draw=modelborder, fill=modelyellow, minimum width=3.25cm,
+                 text width=3.05cm, minimum height=2.05cm, align=left, inner sep=4pt, line width=0.55pt},
+  smallactor/.style={rectangle, draw=modelborder, fill=white, minimum width=3.25cm,
+                text width=3.05cm, minimum height=1.85cm, align=left, inner sep=4pt, line width=0.55pt},
+  rel/.style={-{Stealth[length=2.2mm]}, line width=0.7pt, black},
+  dashedrel/.style={-{Stealth[length=2.2mm]}, line width=0.65pt, black, dashed},
+  label/.style={font=\scriptsize, fill=white, inner sep=1pt},
+  title/.style={font=\scriptsize\bfseries, align=center}
+]
+
+% Top row
+\node[actor] (customer) at (0,8.2) {\begin{center}\textbf{Customer}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Segment, city, age band}
+  \roleitem{lkgreen}{Visit count, complaint count}
+  \modelitem{Customer ID, contact channel}
+  \modelitem{Registration date}
+\end{itemize}};
+
+\node[entity] (membership) at (4.4,8.2) {\begin{center}\textbf{Membership Account}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Member tier, coupon type}
+  \roleitem{lkorange}{Wallet balance, points}
+  \roleitem{lkgreen}{Coupon count, order count}
+  \modelitem{Account ID, app identity}
+\end{itemize}};
+
+\node[entity] (order) at (8.8,8.2) {\begin{center}\textbf{Digital Order}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Channel, payment method, order status}
+  \roleitem{lkorange}{Order amount, discount, delivery fee}
+  \roleitem{lkgreen}{Item count}
+  \modelitem{Order ID, order time}
+\end{itemize}};
+
+\node[smallentity] (fulfilment) at (13.1,8.2) {\begin{center}\textbf{Fulfilment Task}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Task type, queue status}
+  \roleitem{lkorange}{Preparation time, waiting time}
+  \roleitem{lkgreen}{Retry count}
+  \modelitem{Task ID, sequence}
+\end{itemize}};
+
+\node[smallactor] (delivery) at (17.2,8.2) {\begin{center}\textbf{Delivery Partner}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Partner type, service area}
+  \roleitem{lkorange}{Delivery time, service fee}
+  \roleitem{lkgreen}{Delivery count}
+  \modelitem{Partner ID}
+\end{itemize}};
+
+% Middle row
+\node[actor] (platform) at (0,4.5) {\begin{center}\textbf{Digital Channel}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{App, mini-program, e-commerce}
+  \roleitem{lkorange}{Traffic cost, conversion rate}
+  \roleitem{lkgreen}{Session count}
+  \modelitem{Channel ID, campaign tag}
+\end{itemize}};
+
+\node[entity] (promotion) at (4.4,4.5) {\begin{center}\textbf{Promotion Campaign}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Campaign type, target segment}
+  \roleitem{lkorange}{Discount budget, subsidy amount}
+  \roleitem{lkgreen}{Redemption count}
+  \modelitem{Campaign ID, valid period}
+\end{itemize}};
+
+\node[entity] (orderitem) at (8.8,4.5) {\begin{center}\textbf{Order Item}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Size, temperature, add-on type}
+  \roleitem{lkorange}{Item price, item discount}
+  \roleitem{lkgreen}{Quantity}
+  \modelitem{Line ID, customisation}
+\end{itemize}};
+
+\node[entity] (store) at (13.1,4.5) {\begin{center}\textbf{Store}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Self-operated/partnership, city tier}
+  \roleitem{lkorange}{Daily revenue, rent, labour cost}
+  \roleitem{lkgreen}{Order count, staff count}
+  \modelitem{Store ID, location}
+\end{itemize}};
+
+\node[actor] (staff) at (17.2,4.5) {\begin{center}\textbf{Store Staff}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Role, training status}
+  \roleitem{lkorange}{Working hours, productivity}
+  \roleitem{lkgreen}{Training module count}
+  \modelitem{Employee ID, shift}
+\end{itemize}};
+
+% Bottom row
+\node[actor] (product) at (0,0.8) {\begin{center}\textbf{Product}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Category, season, launch region}
+  \roleitem{lkorange}{List price, gross margin}
+  \roleitem{lkgreen}{Sales count}
+  \modelitem{Product ID, product name}
+\end{itemize}};
+
+\node[entity] (recipe) at (4.4,0.8) {\begin{center}\textbf{Recipe Standard}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Recipe version, quality grade}
+  \roleitem{lkorange}{Standard dosage, standard cost}
+  \roleitem{lkgreen}{Ingredient count}
+  \modelitem{Recipe ID, SOP rule}
+\end{itemize}};
+
+\node[entity] (material) at (8.8,0.8) {\begin{center}\textbf{Raw Material}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Material type, origin, batch status}
+  \roleitem{lkorange}{Purchase cost, inventory value}
+  \roleitem{lkgreen}{Batch count, stockout count}
+  \modelitem{Material ID, shelf life}
+\end{itemize}};
+
+\node[smallactor] (supplier) at (13.1,0.8) {\begin{center}\textbf{Supplier}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{Supplier type, region}
+  \roleitem{lkorange}{Contract amount, lead time}
+  \roleitem{lkgreen}{Delivery count}
+  \modelitem{Supplier ID, certification}
+\end{itemize}};
+
+\node[smallentity] (performance) at (17.2,0.8) {\begin{center}\textbf{Performance Result}\end{center}
+\begin{itemize}[leftmargin=*,nosep]
+  \roleitem{lkblue}{KPI type, period, region}
+  \roleitem{lkorange}{Revenue, margin, NPS score}
+  \roleitem{lkgreen}{Complaint count, stockout count}
+  \modelitem{Result ID, dashboard owner}
+\end{itemize}};
+
+% Relationships
+\draw[rel] (customer) -- node[label, above] {owns 1:1} (membership);
+\draw[rel] (membership) -- node[label, above] {places 1:N} (order);
+\draw[rel] (platform) -- node[label, left] {captures 1:N} (customer);
+\draw[rel] (promotion) -- node[label, above] {targets M:N} (membership);
+\draw[rel] (promotion) -- node[label, above] {discounts M:N} (order);
+\draw[rel] (order) -- node[label, right] {contains 1:N} (orderitem);
+\draw[rel] (order) -- node[label, above] {creates 1:N} (fulfilment);
+\draw[rel] (fulfilment) -- node[label, above] {assigned to N:1} (delivery);
+\draw[rel] (fulfilment) -- node[label, right] {prepared by N:1} (store);
+\draw[rel] (store) -- node[label, above] {employs 1:N} (staff);
+\draw[rel] (orderitem) -- node[label, above] {of N:1} (product);
+\draw[rel] (product) -- node[label, above] {defined by 1:N} (recipe);
+\draw[rel] (recipe) -- node[label, above] {uses M:N} (material);
+\draw[rel] (supplier) -- node[label, above] {supplies 1:N} (material);
+\draw[rel] (material) -- node[label, right] {replenishes M:N} (store);
+\draw[dashedrel] (order) .. controls (11.6,6.7) and (15.2,3.1) .. node[label, pos=0.52] {evaluated by} (performance);
+\draw[dashedrel] (store) -- node[label, right] {reported in 1:N} (performance);
+\draw[dashedrel] (promotion) .. controls (8.0,3.1) and (13.2,1.4) .. node[label, pos=0.55] {analysed by} (performance);
+\draw[dashedrel] (performance) .. controls (18.5,4.0) and (17.5,6.2) .. node[label, right] {feeds back} (delivery);
+
+\end{tikzpicture}%
+}
+\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. Yellow boxes indicate core transaction or analytical objects; white boxes indicate actors, channels, or supporting resources.}
+\end{figure}
+\end{landscape}
+
+The diagram shows Luckin Coffee as an integrated retail platform rather than a simple chain of coffee shops. The central object is the \textbf{Digital Order}. It connects customers, membership accounts, promotions, order items, fulfilment tasks, stores, and delivery partners. Around this core, the product and supply-chain side defines what can be sold and how it can be prepared, while the performance-result object collects the evidence needed for management evaluation.
+
+% =================== OBJECT EXPLANATION ===================
+\section{Explanation of Main Objects}
+
+\subsection{Customer, Membership Account, and Digital Channel}
+
+The \textbf{Customer} object represents the consumer who buys Luckin products. It is classified by variables such as segment, city, and age band because these variables help explain demand differences between office workers, students, commuters, and other groups. A customer normally owns one membership account, which records digital identity, coupon use, order history, and points. This relationship is important because Luckin's customer relationship is mainly managed through digital membership rather than through face-to-face service.
+
+The \textbf{Digital Channel} object represents the mobile app, WeChat mini-program, e-commerce interfaces, and other access points. These channels capture customer visits, product browsing, coupon redemption, and payment behaviour. In the conceptual model, the channel does not simply display products; it is also the source of demand data. This reflects Luckin's strategy of using digital channels to lower transaction friction and to support personalised promotion.
+
+\subsection{Promotion Campaign and Digital Order}
+
+The \textbf{Promotion Campaign} object represents coupons, membership discounts, new-product campaigns, seasonal offers, and targeted push messages. It has class variables such as campaign type and target segment, sum variables such as discount budget and subsidy amount, and count variables such as redemption count. This object is connected to both membership accounts and digital orders because the same campaign can target many members and influence many purchases.
+
+The \textbf{Digital Order} object is the operational centre of the model. Each order records the channel, payment method, order status, order time, order amount, discount amount, delivery fee, and number of items. It converts customer demand into a set of fulfilment tasks. A pickup order may require only store preparation, while a delivery order also requires delivery coordination. This is why the model separates orders from fulfilment tasks: the business event of purchase and the operational activity of completing the purchase are related but not identical.
+
+\subsection{Order Item, Product, and Recipe Standard}
+
+The \textbf{Order Item} object breaks a digital order into specific product lines. This distinction is necessary because one order may contain several drinks, different sizes, different add-ons, and different discounts. Item-level data helps Luckin analyse product popularity, price sensitivity, and customer preferences.
+
+The \textbf{Product} object represents beverages, light food, packaged coffee, and merchandise. Its class variables include category, season, and launch region. These variables are important because Luckin frequently launches seasonal drinks and tests products in different markets. The \textbf{Recipe Standard} object defines how a product should be prepared. It includes recipe version, quality grade, standard dosage, standard cost, and SOP rules. Separating product from recipe helps the model express standardisation: the product is what the customer buys, while the recipe is the operational rule that stores follow.
+
+\subsection{Store, Store Staff, Raw Material, and Supplier}
+
+The \textbf{Store} object represents both self-operated stores and partnership stores. It is classified by ownership type, city tier, and location. Its measurable variables include daily revenue, rent, labour cost, order count, and staff count. The store is where the digital order becomes a physical product, so it connects digital demand with local capacity.
+
+The \textbf{Store Staff} object represents employees and store managers who prepare orders, follow SOPs, and complete daily operations. Staff variables include role, training status, working hours, productivity, and training module count. Including staff in the model is important because Luckin's service consistency depends not only on digital systems but also on human execution.
+
+The \textbf{Raw Material} object represents coffee beans, milk, syrups, packaging, and other inputs. It includes origin, material type, batch status, purchase cost, inventory value, batch count, and stockout count. The \textbf{Supplier} object provides these materials and is evaluated by region, supplier type, certification, lead time, contract amount, and delivery count. Together, raw materials and suppliers explain the resource side of Luckin's business model.
+
+\subsection{Fulfilment Task, Delivery Partner, and Performance Result}
+
+The \textbf{Fulfilment Task} object represents the operational work created by an order: drink preparation, pickup handling, delivery handover, or exception processing. Its variables include task type, queue status, preparation time, waiting time, and retry count. This object allows the conceptual model to express operational bottlenecks. For example, a store may receive many orders but have limited preparation capacity during peak periods.
+
+The \textbf{Delivery Partner} object represents external or platform-based logistics partners. It records partner type, service area, delivery time, service fee, and delivery count. This object is separated from the store because delivery performance is partly outside direct store control, but it still affects customer experience.
+
+The \textbf{Performance Result} object summarises the measurable outcomes of the whole operating system. It includes KPI type, period, region, revenue, margin, NPS score, complaint count, stockout count, and dashboard owner. It is connected to orders, stores, promotions, and delivery because these are the main sources of operational and strategic feedback.
+
+% =================== RELATIONSHIP ANALYSIS ===================
+\section{Relationship Analysis}
+
+The main relationships in the model can be grouped into three layers. The first layer is the demand layer: customers use digital channels, maintain membership accounts, receive promotions, and place digital orders. The second layer is the fulfilment layer: orders contain order items, order items refer to products, products are prepared according to recipe standards, and fulfilment tasks are executed by stores and delivery partners. The third layer is the control layer: stores, orders, promotions, stock conditions, and delivery outcomes are summarised into performance results.
+
+\begin{landscape}
+\thispagestyle{empty}
+\begin{table}[H]
+\portraitlandscapepagenumber
+\centering
+\tiny
+\renewcommand{\arraystretch}{0.95}
+\caption{Key relationships in the Luckin Coffee conceptual model.}
+\begin{tabularx}{\linewidth}{P{3.6cm}P{1.7cm}P{3.0cm}P{5.5cm}Y}
+\toprule
+\textbf{Relationship} & \textbf{Type} & \textbf{Reading Direction} & \textbf{Business Meaning} & \textbf{Measures Enabled} \\
+\midrule
+Customer -- Membership Account & 1:1 & Customer owns account & Links consumer identity with app account, points, coupons, and order history. & Active members; repeat purchase; coupon usage. \\
+Membership Account -- Digital Order & 1:N & Account places orders & One member may place many orders across time, stores, and channels. & Orders per member; AOV; lifetime value. \\
+Promotion Campaign -- Digital Order & M:N & Campaign discounts orders & Campaigns influence orders; one order may use several promotion mechanisms. & Redemption; subsidy amount; conversion rate. \\
+Digital Order -- Order Item & 1:N & Order contains items & Separates payment and fulfilment status from product-level demand. & Item quantity; sales mix; item discount ratio. \\
+Order Item -- Product & N:1 & Item is of product & Many order lines can refer to the same product. & Product sales; gross margin; launch success. \\
+Product -- Recipe Standard & 1:N & Product is defined by recipe & Recipe versions support controlled innovation and operational standardisation. & Recipe compliance; standard cost; quality complaints. \\
+Recipe Standard -- Raw Material & M:N & Recipe uses materials & Recipes consume multiple materials; materials may support multiple recipes. & Ingredient use; material cost ratio; wastage. \\
+Supplier -- Raw Material & 1:N & Supplier provides materials & Suppliers provide material batches or categories for store replenishment. & Lead time; delivery count; quality pass rate. \\
+Digital Order -- Fulfilment Task & 1:N & Order creates tasks & One order may create preparation, pickup, delivery, or exception tasks. & Preparation time; waiting time; completion rate. \\
+Fulfilment Task -- Store & N:1 & Task is prepared by store & Store capacity and staff execution determine fulfilment reliability. & Store orders; labour utilisation; queue delay. \\
+Fulfilment Task -- Delivery Partner & N:1 & Task assigned to partner & Delivery partners affect completion time and customer experience. & Delivery time; delivery fee; completion rate. \\
+Store -- Performance Result & 1:N & Store reported in results & Store operations generate periodic financial and service KPIs. & Daily revenue; margin; complaints; stockouts. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+
+This relationship structure supports both operational analysis and future database design. For example, if management wants to know why delivery complaints increased in a city, the model suggests which objects should be connected: customer complaints can be traced to digital orders, fulfilment tasks, delivery partners, stores, and time periods. If management wants to evaluate a new product, the model connects order items, product categories, recipe standards, raw material consumption, promotion campaigns, and performance results.
+
+% =================== BUSINESS SCENARIOS ===================
+\section{Business Scenarios Supported by the Model}
+
+\subsection{Scenario 1: Mobile Order and Store Pickup}
+
+A customer opens the app or WeChat mini-program, receives a personalised coupon, selects a drink, pays digitally, and chooses pickup. In the conceptual model, this scenario begins with the customer and membership account, passes through the promotion campaign and digital order, creates order items, and then creates a fulfilment task at a store. The store staff prepare the product according to the recipe standard, using available raw materials. The final performance result records order amount, discount amount, preparation time, pickup waiting time, and customer feedback.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    step/.style={rectangle, rounded corners=6pt, draw=#1!75!black, fill=#1!10,
+                 text width=2.8cm, minimum height=1.0cm, align=center,
+                 font=\footnotesize\bfseries, line width=0.65pt},
+    arrow/.style={-{Stealth[round]}, line width=0.8pt, black!60}
+  ]
+    \node[step=lkblue] (s1) {Customer\\logs in};
+    \node[step=lkorange, right=0.45cm of s1] (s2) {Coupon\\applied};
+    \node[step=lkpurple, right=0.45cm of s2] (s3) {Digital order\\submitted};
+    \node[step=lkgreen, right=0.45cm of s3] (s4) {Store task\\generated};
+    \node[step=lkblue, below=0.65cm of s4] (s5) {Drink\\prepared};
+    \node[step=lkorange, left=0.45cm of s5] (s6) {Customer\\pickup};
+    \node[step=lkpurple, left=0.45cm of s6] (s7) {Feedback\\recorded};
+    \node[step=lkgreen, left=0.45cm of s7] (s8) {KPI\\updated};
+
+    \draw[arrow] (s1) -- (s2);
+    \draw[arrow] (s2) -- (s3);
+    \draw[arrow] (s3) -- (s4);
+    \draw[arrow] (s4) -- (s5);
+    \draw[arrow] (s5) -- (s6);
+    \draw[arrow] (s6) -- (s7);
+    \draw[arrow] (s7) -- (s8);
+  \end{tikzpicture}
+  \caption{Pickup-order scenario supported by the conceptual model.}
+\end{figure}
+
+\subsection{Scenario 2: New Product Launch and Performance Review}
+
+Luckin frequently launches new drinks and evaluates them through sales data. In the model, a new product first receives a product record and recipe standard. It then appears in digital channels and may be supported by a promotion campaign. When customers order it, order-item records capture quantity, item price, discount, region, and time. Raw material use is linked through the recipe standard. Performance results then summarise whether the product has strong sales, acceptable gross margin, low complaint rate, and stable supply. This scenario shows why the conceptual model includes both product-side and performance-side objects.
+
+\subsection{Scenario 3: Store Capacity and Delivery Reliability}
+
+During peak demand, a store may receive many orders in a short period. The model captures this through digital orders and fulfilment tasks. If preparation time rises, waiting time increases, or delivery completion becomes unstable, the performance-result object can show where the bottleneck appears. Management can then compare staff scheduling, raw material availability, delivery partner service area, and store-level order volume. This supports the Balanced Scorecard logic developed in the earlier report: customer convenience depends on internal process reliability.
+
+% =================== FROM CONCEPTUAL MODEL TO DATABASE ===================
+\section{Implications for Future Database Design}
+
+Although this report is conceptual rather than technical, the model provides a clear foundation for database design. Each business object can later become a candidate entity or table, and each relationship can become a foreign-key relationship, bridge table, or transaction link. For example, the many-to-many relationship between recipe standards and raw materials would require an intermediate recipe-material structure, while the one-to-many relationship between digital orders and order items would normally be implemented as separate order and order-line tables.
+
+\begin{table}[H]
+\centering
+\caption{How the conceptual model can guide future database design.}
+\begin{tabularx}{\textwidth}{P{4.1cm}Y}
+\toprule
+\textbf{Conceptual modelling decision} & \textbf{Database design implication} \\
+\midrule
+Separate customer from membership account & Customer demographic and segment information can be managed separately from app account, points, coupon, and authentication-related data. \\
+Separate digital order from order item & Order-level payment and fulfilment status can be stored independently from product-level quantity, customisation, and item discount data. \\
+Separate product from recipe standard & Product catalogue information can remain stable while recipe versions and SOP rules change over time. \\
+Represent recipe-material as M:N & A bridge table would be needed to record material dosage, standard cost, and recipe version for each ingredient. \\
+Separate fulfilment task from digital order & Operational execution can be analysed even when one order creates multiple tasks, such as preparation and delivery handover. \\
+Include performance result as an analytical object & KPI reporting can aggregate operational data by store, period, region, product, campaign, and delivery partner. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The model also helps prevent premature database design mistakes. If the system stored only orders and products, it would be difficult to analyse fulfilment delay, recipe compliance, supply-chain pressure, or campaign effectiveness. By including fulfilment tasks, recipe standards, raw materials, suppliers, promotions, and performance results, the model preserves the business meaning needed for high-quality enterprise architecture and database work.
+
+% =================== EVALUATION ===================
+\section{Evaluation of the Conceptual Model}
+
+The strength of this conceptual model is that it connects Luckin's strategic logic with operational reality. Previous analysis showed that Luckin competes through mobile ordering, dense store coverage, affordable pricing, data-driven promotion, and standardised fulfilment. The conceptual model expresses the same logic in object-and-relationship form. It shows that customer value is not created by one isolated object, but by the coordination of customers, digital channels, membership accounts, promotions, products, stores, staff, suppliers, and performance analytics.
+
+The model is also scalable. More detailed objects can be added if the project later focuses on a specific database design problem. For example, a complaint object could be added for customer-service analysis, a warehouse object could be added for supply-chain design, and an IoT coffee-machine object could be added for equipment monitoring. However, the current version intentionally keeps the model at a conceptual level. Its purpose is to clarify business structure before moving into technical implementation.
+
+% =================== CONCLUSION ===================
+\section{Conclusion}
+
+This report created a conceptual model for Luckin Coffee as a technology-driven new retail coffee enterprise. The model identifies the most important business objects: customer, membership account, digital channel, promotion campaign, digital order, order item, product, recipe standard, raw material, supplier, store, store staff, fulfilment task, delivery partner, and performance result. It also explains the relationships among these objects, including customer ordering, product preparation, store fulfilment, supply-chain replenishment, delivery coordination, and KPI feedback.
+
+The model demonstrates that Luckin Coffee's enterprise architecture is built around the integration of digital demand capture and physical fulfilment. Customers interact through mobile channels; orders become store tasks; products are controlled through recipes; materials are supplied through partners; and operational results are continuously measured. Therefore, the conceptual model provides a strong bridge between the earlier strategic reports and the future database design work required in the course.
+
+\begingroup
+\small
+\setlength{\itemsep}{0pt}
+\begin{thebibliography}{9}
+
+\bibitem{luckin2025results}
+Luckin Coffee Inc. (2026).
+\emph{Luckin Coffee Announces Fourth Quarter and Fiscal Year 2025 Financial Results}.
+\href{https://investor.luckincoffee.com/news-releases/news-release-details/luckin-coffee-announces-fourth-quarter-and-fiscal-year-2025/}{Luckin Coffee Investor Relations}.
+
+\bibitem{luckin2025annual}
+Luckin Coffee Inc. (2026).
+\emph{Form 20-F Annual Report for the Fiscal Year Ended December 31, 2025}.
+\href{https://www.sec.gov/Archives/edgar/data/1767582/000110465926035712/lk-20251231x20f.htm}{U.S. Securities and Exchange Commission}.
+
+\bibitem{kaplan1992bsc}
+Kaplan, R. S., \& Norton, D. P. (1992).
+\emph{The Balanced Scorecard: Measures That Drive Performance}.
+Harvard Business Review, 70(1), 71--79.
+
+\bibitem{osterwalder2010bmg}
+Osterwalder, A., \& Pigneur, Y. (2010).
+\emph{Business Model Generation: A Handbook for Visionaries, Game Changers, and Challengers}.
+John Wiley \& Sons.
+
+\end{thebibliography}
+\endgroup
+
+\end{document}
