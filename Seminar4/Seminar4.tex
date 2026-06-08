@@ -348,34 +348,50 @@ The \textbf{Performance Result} object summarises the measurable outcomes of the
 
 The main relationships in the model can be grouped into three layers. The first layer is the demand layer: customers use digital channels, maintain membership accounts, receive promotions, and place digital orders. The second layer is the fulfilment layer: orders contain order items, order items refer to products, products are prepared according to recipe standards, and fulfilment tasks are executed by stores and delivery partners. The third layer is the control layer: stores, orders, promotions, stock conditions, and delivery outcomes are summarised into performance results.
 
-\begin{landscape}
-\thispagestyle{empty}
 \begin{table}[H]
-\portraitlandscapepagenumber
 \centering
-\tiny
-\renewcommand{\arraystretch}{0.95}
-\caption{Key relationships in the Luckin Coffee conceptual model.}
-\begin{tabularx}{\linewidth}{P{1.1cm}P{3.6cm}P{1.7cm}P{3.0cm}P{5.1cm}Y}
+\small
+\renewcommand{\arraystretch}{1.18}
+\caption{Demand, order, and fulfilment relationships in the conceptual model.}
+\begin{tabularx}{\textwidth}{P{1.0cm}P{4.0cm}P{1.5cm}Y}
 \toprule
-\textbf{ID} & \textbf{Relationship} & \textbf{Type} & \textbf{Reading Direction} & \textbf{Business Meaning} & \textbf{Measures Enabled} \\
+\textbf{ID} & \textbf{Relationship} & \textbf{Type} & \textbf{Business meaning and measures enabled} \\
 \midrule
-R2 & Customer -- Membership Account & 1:1 & Customer owns account & Links consumer identity with app account, points, coupons, and order history. & Active members; repeat purchase; coupon usage. \\
-R3 & Membership Account -- Digital Order & 1:N & Account places orders & One member may place many orders across time, stores, and channels. & Orders per member; AOV; lifetime value. \\
-R5 & Promotion Campaign -- Digital Order & M:N & Campaign discounts orders & Campaigns influence orders; one order may use several promotion mechanisms. & Redemption; subsidy amount; conversion rate. \\
-R6 & Digital Order -- Order Item & 1:N & Order contains items & Separates payment and fulfilment status from product-level demand. & Item quantity; sales mix; item discount ratio. \\
-R11 & Order Item -- Product & N:1 & Item is of product & Many order lines can refer to the same product. & Product sales; gross margin; launch success. \\
-R12 & Product -- Recipe Standard & 1:N & Product is defined by recipe & Recipe versions support controlled innovation and operational standardisation. & Recipe compliance; standard cost; quality complaints. \\
-R13 & Recipe Standard -- Raw Material & M:N & Recipe uses materials & Recipes consume multiple materials; materials may support multiple recipes. & Ingredient use; material cost ratio; wastage. \\
-R14 & Supplier -- Raw Material & 1:N & Supplier provides materials & Suppliers provide material batches or categories for store replenishment. & Lead time; delivery count; quality pass rate. \\
-R7 & Digital Order -- Fulfilment Task & 1:N & Order creates tasks & One order may create preparation, pickup, delivery, or exception tasks. & Preparation time; waiting time; completion rate. \\
-R8 & Fulfilment Task -- Store & N:1 & Task is prepared by store & Store capacity and staff execution determine fulfilment reliability. & Store orders; labour utilisation; queue delay. \\
-R10 & Fulfilment Task -- Delivery Partner & N:1 & Task assigned to partner & Delivery partners affect completion time and customer experience. & Delivery time; delivery fee; completion rate. \\
-R17 & Store -- Performance Result & 1:N & Store reported in results & Store operations generate periodic financial and service KPIs. & Daily revenue; margin; complaints; stockouts. \\
+R1 & Digital Channel -- Customer & 1:N & Channels such as the app and mini-program capture customer visits, sessions, and campaign exposure. \\
+R2 & Customer -- Membership Account & 1:1 & Customer identity is connected with points, coupons, and order history; this supports active-member and repeat-purchase analysis. \\
+R3 & Membership Account -- Digital Order & 1:N & One member may place many orders across time, stores, and channels; this enables order-frequency, AOV, and customer-lifetime-value analysis. \\
+R4 & Promotion Campaign -- Membership Account & M:N & Campaigns target many members, while members may receive many campaigns; this supports targeting and redemption analysis. \\
+R5 & Promotion Campaign -- Digital Order & M:N & Campaigns influence orders, and one order may use more than one promotional mechanism; this enables subsidy and conversion-rate tracking. \\
+R6 & Digital Order -- Order Item & 1:N & Order-level payment and fulfilment status are separated from product-level quantity, customisation, and item discount information. \\
+R7 & Digital Order -- Fulfilment Task & 1:N & A customer order can create preparation, pickup, delivery, or exception-handling tasks; this supports preparation-time and completion-rate monitoring. \\
+R8 & Fulfilment Task -- Store & N:1 & Many fulfilment tasks are prepared by one store, making store capacity, labour utilisation, and queue delay measurable. \\
+R9 & Store -- Store Staff & 1:N & Stores employ staff whose training status and productivity affect service consistency and operating efficiency. \\
+R10 & Fulfilment Task -- Delivery Partner & N:1 & Delivery tasks are assigned to logistics partners, allowing delivery time, delivery fee, and completion rate to be evaluated. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-\end{landscape}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.18}
+\caption{Product, resource, and analytical feedback relationships in the conceptual model.}
+\begin{tabularx}{\textwidth}{P{1.0cm}P{4.0cm}P{1.5cm}Y}
+\toprule
+\textbf{ID} & \textbf{Relationship} & \textbf{Type} & \textbf{Business meaning and measures enabled} \\
+\midrule
+R11 & Order Item -- Product & N:1 & Many order lines can refer to the same product; this enables product sales, gross margin, and new-product success analysis. \\
+R12 & Product -- Recipe Standard & 1:N & A product may have recipe versions across time or regions, supporting controlled innovation and operational standardisation. \\
+R13 & Recipe Standard -- Raw Material & M:N & Recipes consume multiple materials and materials may support multiple recipes; this supports ingredient-use, cost-ratio, and wastage analysis. \\
+R14 & Supplier -- Raw Material & 1:N & Suppliers provide material batches or categories for store replenishment; this enables lead-time, delivery-count, and quality-pass-rate evaluation. \\
+R15 & Raw Material -- Store & M:N & Stores consume and hold materials from multiple batches, supporting inventory turnover, stockout, and replenishment analysis. \\
+R16 & Digital Order -- Performance Result & 1:N & Orders feed analytical results such as revenue, discount amount, order value, and transaction success rate. \\
+R17 & Store -- Performance Result & 1:N & Store operations generate periodic financial and service KPIs, including daily revenue, margin, complaints, and stockouts. \\
+R18 & Delivery Partner -- Performance Result & 1:N & Delivery partners generate service KPIs such as delivery completion time, delivery success rate, and logistics cost per order. \\
+R19 & Performance Result -- Promotion Campaign & 1:N & Analytical feedback improves future promotion design by showing which campaigns produce durable loyalty rather than only short-term discount purchases. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 This relationship structure supports both operational analysis and future database design. For example, if management wants to know why delivery complaints increased in a city, the model suggests which objects should be connected: customer complaints can be traced to digital orders, fulfilment tasks, delivery partners, stores, and time periods. If management wants to evaluate a new product, the model connects order items, product categories, recipe standards, raw material consumption, promotion campaigns, and performance results.
 
