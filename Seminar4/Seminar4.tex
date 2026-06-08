@@ -148,12 +148,12 @@ Main deliverable & A conceptual model for the Luckin Coffee case study and a wri
 \end{tabularx}
 \end{table}
 
-The purpose of this report is to transform the previous strategic analysis of Luckin Coffee into a conceptual model. A conceptual model does not begin with database tables, software screens, or implementation details. Instead, it identifies the key business objects in the case enterprise, clarifies how these objects relate to one another, and shows which variables are important for measurement and decision-making. For Luckin Coffee, this is especially useful because the company operates as a digital-to-physical retail system: customers place orders through mobile channels, stores prepare products, delivery partners complete logistics, and management systems continuously monitor revenue, quality, inventory, and customer behaviour.
+The report develops a conceptual model for Luckin Coffee by identifying the key business objects, their relationships, and the variables needed for measurement and decision-making. This is appropriate for Luckin because its business operates as a digital-to-physical retail system: customers order through mobile channels, stores fulfil orders, delivery partners support logistics, and management systems monitor revenue, quality, inventory, and customer behaviour.
 
 % =================== MODELLING SCOPE ===================
 \section{Modelling Scope and Design Logic}
 
-The conceptual model focuses on the daily operating logic of Luckin Coffee's new retail model. It covers the path from customer demand to order fulfilment and then to performance feedback. The model therefore includes six major domains: customer and membership management, digital ordering, store fulfilment, product and recipe management, supply chain resources, and performance analytics. These domains are selected because they directly support Luckin's value proposition of convenient, affordable, and reliable coffee consumption.
+The conceptual model focuses on Luckin Coffee's daily operating logic, from customer demand to order fulfilment and performance feedback. It covers six domains: customer and membership management, digital ordering, store fulfilment, product and recipe management, supply-chain resources, and performance analytics. These domains directly support Luckin's value proposition of convenient, affordable, and reliable coffee consumption.
 
 \begin{figure}[H]
   \centering
@@ -186,12 +186,12 @@ The conceptual model focuses on the daily operating logic of Luckin Coffee's new
   \caption{Scope of the conceptual model for Luckin Coffee.}
 \end{figure}
 
-A good conceptual model should be readable by both business and technical stakeholders. For this reason, the diagram uses object boxes rather than database tables. Each box lists examples of classifying variables, measurable sum variables, count variables, and additional attributes. The relationships between boxes show business meaning, such as ``places'', ``contains'', ``prepared by'', and ``evaluated by''. These relationships can later be translated into database entities, process models, or system architecture components.
+The diagram uses business object boxes rather than database tables, so it remains readable for both business and technical stakeholders. The diagram presents the core objects and relationship IDs, while the following object table lists representative class variables, sum variables, count variables, and attributes in the notation used by the Seminar 4 examples. The relationships can later be translated into database entities, process models, or system architecture components.
 
 % =================== NOTATION ===================
 \section{Notation Used in the Conceptual Model}
 
-The model follows the spirit of the examples in the Seminar 4 instruction sheet. Business objects are represented as boxes. Yellow boxes show core transactional or analytical objects; white boxes show supporting actor or resource objects. Arrows indicate relationship direction, while multiplicity labels describe whether the relationship is one-to-one, one-to-many, or many-to-many.
+The model follows the spirit of the examples in the Seminar 4 instruction sheet. Business objects are represented as boxes, and colours separate demand, fulfilment, resource, and analytics objects. Arrows indicate reading direction, while the relationship tables specify one-to-one, one-to-many, and many-to-many multiplicities.
 
 \begin{table}[H]
 \centering
@@ -296,52 +296,73 @@ Multiplicity & 1:N means one object can connect to many objects; M:N means many 
 \draw[feedback] (performance) .. controls (18.2,3.3) and (16.6,6.7) .. node[rtag, pos=0.48, right] {R19} (promotion);
 
 % Legend
-\node[note, below=0.35cm of g3.south west, anchor=north west] {\textbf{Legend:} solid arrows show operational relationships; dashed arrows show analytical feedback. Relationship IDs R1--R19 are explained in Table 3.};
+\node[note, below=0.35cm of g3.south west, anchor=north west] {\textbf{Legend:} solid arrows show operational relationships; dashed arrows show analytical feedback. Relationship IDs R1--R19 are explained in Tables 4 and 5.};
 
 \end{tikzpicture}%
 }
-\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. The diagram separates demand, fulfilment, resource, and analytics objects so that the main relationships remain readable; detailed variables and relationship meanings are explained in the following sections and Table 3.}
+\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. The diagram separates demand, fulfilment, resource, and analytics objects so that the main relationships remain readable; representative variables are listed in Table 3, and relationship meanings are explained in Tables 4 and 5.}
 \end{figure}
 \end{landscape}
 
-The diagram shows Luckin Coffee as an integrated retail platform rather than a simple chain of coffee shops. The central object is the \textbf{Digital Order}. It connects customers, membership accounts, promotions, order items, fulfilment tasks, stores, and delivery partners. Around this core, the product and supply-chain side defines what can be sold and how it can be prepared, while the performance-result object collects the evidence needed for management evaluation.
+The diagram shows Luckin Coffee as an integrated retail platform rather than a simple chain of coffee shops. The central object is the \textbf{Digital Order}. It connects customers, membership accounts, promotions, order items, fulfilment tasks, stores, and delivery partners. Around this core, products and recipes define what can be sold, suppliers and materials define what can be prepared, and performance results provide management feedback.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.16}
+\caption{Representative variables in the conceptual model.}
+\begin{tabularx}{\textwidth}{P{3.0cm}Y Y Y Y}
+\toprule
+\textbf{Object} & \textbf{Class variables} & \textbf{Sum variables} & \textbf{Count variables} & \textbf{Attributes} \\
+\midrule
+Customer / Membership & Segment, city, age band, member tier & Points balance, coupon value & Visit count, order count & Customer ID, account ID \\
+Digital Channel & Channel type, access device & Payment amount, discount value & Session count, redemption count & Channel ID, app version \\
+Promotion Campaign & Campaign type, target segment & Budget, subsidy amount & Exposure count, redemption count & Campaign ID, valid period \\
+Digital Order / Order Item & Order channel, payment method, product category & Order amount, item price, delivery fee & Item count, order count & Order ID, order time, status \\
+Product / Recipe Standard & Category, season, launch region, quality grade & Standard cost, material dosage & Recipe version count & Product ID, recipe version \\
+Store / Store Staff & Ownership type, city tier, staff role & Revenue, rent, labour cost, working hours & Order count, staff count & Store ID, staff ID \\
+Raw Material / Supplier & Material type, origin, supplier type & Purchase cost, inventory value, contract amount & Batch count, delivery count, stockout count & Material ID, supplier ID \\
+Fulfilment / Delivery / Performance & Task type, queue status, partner type, KPI type & Preparation time, waiting time, delivery fee, margin & Retry count, complaint count, delivery count & Task ID, partner ID, period \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 % =================== OBJECT EXPLANATION ===================
 \section{Explanation of Main Objects}
 
 \subsection{Customer, Membership Account, and Digital Channel}
 
-The \textbf{Customer} object represents the consumer who buys Luckin products. It is classified by variables such as segment, city, and age band because these variables help explain demand differences between office workers, students, commuters, and other groups. A customer normally owns one membership account, which records digital identity, coupon use, order history, and points. This relationship is important because Luckin's customer relationship is mainly managed through digital membership rather than through face-to-face service.
+The \textbf{Customer} object identifies the consumer and is classified by segment, city, and age band to explain demand differences across office workers, students, commuters, and other groups. A customer normally owns one \textbf{Membership Account}, which records digital identity, coupons, points, and order history. This reflects Luckin's dependence on digital membership rather than purely face-to-face customer management.
 
-The \textbf{Digital Channel} object represents the mobile app, WeChat mini-program, e-commerce interfaces, and other access points. These channels capture customer visits, product browsing, coupon redemption, and payment behaviour. In the conceptual model, the channel does not simply display products; it is also the source of demand data. This reflects Luckin's strategy of using digital channels to lower transaction friction and to support personalised promotion.
+The \textbf{Digital Channel} object covers the mobile app, WeChat mini-program, e-commerce interfaces, and other access points. These channels capture visits, browsing, coupon redemption, and payment behaviour, making them both transaction interfaces and sources of demand data.
 
 \subsection{Promotion Campaign and Digital Order}
 
-The \textbf{Promotion Campaign} object represents coupons, membership discounts, new-product campaigns, seasonal offers, and targeted push messages. It has class variables such as campaign type and target segment, sum variables such as discount budget and subsidy amount, and count variables such as redemption count. This object is connected to both membership accounts and digital orders because the same campaign can target many members and influence many purchases.
+The \textbf{Promotion Campaign} object covers coupons, membership discounts, new-product campaigns, seasonal offers, and targeted push messages. It is linked to both membership accounts and digital orders because one campaign can target many members and influence many purchases.
 
-The \textbf{Digital Order} object is the operational centre of the model. Each order records the channel, payment method, order status, order time, order amount, discount amount, delivery fee, and number of items. It converts customer demand into a set of fulfilment tasks. A pickup order may require only store preparation, while a delivery order also requires delivery coordination. This is why the model separates orders from fulfilment tasks: the business event of purchase and the operational activity of completing the purchase are related but not identical.
+The \textbf{Digital Order} object is the operational centre of the model. It records channel, payment method, status, order time, order amount, discount amount, delivery fee, and item count. Separating orders from \textbf{Fulfilment Tasks} distinguishes the purchase event from the work required to complete it, such as preparation, pickup, delivery, or exception handling.
 
 \subsection{Order Item, Product, and Recipe Standard}
 
-The \textbf{Order Item} object breaks a digital order into specific product lines. This distinction is necessary because one order may contain several drinks, different sizes, different add-ons, and different discounts. Item-level data helps Luckin analyse product popularity, price sensitivity, and customer preferences.
+The \textbf{Order Item} object decomposes a digital order into product lines, allowing item-level analysis of quantity, customisation, discount, popularity, and price sensitivity.
 
-The \textbf{Product} object represents beverages, light food, packaged coffee, and merchandise. Its class variables include category, season, and launch region. These variables are important because Luckin frequently launches seasonal drinks and tests products in different markets. The \textbf{Recipe Standard} object defines how a product should be prepared. It includes recipe version, quality grade, standard dosage, standard cost, and SOP rules. Separating product from recipe helps the model express standardisation: the product is what the customer buys, while the recipe is the operational rule that stores follow.
+The \textbf{Product} object covers beverages, light food, packaged coffee, and merchandise. Its category, season, and launch region help describe Luckin's frequent product testing. The \textbf{Recipe Standard} object defines the operational rule behind each product, including recipe version, quality grade, dosage, standard cost, and SOP requirements. This separation expresses the difference between what the customer buys and how the store prepares it.
 
 \subsection{Store, Store Staff, Raw Material, and Supplier}
 
-The \textbf{Store} object represents both self-operated stores and partnership stores. It is classified by ownership type, city tier, and location. Its measurable variables include daily revenue, rent, labour cost, order count, and staff count. The store is where the digital order becomes a physical product, so it connects digital demand with local capacity.
+The \textbf{Store} object covers self-operated and partnership stores, classified by ownership type, city tier, and location. Its revenue, rent, labour cost, order count, and staff count connect digital demand with local operating capacity.
 
-The \textbf{Store Staff} object represents employees and store managers who prepare orders, follow SOPs, and complete daily operations. Staff variables include role, training status, working hours, productivity, and training module count. Including staff in the model is important because Luckin's service consistency depends not only on digital systems but also on human execution.
+The \textbf{Store Staff} object covers employees and managers who prepare orders and follow SOPs. Role, training status, working hours, productivity, and training modules are included because service consistency depends on both digital systems and human execution.
 
-The \textbf{Raw Material} object represents coffee beans, milk, syrups, packaging, and other inputs. It includes origin, material type, batch status, purchase cost, inventory value, batch count, and stockout count. The \textbf{Supplier} object provides these materials and is evaluated by region, supplier type, certification, lead time, contract amount, and delivery count. Together, raw materials and suppliers explain the resource side of Luckin's business model.
+The \textbf{Raw Material} object covers coffee beans, milk, syrups, packaging, and other inputs, while the \textbf{Supplier} object identifies the external source of those materials. Together, they express the resource side of Luckin's model through origin, material type, batch status, purchase cost, inventory value, supplier certification, lead time, and delivery count.
 
 \subsection{Fulfilment Task, Delivery Partner, and Performance Result}
 
-The \textbf{Fulfilment Task} object represents the operational work created by an order: drink preparation, pickup handling, delivery handover, or exception processing. Its variables include task type, queue status, preparation time, waiting time, and retry count. This object allows the conceptual model to express operational bottlenecks. For example, a store may receive many orders but have limited preparation capacity during peak periods.
+The \textbf{Fulfilment Task} object records the operational work created by an order, including drink preparation, pickup handling, delivery handover, and exception processing. Task type, queue status, preparation time, waiting time, and retry count make store bottlenecks visible.
 
-The \textbf{Delivery Partner} object represents external or platform-based logistics partners. It records partner type, service area, delivery time, service fee, and delivery count. This object is separated from the store because delivery performance is partly outside direct store control, but it still affects customer experience.
+The \textbf{Delivery Partner} object covers external or platform-based logistics partners. Partner type, service area, delivery time, service fee, and delivery count are separated from store variables because delivery performance is partly outside direct store control but still affects customer experience.
 
-The \textbf{Performance Result} object summarises the measurable outcomes of the whole operating system. It includes KPI type, period, region, revenue, margin, NPS score, complaint count, stockout count, and dashboard owner. It is connected to orders, stores, promotions, and delivery because these are the main sources of operational and strategic feedback.
+The \textbf{Performance Result} object summarises operating outcomes by KPI type, period, region, revenue, margin, NPS score, complaint count, stockout count, and dashboard owner. It links orders, stores, promotions, and delivery outcomes to management evaluation.
 
 % =================== RELATIONSHIP ANALYSIS ===================
 \section{Relationship Analysis}
@@ -400,7 +421,7 @@ This relationship structure supports both operational analysis and future databa
 
 \subsection{Scenario 1: Mobile Order and Store Pickup}
 
-A customer opens the app or WeChat mini-program, receives a personalised coupon, selects a drink, pays digitally, and chooses pickup. In the conceptual model, this scenario begins with the customer and membership account, passes through the promotion campaign and digital order, creates order items, and then creates a fulfilment task at a store. The store staff prepare the product according to the recipe standard, using available raw materials. The final performance result records order amount, discount amount, preparation time, pickup waiting time, and customer feedback.
+A customer opens the app or WeChat mini-program, receives a personalised coupon, selects a drink, pays digitally, and chooses pickup. The model traces this process from customer and membership account to promotion campaign, digital order, order item, fulfilment task, store preparation, pickup, feedback, and KPI update.
 
 \begin{figure}[H]
   \centering
@@ -432,16 +453,16 @@ A customer opens the app or WeChat mini-program, receives a personalised coupon,
 
 \subsection{Scenario 2: New Product Launch and Performance Review}
 
-Luckin frequently launches new drinks and evaluates them through sales data. In the model, a new product first receives a product record and recipe standard. It then appears in digital channels and may be supported by a promotion campaign. When customers order it, order-item records capture quantity, item price, discount, region, and time. Raw material use is linked through the recipe standard. Performance results then summarise whether the product has strong sales, acceptable gross margin, low complaint rate, and stable supply. This scenario shows why the conceptual model includes both product-side and performance-side objects.
+Luckin frequently launches new drinks and evaluates them through sales data. In the model, a new product receives a product record and recipe standard, appears in digital channels, may be supported by a campaign, and is then measured through order-item data, raw-material use, margin, complaints, and supply stability.
 
 \subsection{Scenario 3: Store Capacity and Delivery Reliability}
 
-During peak demand, a store may receive many orders in a short period. The model captures this through digital orders and fulfilment tasks. If preparation time rises, waiting time increases, or delivery completion becomes unstable, the performance-result object can show where the bottleneck appears. Management can then compare staff scheduling, raw material availability, delivery partner service area, and store-level order volume. This supports the Balanced Scorecard logic developed in the earlier report: customer convenience depends on internal process reliability.
+During peak demand, the model captures pressure through digital orders and fulfilment tasks. If preparation time, waiting time, or delivery completion deteriorates, management can compare staff scheduling, material availability, delivery partner capacity, and store-level order volume.
 
 % =================== FROM CONCEPTUAL MODEL TO DATABASE ===================
 \section{Implications for Future Database Design}
 
-Although this report is conceptual rather than technical, the model provides a clear foundation for database design. Each business object can later become a candidate entity or table, and each relationship can become a foreign-key relationship, bridge table, or transaction link. For example, the many-to-many relationship between recipe standards and raw materials would require an intermediate recipe-material structure, while the one-to-many relationship between digital orders and order items would normally be implemented as separate order and order-line tables.
+Although this report is conceptual rather than technical, the model provides a foundation for database design. Each object can become a candidate entity or table, and each relationship can become a foreign-key relationship, bridge table, or transaction link. For example, the many-to-many relationship between recipe standards and raw materials would require a recipe-material bridge, while the one-to-many relationship between digital orders and order items would normally become separate order and order-line tables.
 
 \begin{table}[H]
 \centering
@@ -460,21 +481,14 @@ Include performance result as an analytical object & KPI reporting can aggregate
 \end{tabularx}
 \end{table}
 
-The model also helps prevent premature database design mistakes. If the system stored only orders and products, it would be difficult to analyse fulfilment delay, recipe compliance, supply-chain pressure, or campaign effectiveness. By including fulfilment tasks, recipe standards, raw materials, suppliers, promotions, and performance results, the model preserves the business meaning needed for high-quality enterprise architecture and database work.
-
-% =================== EVALUATION ===================
-\section{Evaluation of the Conceptual Model}
-
-The strength of this conceptual model is that it connects Luckin's strategic logic with operational reality. Previous analysis showed that Luckin competes through mobile ordering, dense store coverage, affordable pricing, data-driven promotion, and standardised fulfilment. The conceptual model expresses the same logic in object-and-relationship form. It shows that customer value is not created by one isolated object, but by the coordination of customers, digital channels, membership accounts, promotions, products, stores, staff, suppliers, and performance analytics.
-
-The model is also scalable. More detailed objects can be added if the project later focuses on a specific database design problem. For example, a complaint object could be added for customer-service analysis, a warehouse object could be added for supply-chain design, and an IoT coffee-machine object could be added for equipment monitoring. However, the current version intentionally keeps the model at a conceptual level. Its purpose is to clarify business structure before moving into technical implementation.
+The model also prevents premature database design mistakes. If the system stored only orders and products, it would be difficult to analyse fulfilment delay, recipe compliance, supply-chain pressure, or campaign effectiveness. Including fulfilment tasks, recipe standards, raw materials, suppliers, promotions, and performance results preserves the business meaning needed for later enterprise architecture and database work.
 
 % =================== CONCLUSION ===================
 \section{Conclusion}
 
-This report created a conceptual model for Luckin Coffee as a technology-driven new retail coffee enterprise. The model identifies the most important business objects: customer, membership account, digital channel, promotion campaign, digital order, order item, product, recipe standard, raw material, supplier, store, store staff, fulfilment task, delivery partner, and performance result. It also explains the relationships among these objects, including customer ordering, product preparation, store fulfilment, supply-chain replenishment, delivery coordination, and KPI feedback.
+This report created a conceptual model for Luckin Coffee as a technology-driven new retail coffee enterprise. The model identifies the main objects---customer, membership account, digital channel, promotion campaign, digital order, order item, product, recipe standard, raw material, supplier, store, store staff, fulfilment task, delivery partner, and performance result---and explains how they support customer ordering, product preparation, store fulfilment, supply-chain replenishment, delivery coordination, and KPI feedback.
 
-The model demonstrates that Luckin Coffee's enterprise architecture is built around the integration of digital demand capture and physical fulfilment. Customers interact through mobile channels; orders become store tasks; products are controlled through recipes; materials are supplied through partners; and operational results are continuously measured. Therefore, the conceptual model provides a strong bridge between the earlier strategic reports and the future database design work required in the course.
+The model connects Luckin's strategic logic with operational reality. Customer value is created through the coordination of digital demand capture, physical fulfilment, recipe standardisation, supply support, and performance measurement. The model is therefore detailed enough to support later database design while remaining conceptual enough to clarify the business structure before technical implementation.
 
 \begingroup
 \small
