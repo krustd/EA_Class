@@ -218,170 +218,89 @@ Multiplicity & 1:N means one object can connect to many objects; M:N means many 
 \begin{figure}[H]
 \portraitlandscapepagenumber
 \centering
-\scriptsize
-\resizebox{0.985\linewidth}{!}{%
+\footnotesize
+\resizebox{0.965\linewidth}{!}{%
 \begin{tikzpicture}[
-  entity/.style={rectangle, draw=modelborder, fill=modelyellow, minimum width=3.55cm,
-                 text width=3.35cm, minimum height=2.35cm, align=left, inner sep=4pt, line width=0.55pt},
-  actor/.style={rectangle, draw=modelborder, fill=white, minimum width=3.55cm,
-                text width=3.35cm, minimum height=2.15cm, align=left, inner sep=4pt, line width=0.55pt},
-  smallentity/.style={rectangle, draw=modelborder, fill=modelyellow, minimum width=3.25cm,
-                 text width=3.05cm, minimum height=2.05cm, align=left, inner sep=4pt, line width=0.55pt},
-  smallactor/.style={rectangle, draw=modelborder, fill=white, minimum width=3.25cm,
-                text width=3.05cm, minimum height=1.85cm, align=left, inner sep=4pt, line width=0.55pt},
-  rel/.style={-{Stealth[length=2.2mm]}, line width=0.7pt, black},
-  dashedrel/.style={-{Stealth[length=2.2mm]}, line width=0.65pt, black, dashed},
-  label/.style={font=\scriptsize, fill=white, inner sep=1pt},
-  title/.style={font=\scriptsize\bfseries, align=center}
+  obj/.style={rectangle, rounded corners=6pt, draw=#1!75!black, fill=#1!10,
+              text width=3.0cm, minimum height=0.88cm, align=center,
+              font=\small\bfseries, line width=0.65pt},
+  core/.style={rectangle, rounded corners=7pt, draw=#1!85!black, fill=#1!16,
+               text width=3.15cm, minimum height=1.0cm, align=center,
+               font=\small\bfseries, line width=0.85pt},
+  group/.style={rectangle, rounded corners=10pt, draw=#1!48!black, fill=#1!4,
+                inner sep=10pt, line width=0.55pt},
+  rel/.style={-{Stealth[length=2.35mm]}, line width=0.8pt, black!72},
+  feedback/.style={-{Stealth[length=2.35mm]}, line width=0.75pt, dashed, black!62},
+  rtag/.style={circle, draw=black!55, fill=white, inner sep=1.15pt,
+               font=\tiny\bfseries, text=darkgray},
+  layerlabel/.style={font=\scriptsize\bfseries, text=darkgray},
+  note/.style={rectangle, rounded corners=5pt, draw=black!35, fill=lkgray,
+               text width=5.2cm, align=left, inner sep=5pt, font=\scriptsize}
 ]
 
-% Top row
-\node[actor] (customer) at (0,8.2) {\begin{center}\textbf{Customer}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Segment, city, age band}
-  \roleitem{lkgreen}{Visit count, complaint count}
-  \modelitem{Customer ID, contact channel}
-  \modelitem{Registration date}
-\end{itemize}};
+% Customer and demand objects
+\node[obj=lkblue] (channel) at (0,7.0) {Digital Channel};
+\node[obj=lkblue] (customer) at (4.0,7.0) {Customer};
+\node[obj=lkblue] (membership) at (8.0,7.0) {Membership Account};
+\node[obj=lkorange] (promotion) at (12.0,7.0) {Promotion Campaign};
 
-\node[entity] (membership) at (4.4,8.2) {\begin{center}\textbf{Membership Account}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Member tier, coupon type}
-  \roleitem{lkorange}{Wallet balance, points}
-  \roleitem{lkgreen}{Coupon count, order count}
-  \modelitem{Account ID, app identity}
-\end{itemize}};
+% Transaction and fulfilment objects
+\node[core=lkpurple] (order) at (4.0,4.25) {Digital Order};
+\node[obj=lkpurple] (orderitem) at (4.0,2.75) {Order Item};
+\node[core=lkgreen] (task) at (8.0,4.25) {Fulfilment Task};
+\node[obj=lkgreen] (store) at (12.0,4.25) {Store};
+\node[obj=lkgreen] (staff) at (12.0,2.75) {Store Staff};
+\node[obj=lkorange] (delivery) at (16.0,4.25) {Delivery Partner};
 
-\node[entity] (order) at (8.8,8.2) {\begin{center}\textbf{Digital Order}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Channel, payment method, order status}
-  \roleitem{lkorange}{Order amount, discount, delivery fee}
-  \roleitem{lkgreen}{Item count}
-  \modelitem{Order ID, order time}
-\end{itemize}};
+% Product, supply, and analytical objects
+\node[obj=lkblue] (product) at (0,0.9) {Product};
+\node[obj=lkblue] (recipe) at (4.0,0.9) {Recipe Standard};
+\node[obj=lkorange] (material) at (8.0,0.9) {Raw Material};
+\node[obj=lkorange] (supplier) at (12.0,0.9) {Supplier};
+\node[core=lkpurple] (performance) at (16.0,0.9) {Performance Result};
 
-\node[smallentity] (fulfilment) at (13.1,8.2) {\begin{center}\textbf{Fulfilment Task}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Task type, queue status}
-  \roleitem{lkorange}{Preparation time, waiting time}
-  \roleitem{lkgreen}{Retry count}
-  \modelitem{Task ID, sequence}
-\end{itemize}};
+% Background groups
+\begin{scope}[on background layer]
+  \node[group=lkblue, fit=(channel)(customer)(membership)(promotion)] (g1) {};
+  \node[group=lkgreen, fit=(order)(orderitem)(task)(store)(staff)(delivery)] (g2) {};
+  \node[group=lkorange, fit=(product)(recipe)(material)(supplier)(performance)] (g3) {};
+\end{scope}
 
-\node[smallactor] (delivery) at (17.2,8.2) {\begin{center}\textbf{Delivery Partner}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Partner type, service area}
-  \roleitem{lkorange}{Delivery time, service fee}
-  \roleitem{lkgreen}{Delivery count}
-  \modelitem{Partner ID}
-\end{itemize}};
+\node[layerlabel, above=0.08cm of g1.north west, anchor=west] {Demand and customer relationship layer};
+\node[layerlabel, above=0.08cm of g2.north west, anchor=west] {Transaction and fulfilment layer};
+\node[layerlabel, above=0.08cm of g3.north west, anchor=west] {Product, resource, and analytics layer};
 
-% Middle row
-\node[actor] (platform) at (0,4.5) {\begin{center}\textbf{Digital Channel}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{App, mini-program, e-commerce}
-  \roleitem{lkorange}{Traffic cost, conversion rate}
-  \roleitem{lkgreen}{Session count}
-  \modelitem{Channel ID, campaign tag}
-\end{itemize}};
+% Main operational relationships
+\draw[rel] (channel) -- node[rtag, midway, above] {R1} (customer);
+\draw[rel] (customer) -- node[rtag, midway, above] {R2} (membership);
+\draw[rel] (membership) -- node[rtag, midway, left] {R3} (order);
+\draw[rel] (promotion) -- node[rtag, midway, above] {R4} (membership);
+\draw[rel] (promotion) |- node[rtag, pos=0.28, right] {R5} (order);
 
-\node[entity] (promotion) at (4.4,4.5) {\begin{center}\textbf{Promotion Campaign}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Campaign type, target segment}
-  \roleitem{lkorange}{Discount budget, subsidy amount}
-  \roleitem{lkgreen}{Redemption count}
-  \modelitem{Campaign ID, valid period}
-\end{itemize}};
+\draw[rel] (order) -- node[rtag, midway, left] {R6} (orderitem);
+\draw[rel] (order) -- node[rtag, midway, above] {R7} (task);
+\draw[rel] (task) -- node[rtag, midway, above] {R8} (store);
+\draw[rel] (store) -- node[rtag, midway, right] {R9} (staff);
+\draw[rel] (task) .. controls (10.2,5.25) and (13.9,5.25) .. node[rtag, midway, above] {R10} (delivery);
 
-\node[entity] (orderitem) at (8.8,4.5) {\begin{center}\textbf{Order Item}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Size, temperature, add-on type}
-  \roleitem{lkorange}{Item price, item discount}
-  \roleitem{lkgreen}{Quantity}
-  \modelitem{Line ID, customisation}
-\end{itemize}};
+\draw[rel] (orderitem) -| node[rtag, pos=0.28, below] {R11} (product);
+\draw[rel] (product) -- node[rtag, midway, above] {R12} (recipe);
+\draw[rel] (recipe) -- node[rtag, midway, above] {R13} (material);
+\draw[rel] (supplier) -- node[rtag, midway, above] {R14} (material);
+\draw[rel] (material) |- node[rtag, pos=0.35, right] {R15} (store);
 
-\node[entity] (store) at (13.1,4.5) {\begin{center}\textbf{Store}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Self-operated/partnership, city tier}
-  \roleitem{lkorange}{Daily revenue, rent, labour cost}
-  \roleitem{lkgreen}{Order count, staff count}
-  \modelitem{Store ID, location}
-\end{itemize}};
+% Analytical feedback relationships
+\draw[feedback] (order) .. controls (7.0,2.35) and (12.0,1.6) .. node[rtag, pos=0.60, above] {R16} (performance);
+\draw[feedback] (store) .. controls (14.6,3.4) and (15.7,2.2) .. node[rtag, pos=0.48, right] {R17} (performance);
+\draw[feedback] (delivery) -- node[rtag, midway, right] {R18} (performance);
+\draw[feedback] (performance) .. controls (18.2,3.3) and (16.6,6.7) .. node[rtag, pos=0.48, right] {R19} (promotion);
 
-\node[actor] (staff) at (17.2,4.5) {\begin{center}\textbf{Store Staff}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Role, training status}
-  \roleitem{lkorange}{Working hours, productivity}
-  \roleitem{lkgreen}{Training module count}
-  \modelitem{Employee ID, shift}
-\end{itemize}};
-
-% Bottom row
-\node[actor] (product) at (0,0.8) {\begin{center}\textbf{Product}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Category, season, launch region}
-  \roleitem{lkorange}{List price, gross margin}
-  \roleitem{lkgreen}{Sales count}
-  \modelitem{Product ID, product name}
-\end{itemize}};
-
-\node[entity] (recipe) at (4.4,0.8) {\begin{center}\textbf{Recipe Standard}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Recipe version, quality grade}
-  \roleitem{lkorange}{Standard dosage, standard cost}
-  \roleitem{lkgreen}{Ingredient count}
-  \modelitem{Recipe ID, SOP rule}
-\end{itemize}};
-
-\node[entity] (material) at (8.8,0.8) {\begin{center}\textbf{Raw Material}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Material type, origin, batch status}
-  \roleitem{lkorange}{Purchase cost, inventory value}
-  \roleitem{lkgreen}{Batch count, stockout count}
-  \modelitem{Material ID, shelf life}
-\end{itemize}};
-
-\node[smallactor] (supplier) at (13.1,0.8) {\begin{center}\textbf{Supplier}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{Supplier type, region}
-  \roleitem{lkorange}{Contract amount, lead time}
-  \roleitem{lkgreen}{Delivery count}
-  \modelitem{Supplier ID, certification}
-\end{itemize}};
-
-\node[smallentity] (performance) at (17.2,0.8) {\begin{center}\textbf{Performance Result}\end{center}
-\begin{itemize}[leftmargin=*,nosep]
-  \roleitem{lkblue}{KPI type, period, region}
-  \roleitem{lkorange}{Revenue, margin, NPS score}
-  \roleitem{lkgreen}{Complaint count, stockout count}
-  \modelitem{Result ID, dashboard owner}
-\end{itemize}};
-
-% Relationships
-\draw[rel] (customer) -- node[label, above] {owns 1:1} (membership);
-\draw[rel] (membership) -- node[label, above] {places 1:N} (order);
-\draw[rel] (platform) -- node[label, left] {captures 1:N} (customer);
-\draw[rel] (promotion) -- node[label, above] {targets M:N} (membership);
-\draw[rel] (promotion) -- node[label, above] {discounts M:N} (order);
-\draw[rel] (order) -- node[label, right] {contains 1:N} (orderitem);
-\draw[rel] (order) -- node[label, above] {creates 1:N} (fulfilment);
-\draw[rel] (fulfilment) -- node[label, above] {assigned to N:1} (delivery);
-\draw[rel] (fulfilment) -- node[label, right] {prepared by N:1} (store);
-\draw[rel] (store) -- node[label, above] {employs 1:N} (staff);
-\draw[rel] (orderitem) -- node[label, above] {of N:1} (product);
-\draw[rel] (product) -- node[label, above] {defined by 1:N} (recipe);
-\draw[rel] (recipe) -- node[label, above] {uses M:N} (material);
-\draw[rel] (supplier) -- node[label, above] {supplies 1:N} (material);
-\draw[rel] (material) -- node[label, right] {replenishes M:N} (store);
-\draw[dashedrel] (order) .. controls (11.6,6.7) and (15.2,3.1) .. node[label, pos=0.52] {evaluated by} (performance);
-\draw[dashedrel] (store) -- node[label, right] {reported in 1:N} (performance);
-\draw[dashedrel] (promotion) .. controls (8.0,3.1) and (13.2,1.4) .. node[label, pos=0.55] {analysed by} (performance);
-\draw[dashedrel] (performance) .. controls (18.5,4.0) and (17.5,6.2) .. node[label, right] {feeds back} (delivery);
+% Legend
+\node[note, below=0.35cm of g3.south west, anchor=north west] {\textbf{Legend:} solid arrows show operational relationships; dashed arrows show analytical feedback. Relationship IDs R1--R19 are explained in Table 3.};
 
 \end{tikzpicture}%
 }
-\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. Yellow boxes indicate core transaction or analytical objects; white boxes indicate actors, channels, or supporting resources.}
+\caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. The diagram separates demand, fulfilment, resource, and analytics objects so that the main relationships remain readable; detailed variables and relationship meanings are explained in the following sections and Table 3.}
 \end{figure}
 \end{landscape}
 
@@ -437,22 +356,22 @@ The main relationships in the model can be grouped into three layers. The first 
 \tiny
 \renewcommand{\arraystretch}{0.95}
 \caption{Key relationships in the Luckin Coffee conceptual model.}
-\begin{tabularx}{\linewidth}{P{3.6cm}P{1.7cm}P{3.0cm}P{5.5cm}Y}
+\begin{tabularx}{\linewidth}{P{1.1cm}P{3.6cm}P{1.7cm}P{3.0cm}P{5.1cm}Y}
 \toprule
-\textbf{Relationship} & \textbf{Type} & \textbf{Reading Direction} & \textbf{Business Meaning} & \textbf{Measures Enabled} \\
+\textbf{ID} & \textbf{Relationship} & \textbf{Type} & \textbf{Reading Direction} & \textbf{Business Meaning} & \textbf{Measures Enabled} \\
 \midrule
-Customer -- Membership Account & 1:1 & Customer owns account & Links consumer identity with app account, points, coupons, and order history. & Active members; repeat purchase; coupon usage. \\
-Membership Account -- Digital Order & 1:N & Account places orders & One member may place many orders across time, stores, and channels. & Orders per member; AOV; lifetime value. \\
-Promotion Campaign -- Digital Order & M:N & Campaign discounts orders & Campaigns influence orders; one order may use several promotion mechanisms. & Redemption; subsidy amount; conversion rate. \\
-Digital Order -- Order Item & 1:N & Order contains items & Separates payment and fulfilment status from product-level demand. & Item quantity; sales mix; item discount ratio. \\
-Order Item -- Product & N:1 & Item is of product & Many order lines can refer to the same product. & Product sales; gross margin; launch success. \\
-Product -- Recipe Standard & 1:N & Product is defined by recipe & Recipe versions support controlled innovation and operational standardisation. & Recipe compliance; standard cost; quality complaints. \\
-Recipe Standard -- Raw Material & M:N & Recipe uses materials & Recipes consume multiple materials; materials may support multiple recipes. & Ingredient use; material cost ratio; wastage. \\
-Supplier -- Raw Material & 1:N & Supplier provides materials & Suppliers provide material batches or categories for store replenishment. & Lead time; delivery count; quality pass rate. \\
-Digital Order -- Fulfilment Task & 1:N & Order creates tasks & One order may create preparation, pickup, delivery, or exception tasks. & Preparation time; waiting time; completion rate. \\
-Fulfilment Task -- Store & N:1 & Task is prepared by store & Store capacity and staff execution determine fulfilment reliability. & Store orders; labour utilisation; queue delay. \\
-Fulfilment Task -- Delivery Partner & N:1 & Task assigned to partner & Delivery partners affect completion time and customer experience. & Delivery time; delivery fee; completion rate. \\
-Store -- Performance Result & 1:N & Store reported in results & Store operations generate periodic financial and service KPIs. & Daily revenue; margin; complaints; stockouts. \\
+R2 & Customer -- Membership Account & 1:1 & Customer owns account & Links consumer identity with app account, points, coupons, and order history. & Active members; repeat purchase; coupon usage. \\
+R3 & Membership Account -- Digital Order & 1:N & Account places orders & One member may place many orders across time, stores, and channels. & Orders per member; AOV; lifetime value. \\
+R5 & Promotion Campaign -- Digital Order & M:N & Campaign discounts orders & Campaigns influence orders; one order may use several promotion mechanisms. & Redemption; subsidy amount; conversion rate. \\
+R6 & Digital Order -- Order Item & 1:N & Order contains items & Separates payment and fulfilment status from product-level demand. & Item quantity; sales mix; item discount ratio. \\
+R11 & Order Item -- Product & N:1 & Item is of product & Many order lines can refer to the same product. & Product sales; gross margin; launch success. \\
+R12 & Product -- Recipe Standard & 1:N & Product is defined by recipe & Recipe versions support controlled innovation and operational standardisation. & Recipe compliance; standard cost; quality complaints. \\
+R13 & Recipe Standard -- Raw Material & M:N & Recipe uses materials & Recipes consume multiple materials; materials may support multiple recipes. & Ingredient use; material cost ratio; wastage. \\
+R14 & Supplier -- Raw Material & 1:N & Supplier provides materials & Suppliers provide material batches or categories for store replenishment. & Lead time; delivery count; quality pass rate. \\
+R7 & Digital Order -- Fulfilment Task & 1:N & Order creates tasks & One order may create preparation, pickup, delivery, or exception tasks. & Preparation time; waiting time; completion rate. \\
+R8 & Fulfilment Task -- Store & N:1 & Task is prepared by store & Store capacity and staff execution determine fulfilment reliability. & Store orders; labour utilisation; queue delay. \\
+R10 & Fulfilment Task -- Delivery Partner & N:1 & Task assigned to partner & Delivery partners affect completion time and customer experience. & Delivery time; delivery fee; completion rate. \\
+R17 & Store -- Performance Result & 1:N & Store reported in results & Store operations generate periodic financial and service KPIs. & Daily revenue; margin; complaints; stockouts. \\
 \bottomrule
 \end{tabularx}
 \end{table}
