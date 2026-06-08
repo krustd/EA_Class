@@ -12,87 +12,60 @@ plt.rcParams.update({
     "ps.fonttype": 42,
 })
 
-fig, ax = plt.subplots(figsize=(16.8, 8.9))
-ax.set_xlim(0, 16.8)
-ax.set_ylim(0, 8.9)
+fig, ax = plt.subplots(figsize=(16.2, 9.4))
+ax.set_xlim(0, 16.2)
+ax.set_ylim(0, 9.4)
 ax.axis("off")
 
 colors = {
-    "blue": "#DDEAF3",
-    "blue_edge": "#2B6F9E",
-    "green": "#E4F0E4",
-    "green_edge": "#3B7D3A",
-    "orange": "#F7E9DC",
-    "orange_edge": "#C96C22",
-    "purple": "#ECE6F3",
-    "purple_edge": "#6B4C8A",
+    "demand": ("#DDEAF3", "#2B6F9E"),
+    "fulfil": ("#E4F0E4", "#3B7D3A"),
+    "resource": ("#F7E9DC", "#C96C22"),
+    "analytics": ("#ECE6F3", "#6B4C8A"),
     "line": "#333333",
-    "group": "#F7F8FA",
-    "group_edge": "#C8CDD3",
+    "panel": "#F7F8FA",
+    "panel_edge": "#C8CDD3",
 }
 
-W, H = 2.28, 0.98
+W, H = 1.92, 0.78
 
-nodes = {
-    "channel": (1.35, 7.12, "blue", "blue_edge", "Digital Channel", "App, WeChat mini-program"),
-    "customer": (3.95, 7.12, "blue", "blue_edge", "Customer", "Member, commuter, student"),
-    "membership": (6.55, 7.12, "blue", "blue_edge", "Membership Account", "Points, coupons, profile"),
-    "promotion": (9.15, 7.12, "orange", "orange_edge", "Promotion Campaign", "Coupon, seasonal offer"),
-    "order": (2.65, 4.78, "purple", "purple_edge", "Digital Order", "Pickup, delivery order"),
-    "orderitem": (2.65, 3.25, "purple", "purple_edge", "Order Item", "Drink line, add-on"),
-    "task": (5.55, 4.78, "green", "green_edge", "Fulfilment Task", "Prepare, handover, exception"),
-    "store": (8.45, 4.78, "green", "green_edge", "Store", "Self-operated, partner store"),
-    "staff": (8.45, 3.25, "green", "green_edge", "Store Staff", "Barista, manager"),
-    "delivery": (11.35, 4.78, "orange", "orange_edge", "Delivery Partner", "Courier, delivery platform"),
-    "product": (1.35, 1.42, "blue", "blue_edge", "Product", "Coffee drink, light food"),
-    "recipe": (3.95, 1.42, "blue", "blue_edge", "Recipe Standard", "Dosage, SOP version"),
-    "material": (6.55, 1.42, "orange", "orange_edge", "Raw Material", "Beans, milk, packaging"),
-    "supplier": (9.15, 1.42, "orange", "orange_edge", "Supplier", "Bean farm, ingredient vendor"),
-    "performance": (12.15, 1.42, "purple", "purple_edge", "Performance Result", "Revenue, margin, complaints"),
+panels = {
+    "demand": (0.55, 5.15, 7.55, 3.55, "A. Demand and membership relationships"),
+    "fulfil": (8.55, 5.15, 7.55, 3.55, "B. Order fulfilment relationships"),
+    "supply": (0.55, 1.15, 7.55, 3.55, "C. Product and supply relationships"),
+    "analytics": (8.55, 1.15, 7.55, 3.55, "D. Analytical feedback relationships"),
 }
 
-groups = [
-    (0.45, 6.18, 10.35, 1.82, "Demand and customer relationship layer"),
-    (1.35, 2.52, 12.05, 3.02, "Transaction and fulfilment layer"),
-    (0.45, 0.58, 13.45, 1.74, "Product, resource, and analytics layer"),
-]
-
-for x, y, w, h, label in groups:
+for x, y, w, h, title in panels.values():
     ax.add_patch(FancyBboxPatch(
         (x, y), w, h,
-        boxstyle="round,pad=0.08,rounding_size=0.12",
-        linewidth=0.8,
-        edgecolor=colors["group_edge"],
-        facecolor=colors["group"],
+        boxstyle="round,pad=0.10,rounding_size=0.14",
+        linewidth=0.9,
+        edgecolor=colors["panel_edge"],
+        facecolor=colors["panel"],
         zorder=0,
     ))
-    ax.text(
-        x + 0.18,
-        y + h - 0.18,
-        label,
-        fontsize=10.2,
-        fontweight="bold",
-        va="top",
-        color="#222222",
-        bbox=dict(boxstyle="round,pad=0.18", facecolor="white", edgecolor="none", alpha=0.92),
-        zorder=6,
-    )
+    ax.text(x + 0.16, y + h - 0.20, title, fontsize=11.0, fontweight="bold", va="top", color="#222222", zorder=5)
 
-for key, (x, y, fill, edge, title, example) in nodes.items():
+nodes = {}
+
+def add_node(key, x, y, category, title, example):
+    fill, edge = colors[category]
+    nodes[key] = (x, y)
     ax.add_patch(FancyBboxPatch(
         (x - W / 2, y - H / 2), W, H,
         boxstyle="round,pad=0.08,rounding_size=0.10",
-        linewidth=1.15,
-        edgecolor=colors[edge],
-        facecolor=colors[fill],
+        linewidth=1.05,
+        edgecolor=edge,
+        facecolor=fill,
         zorder=3,
     ))
-    ax.text(x, y + 0.23, title, ha="center", va="center", fontsize=9.4, fontweight="bold", color="#111111", zorder=4)
-    ax.text(x, y + 0.02, f"({example})", ha="center", va="center", fontsize=7.0, color="#222222", zorder=4)
-    ax.text(x, y - 0.27, "CV / SV / AV / EP", ha="center", va="center", fontsize=6.5, color="#444444", zorder=4)
+    ax.text(x, y + 0.19, title, ha="center", va="center", fontsize=9.4, fontweight="bold", color="#111111", zorder=4)
+    ax.text(x, y - 0.02, f"({example})", ha="center", va="center", fontsize=6.9, color="#222222", zorder=4)
+    ax.text(x, y - 0.25, "CV / SV / AV / EP", ha="center", va="center", fontsize=6.2, color="#444444", zorder=4)
 
-def anchor(name, side):
-    x, y, *_ = nodes[name]
+def anchor(key, side):
+    x, y = nodes[key]
     if side == "r":
         return x + W / 2, y
     if side == "l":
@@ -103,14 +76,24 @@ def anchor(name, side):
         return x, y - H / 2
     return x, y
 
-def arrow(a, aside, b, bside, label, rad=0, dashed=False, text=(0, 0)):
-    p1 = anchor(a, aside)
-    p2 = anchor(b, bside)
+def draw_label(x, y, rel, card):
+    ax.text(
+        x, y, f"{rel}  {card}",
+        ha="center",
+        va="center",
+        fontsize=7.4,
+        fontweight="bold",
+        bbox=dict(boxstyle="round,pad=0.12", facecolor="white", edgecolor="#CCCCCC", linewidth=0.25, alpha=0.96),
+        zorder=8,
+    )
+
+def arrow(a, aside, b, bside, rel, card, dashed=False, rad=0, label_shift=(0, 0)):
+    p1, p2 = anchor(a, aside), anchor(b, bside)
     ax.add_patch(FancyArrowPatch(
         p1, p2,
         arrowstyle="-|>",
-        mutation_scale=11,
-        linewidth=1.05,
+        mutation_scale=10.5,
+        linewidth=1.0,
         color=colors["line"],
         linestyle=(0, (4, 3)) if dashed else "solid",
         connectionstyle=f"arc3,rad={rad}",
@@ -118,70 +101,97 @@ def arrow(a, aside, b, bside, label, rad=0, dashed=False, text=(0, 0)):
         shrinkB=3,
         zorder=2,
     ))
-    ax.text(
-        (p1[0] + p2[0]) / 2 + text[0],
-        (p1[1] + p2[1]) / 2 + text[1],
-        label,
-        ha="center",
-        va="center",
-        fontsize=8.0,
-        fontweight="bold",
-        bbox=dict(boxstyle="round,pad=0.13", facecolor="white", edgecolor="none", alpha=0.95),
-        zorder=5,
-    )
+    draw_label((p1[0] + p2[0]) / 2 + label_shift[0], (p1[1] + p2[1]) / 2 + label_shift[1], rel, card)
 
-arrow("channel", "r", "customer", "l", "D1", text=(0, 0.18))
-arrow("customer", "r", "membership", "l", "D2", text=(0, 0.18))
-arrow("membership", "b", "order", "t", "D3", rad=0.03, text=(-0.28, -0.04))
-arrow("membership", "r", "promotion", "l", "D4", text=(0, 0.18))
-arrow("promotion", "b", "order", "t", "D5", rad=-0.22, text=(0.25, -0.10))
+def poly_arrow(points, rel, card, dashed=False, label_index=0, label_shift=(0, 0)):
+    style = (0, (4, 3)) if dashed else "solid"
+    for i in range(len(points) - 1):
+        ax.add_patch(FancyArrowPatch(
+            points[i], points[i + 1],
+            arrowstyle="-|>" if i == len(points) - 2 else "-",
+            mutation_scale=10.5,
+            linewidth=1.0,
+            color=colors["line"],
+            linestyle=style,
+            shrinkA=0,
+            shrinkB=3 if i == len(points) - 2 else 0,
+            zorder=2,
+        ))
+    p1, p2 = points[label_index], points[label_index + 1]
+    draw_label((p1[0] + p2[0]) / 2 + label_shift[0], (p1[1] + p2[1]) / 2 + label_shift[1], rel, card)
 
-arrow("order", "b", "orderitem", "t", "F1", text=(-0.22, 0))
-arrow("order", "r", "task", "l", "F2", text=(0, 0.18))
-arrow("task", "r", "store", "l", "F3", text=(0, 0.18))
-arrow("store", "b", "staff", "t", "F4", text=(0.22, 0))
-arrow("task", "r", "delivery", "l", "F5", rad=-0.16, text=(0.20, 0.42))
+# Panel A
+add_node("A_channel", 1.55, 7.25, "demand", "Digital Channel", "app, mini-program")
+add_node("A_customer", 3.75, 7.25, "demand", "Customer", "member, commuter")
+add_node("A_member", 5.95, 7.25, "demand", "Membership Account", "points, coupons")
+add_node("A_promo", 3.75, 6.05, "resource", "Promotion Campaign", "coupon, offer")
+add_node("A_order", 5.95, 6.05, "analytics", "Digital Order", "pickup, delivery")
+arrow("A_channel", "r", "A_customer", "l", "D1", "1:N")
+arrow("A_customer", "r", "A_member", "l", "D2", "1:1")
+arrow("A_member", "b", "A_order", "t", "D3", "1:N", label_shift=(0.38, 0.05))
+arrow("A_promo", "t", "A_member", "b", "D4", "M:N", label_shift=(-0.48, 0.18))
+arrow("A_promo", "r", "A_order", "l", "D5", "M:N", label_shift=(0, -0.18))
 
-arrow("orderitem", "l", "product", "t", "S1", rad=0.06, text=(-0.23, -0.08))
-arrow("product", "r", "recipe", "l", "S2", text=(0, 0.18))
-arrow("recipe", "r", "material", "l", "S3", text=(0, 0.18))
-arrow("supplier", "l", "material", "r", "S4", text=(0, 0.18))
-arrow("material", "t", "store", "b", "S5", rad=-0.13, text=(0.25, 0.05))
+# Panel B
+add_node("B_order", 9.85, 7.25, "analytics", "Digital Order", "pickup, delivery")
+add_node("B_task", 12.15, 7.25, "fulfil", "Fulfilment Task", "prepare, handover")
+add_node("B_store", 14.45, 7.25, "fulfil", "Store", "self-operated, partner")
+add_node("B_item", 9.85, 6.05, "analytics", "Order Item", "drink line, add-on")
+add_node("B_staff", 14.45, 6.05, "fulfil", "Store Staff", "barista, manager")
+add_node("B_delivery", 12.15, 6.05, "resource", "Delivery Partner", "courier, platform")
+arrow("B_order", "r", "B_task", "l", "F2", "1:N")
+arrow("B_task", "r", "B_store", "l", "F3", "N:1")
+arrow("B_order", "b", "B_item", "t", "F1", "1:N")
+arrow("B_store", "b", "B_staff", "t", "F4", "1:N")
+poly_arrow([anchor("B_store", "b"), (14.45, 5.55), (12.15, 5.55), anchor("B_delivery", "b")], "F5", "1:N", label_index=1)
 
-arrow("order", "b", "performance", "l", "A1", rad=0.16, dashed=True, text=(0.45, -0.30))
-arrow("store", "b", "performance", "t", "A2", rad=-0.18, dashed=True, text=(0.18, -0.03))
-arrow("delivery", "b", "performance", "r", "A3", rad=0.12, dashed=True, text=(0.35, 0.08))
-arrow("performance", "r", "promotion", "r", "A4", rad=0.30, dashed=True, text=(0.35, 0.35))
+# Panel C
+add_node("C_item", 1.55, 3.40, "analytics", "Order Item", "drink line, add-on")
+add_node("C_product", 3.75, 3.40, "demand", "Product", "coffee, light food")
+add_node("C_recipe", 5.95, 3.40, "demand", "Recipe Standard", "dosage, SOP")
+add_node("C_material", 5.95, 2.20, "resource", "Raw Material", "beans, milk")
+add_node("C_supplier", 3.75, 2.20, "resource", "Supplier", "farm, vendor")
+add_node("C_store", 1.55, 2.20, "fulfil", "Store", "inventory location")
+arrow("C_item", "r", "C_product", "l", "S1", "N:1")
+arrow("C_product", "r", "C_recipe", "l", "S2", "1:N")
+arrow("C_recipe", "b", "C_material", "t", "S3", "M:N")
+arrow("C_supplier", "r", "C_material", "l", "S4", "1:N")
+arrow("C_material", "l", "C_store", "r", "S5", "M:N")
 
-legend_x, legend_y = 14.25, 7.10
-ax.text(legend_x, legend_y + 0.50, "Object colour legend", ha="left", va="center", fontsize=10.2, fontweight="bold", color="#222222")
-for i, (fill, label) in enumerate([
-    ("blue", "Demand / customer object"),
-    ("purple", "Transaction / analytics object"),
-    ("green", "Fulfilment object"),
-    ("orange", "Resource / partner object"),
-]):
-    y = legend_y - i * 0.38
-    ax.add_patch(Rectangle((legend_x, y - 0.12), 0.25, 0.18, facecolor=colors[fill], edgecolor=colors[f"{fill}_edge"], linewidth=0.9))
-    ax.text(legend_x + 0.35, y - 0.03, label, ha="left", va="center", fontsize=8.8, color="#222222")
+# Panel D
+add_node("D_order", 9.85, 3.40, "analytics", "Digital Order", "revenue, order value")
+add_node("D_store", 12.15, 3.40, "fulfil", "Store", "margin, stockout")
+add_node("D_delivery", 14.45, 3.40, "resource", "Delivery Partner", "time, cost")
+add_node("D_perf", 12.15, 2.20, "analytics", "Performance Result", "KPI dashboard")
+add_node("D_promo", 14.45, 2.20, "resource", "Promotion Campaign", "future targeting")
+arrow("D_order", "b", "D_perf", "l", "A1", "1:N", dashed=True, rad=-0.12, label_shift=(-0.36, -0.12))
+arrow("D_store", "b", "D_perf", "t", "A2", "1:N", dashed=True, label_shift=(0, 0.10))
+arrow("D_delivery", "b", "D_perf", "r", "A3", "1:N", dashed=True, rad=0.12, label_shift=(0.36, -0.12))
+arrow("D_perf", "r", "D_promo", "l", "A4", "1:N", dashed=True)
 
-ax.text(legend_x, 4.95, "Relationship ID groups", ha="left", va="center", fontsize=10.2, fontweight="bold", color="#222222")
-for i, line in enumerate(["D1--D5  Demand", "F1--F5  Fulfilment", "S1--S5  Supply", "A1--A4  Analytics"]):
-    ax.text(legend_x, 4.58 - i * 0.32, line, ha="left", va="center", fontsize=8.8, color="#222222")
+# Legend
+legend_y = 0.78
+ax.text(0.65, legend_y, "Legend:", ha="left", va="center", fontsize=9.6, fontweight="bold")
+legend_items = [
+    ("demand", "Demand/customer"),
+    ("analytics", "Transaction/analytics"),
+    ("fulfil", "Fulfilment"),
+    ("resource", "Resource/partner"),
+]
+for i, (cat, label) in enumerate(legend_items):
+    fill, edge = colors[cat]
+    x = 1.55 + i * 2.25
+    ax.add_patch(Rectangle((x, legend_y - 0.10), 0.22, 0.16, facecolor=fill, edgecolor=edge, linewidth=0.8))
+    ax.text(x + 0.30, legend_y - 0.02, label, ha="left", va="center", fontsize=8.2)
 
-ax.plot([legend_x, legend_x + 0.55], [3.10, 3.10], color=colors["line"], lw=1.15)
-ax.text(legend_x + 0.70, 3.10, "operational relation", fontsize=8.8, va="center", ha="left")
-ax.plot([legend_x, legend_x + 0.55], [2.78, 2.78], color=colors["line"], lw=1.15, linestyle=(0, (4, 3)))
-ax.text(legend_x + 0.70, 2.78, "feedback relation", fontsize=8.8, va="center", ha="left")
+ax.text(10.75, legend_y, "IDs: D demand | F fulfilment | S supply | A analytics", ha="left", va="center", fontsize=8.2)
+ax.text(10.75, legend_y - 0.32, "Multiplicity: 1:1, 1:N, N:1, M:N", ha="left", va="center", fontsize=8.2)
+ax.plot([13.55, 14.00], [legend_y - 0.32, legend_y - 0.32], color=colors["line"], lw=1.0)
+ax.text(14.08, legend_y - 0.32, "operational", ha="left", va="center", fontsize=8.2)
+ax.plot([15.00, 15.45], [legend_y - 0.32, legend_y - 0.32], color=colors["line"], lw=1.0, linestyle=(0, (4, 3)))
+ax.text(15.53, legend_y - 0.32, "feedback", ha="left", va="center", fontsize=8.2)
 
-ax.text(
-    7.35, 0.28,
-    "CV: ClassVariables    SV: SumVariables    AV: AdjVariables    EP: EstParameters",
-    ha="center",
-    va="center",
-    fontsize=9.0,
-    color="#333333",
-)
+ax.text(8.10, 0.34, "Each repeated boundary object represents the same business object in a different relationship group; CV/SV/AV/EP follow the seminar notation.", ha="center", va="center", fontsize=8.7, color="#333333")
 
 fig.tight_layout(pad=0.2)
 fig.savefig(OUT, format="pdf", bbox_inches="tight")
