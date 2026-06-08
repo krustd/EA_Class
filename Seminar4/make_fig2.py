@@ -12,9 +12,9 @@ plt.rcParams.update({
     "ps.fonttype": 42,
 })
 
-fig, ax = plt.subplots(figsize=(16.8, 8.6))
+fig, ax = plt.subplots(figsize=(16.8, 8.9))
 ax.set_xlim(0, 16.8)
-ax.set_ylim(0, 8.6)
+ax.set_ylim(0, 8.9)
 ax.axis("off")
 
 colors = {
@@ -34,27 +34,27 @@ colors = {
 W, H = 2.28, 0.98
 
 nodes = {
-    "channel": (1.35, 7.05, "blue", "blue_edge", "Digital Channel", "App, WeChat mini-program"),
-    "customer": (3.95, 7.05, "blue", "blue_edge", "Customer", "Member, commuter, student"),
-    "membership": (6.55, 7.05, "blue", "blue_edge", "Membership Account", "Points, coupons, profile"),
-    "promotion": (9.15, 7.05, "orange", "orange_edge", "Promotion Campaign", "Coupon, seasonal offer"),
-    "order": (2.65, 4.72, "purple", "purple_edge", "Digital Order", "Pickup, delivery order"),
-    "orderitem": (2.65, 3.23, "purple", "purple_edge", "Order Item", "Drink line, add-on"),
-    "task": (5.55, 4.72, "green", "green_edge", "Fulfilment Task", "Prepare, handover, exception"),
-    "store": (8.45, 4.72, "green", "green_edge", "Store", "Self-operated, partner store"),
-    "staff": (8.45, 3.23, "green", "green_edge", "Store Staff", "Barista, manager"),
-    "delivery": (11.35, 4.72, "orange", "orange_edge", "Delivery Partner", "Courier, delivery platform"),
-    "product": (1.35, 1.45, "blue", "blue_edge", "Product", "Coffee drink, light food"),
-    "recipe": (3.95, 1.45, "blue", "blue_edge", "Recipe Standard", "Dosage, SOP version"),
-    "material": (6.55, 1.45, "orange", "orange_edge", "Raw Material", "Beans, milk, packaging"),
-    "supplier": (9.15, 1.45, "orange", "orange_edge", "Supplier", "Bean farm, ingredient vendor"),
-    "performance": (12.15, 1.45, "purple", "purple_edge", "Performance Result", "Revenue, margin, complaints"),
+    "channel": (1.35, 7.12, "blue", "blue_edge", "Digital Channel", "App, WeChat mini-program"),
+    "customer": (3.95, 7.12, "blue", "blue_edge", "Customer", "Member, commuter, student"),
+    "membership": (6.55, 7.12, "blue", "blue_edge", "Membership Account", "Points, coupons, profile"),
+    "promotion": (9.15, 7.12, "orange", "orange_edge", "Promotion Campaign", "Coupon, seasonal offer"),
+    "order": (2.65, 4.78, "purple", "purple_edge", "Digital Order", "Pickup, delivery order"),
+    "orderitem": (2.65, 3.25, "purple", "purple_edge", "Order Item", "Drink line, add-on"),
+    "task": (5.55, 4.78, "green", "green_edge", "Fulfilment Task", "Prepare, handover, exception"),
+    "store": (8.45, 4.78, "green", "green_edge", "Store", "Self-operated, partner store"),
+    "staff": (8.45, 3.25, "green", "green_edge", "Store Staff", "Barista, manager"),
+    "delivery": (11.35, 4.78, "orange", "orange_edge", "Delivery Partner", "Courier, delivery platform"),
+    "product": (1.35, 1.42, "blue", "blue_edge", "Product", "Coffee drink, light food"),
+    "recipe": (3.95, 1.42, "blue", "blue_edge", "Recipe Standard", "Dosage, SOP version"),
+    "material": (6.55, 1.42, "orange", "orange_edge", "Raw Material", "Beans, milk, packaging"),
+    "supplier": (9.15, 1.42, "orange", "orange_edge", "Supplier", "Bean farm, ingredient vendor"),
+    "performance": (12.15, 1.42, "purple", "purple_edge", "Performance Result", "Revenue, margin, complaints"),
 }
 
 groups = [
-    (0.45, 6.28, 10.35, 1.45, "Demand and customer relationship layer"),
-    (1.35, 2.62, 12.05, 2.65, "Transaction and fulfilment layer"),
-    (0.45, 0.70, 13.45, 1.45, "Product, resource, and analytics layer"),
+    (0.45, 6.18, 10.35, 1.82, "Demand and customer relationship layer"),
+    (1.35, 2.52, 12.05, 3.02, "Transaction and fulfilment layer"),
+    (0.45, 0.58, 13.45, 1.74, "Product, resource, and analytics layer"),
 ]
 
 for x, y, w, h, label in groups:
@@ -66,7 +66,17 @@ for x, y, w, h, label in groups:
         facecolor=colors["group"],
         zorder=0,
     ))
-    ax.text(x + 0.18, y + h - 0.18, label, fontsize=10.2, fontweight="bold", va="top", color="#222222", zorder=1)
+    ax.text(
+        x + 0.18,
+        y + h - 0.18,
+        label,
+        fontsize=10.2,
+        fontweight="bold",
+        va="top",
+        color="#222222",
+        bbox=dict(boxstyle="round,pad=0.18", facecolor="white", edgecolor="none", alpha=0.92),
+        zorder=6,
+    )
 
 for key, (x, y, fill, edge, title, example) in nodes.items():
     ax.add_patch(FancyBboxPatch(
