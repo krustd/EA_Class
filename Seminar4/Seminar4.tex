@@ -219,35 +219,40 @@ Multiplicity & 1:N means one object can connect to many objects; M:N means many 
 % =================== MAIN CONCEPTUAL MODEL ===================
 \section{Conceptual Model for Luckin Coffee}
 
+\newgeometry{margin=1cm}
 \begin{landscape}
 \thispagestyle{empty}
 \begin{figure}[p]
-\portraitlandscapepagenumber
 \centering
-\includegraphics[width=\linewidth,height=0.91\textheight,keepaspectratio]{fig2_conceptual_model_clean.pdf}
+\begin{minipage}{26cm}
+\centering
+\includegraphics[width=\linewidth,height=17.5cm,keepaspectratio]{fig/466d80ccef257c51e82fa3751fd7e10e.png}
+\vspace{0.2cm}
 \caption{Conceptual model of Luckin Coffee's mobile-first retail operating system. The diagram follows the seminar notation by showing business objects, variable categories, colour-coded object types, grouped relationship identifiers, and analytical feedback links.}
+\end{minipage}
 \end{figure}
 \end{landscape}
+\restoregeometry
 
-The diagram shows Luckin Coffee as an integrated retail platform rather than a simple chain of coffee shops. The central object is the \textbf{Digital Order}. It connects customers, membership accounts, promotions, order items, fulfilment tasks, stores, and delivery partners. Around this core, products and recipes define what can be sold, suppliers and materials define what can be prepared, and performance results provide management feedback.
+The diagram shows Luckin Coffee as an integrated retail platform rather than a simple chain of coffee shops. The central object is the \textbf{Digital Order}. It connects customers, membership accounts, digital channels, order items, fulfilment tasks, stores, and delivery partners. Around this core, products and recipes define what can be sold, while suppliers and materials define what can be prepared.
 
 \begin{table}[H]
 \centering
 \scriptsize
 \renewcommand{\arraystretch}{1.16}
 \caption{Representative variables in the conceptual model.}
-\begin{tabularx}{\textwidth}{P{3.0cm}Y Y Y Y}
+\begin{tabularx}{\textwidth}{P{3.0cm}Y Y Y}
 \toprule
-\textbf{Object} & \textbf{ClassVariables} & \textbf{SumVariables} & \textbf{AdjVariables} & \textbf{EstParameters / identifiers} \\
+\textbf{Object} & \textbf{Classifying Variables (x)} & \textbf{Summarised Variables (.sum / .count)} & \textbf{Estimated Variables (.estimated)} \\
 \midrule
-Customer / Membership & Segment, city, age band, member tier & Points balance, coupon value & Registration channel, activity status & Repeat-purchase rate, CLV, customer ID \\
-Digital Channel & Channel type, access device & Payment amount, discount value & App version, traffic source & Conversion rate, session value, channel ID \\
-Promotion Campaign & Campaign type, target segment & Budget, subsidy amount & Valid period, season, region & Redemption rate, incremental sales, campaign ID \\
-Digital Order / Order Item & Order channel, payment method, product category & Order amount, item price, delivery fee & Order time, queue status, fulfilment mode & AOV, item share, order ID \\
-Product / Recipe Standard & Category, season, launch region, quality grade & Standard cost, material dosage & Recipe version, SOP status & Gross margin, defect rate, product ID \\
-Store / Store Staff & Ownership type, city tier, staff role & Revenue, rent, labour cost, working hours & Location type, training status & Productivity, utilisation rate, store ID \\
-Raw Material / Supplier & Material type, origin, supplier type & Purchase cost, inventory value, contract amount & Batch status, lead time, certification status & Stockout rate, quality-pass rate, supplier ID \\
-Fulfilment / Delivery / Performance & Task type, partner type, KPI type & Preparation time, waiting time, delivery fee, margin & Service area, period, weather or peak status & Completion rate, complaint rate, KPI period \\
+Customer \& Membership & Segment, city, age band, member tier, activity status & Points balance, coupon value, account count & CLV, repeat-purchase rate \\
+Digital Channel & Channel type, access device, app version & Payment amount & Conversion rate \\
+Promotion Campaign & Campaign type, target segment, valid period & Subsidy amount & Redemption rate \\
+Digital Order \& Order Item & Order channel, payment method, queue status, product category & Order amount, delivery fee, order count, item price & AOV, item share \\
+Product \& Recipe Standard & Category, season, recipe version, SOP status & Standard cost & Gross margin, defect rate \\
+Store \& Store Staff & Ownership type, city tier, location type, staff role, training status & Revenue, labour cost, working hours & Utilisation rate, productivity \\
+Raw Material \& Supplier & Material type, origin, batch status, supplier type, lead time & Inventory value, purchase cost & Stockout rate, quality-pass rate \\
+Fulfilment \& Delivery & Task type, partner type, service area & Prep time, waiting time, delivery fee & Completion rate, complaint rate \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -265,34 +270,32 @@ The \textbf{Digital Channel} object covers the mobile app, WeChat mini-program, 
 
 The \textbf{Promotion Campaign} object covers coupons, membership discounts, new-product campaigns, seasonal offers, and targeted push messages. It is linked to both membership accounts and digital orders because one campaign can target many members and influence many purchases.
 
-The \textbf{Digital Order} object is the operational centre of the model. It records channel, payment method, status, order time, order amount, discount amount, delivery fee, and item count. Separating orders from \textbf{Fulfilment Tasks} distinguishes the purchase event from the work required to complete it, such as preparation, pickup, delivery, or exception handling.
+The \textbf{Digital Order} object is the operational centre of the model. It records order channel, payment method, queue status, order amount, delivery fee, average order value (AOV), and order count. Separating orders from \textbf{Fulfilment Tasks} distinguishes the purchase event from the work required to complete it, such as preparation, pickup, delivery, or exception handling.
 
 \subsection{Order Item, Product, and Recipe Standard}
 
 The \textbf{Order Item} object decomposes a digital order into product lines, allowing item-level analysis of quantity, customisation, discount, popularity, and price sensitivity.
 
-The \textbf{Product} object covers beverages, light food, packaged coffee, and merchandise. Its category, season, and launch region help describe Luckin's frequent product testing. The \textbf{Recipe Standard} object defines the operational rule behind each product, including recipe version, quality grade, dosage, standard cost, and SOP requirements. This separation expresses the difference between what the customer buys and how the store prepares it.
+The \textbf{Product} object covers beverages, light food, packaged coffee, and merchandise. Its category, season, and gross margin help describe Luckin's frequent product testing and profitability. The \textbf{Recipe Standard} object defines the operational rule behind each product, including recipe version, SOP status, standard cost, and defect rate. This separation expresses the difference between what the customer buys and how the store prepares it.
 
 \subsection{Store, Store Staff, Raw Material, and Supplier}
 
-The \textbf{Store} object covers self-operated and partnership stores, classified by ownership type, city tier, and location. Its revenue, rent, labour cost, order count, and staff count connect digital demand with local operating capacity.
+The \textbf{Store} object covers self-operated and partnership stores, classified by ownership type, city tier, and location type. Its revenue and utilisation rate connect digital demand with local operating capacity.
 
-The \textbf{Store Staff} object covers employees and managers who prepare orders and follow SOPs. Role, training status, working hours, productivity, and training modules are included because service consistency depends on both digital systems and human execution.
+The \textbf{Store Staff} object covers employees and managers who prepare orders and follow SOPs. Staff role, training status, working hours, labour cost, and productivity are included because service consistency depends on both digital systems and human execution.
 
-The \textbf{Raw Material} object covers coffee beans, milk, syrups, packaging, and other inputs, while the \textbf{Supplier} object identifies the external source of those materials. Together, they express the resource side of Luckin's model through origin, material type, batch status, purchase cost, inventory value, supplier certification, lead time, and delivery count.
+The \textbf{Raw Material} object covers coffee beans, milk, syrups, packaging, and other inputs, while the \textbf{Supplier} object identifies the external source of those materials. Together, they express the resource side of Luckin's model through origin, material type, batch status, inventory value, stockout rate, supplier type, lead time, purchase cost, and quality-pass rate.
 
-\subsection{Fulfilment Task, Delivery Partner, and Performance Result}
+\subsection{Fulfilment Task and Delivery Partner}
 
-The \textbf{Fulfilment Task} object records the operational work created by an order, including drink preparation, pickup handling, delivery handover, and exception processing. Task type, queue status, preparation time, waiting time, and retry count make store bottlenecks visible.
+The \textbf{Fulfilment Task} object records the operational work created by an order, including drink preparation, pickup handling, delivery handover, and exception processing. Task type, preparation time, waiting time, and completion rate make store bottlenecks visible.
 
-The \textbf{Delivery Partner} object covers external or platform-based logistics partners. Partner type, service area, delivery time, service fee, and delivery count are separated from store variables because delivery performance is partly outside direct store control but still affects customer experience.
-
-The \textbf{Performance Result} object summarises operating outcomes by KPI type, period, region, revenue, margin, NPS score, complaint count, stockout count, and dashboard owner. It links orders, stores, promotions, and delivery outcomes to management evaluation.
+The \textbf{Delivery Partner} object covers external or platform-based logistics partners. Partner type, service area, delivery fee, and complaint rate are separated from store variables because delivery performance is partly outside direct store control but still affects customer experience.
 
 % =================== RELATIONSHIP ANALYSIS ===================
 \section{Relationship Analysis}
 
-The main relationships in the model can be grouped into three layers. The first layer is the demand layer: customers use digital channels, maintain membership accounts, receive promotions, and place digital orders. The second layer is the fulfilment layer: orders contain order items, order items refer to products, products are prepared according to recipe standards, and fulfilment tasks are executed by stores and delivery partners. The third layer is the control layer: stores, orders, promotions, stock conditions, and delivery outcomes are summarised into performance results.
+The main relationships in the model can be grouped into two layers. The first layer is the demand layer: customers use digital channels, maintain membership accounts, receive promotions, and place digital orders. The second layer is the fulfilment layer: orders contain order items, order items refer to products, products are prepared according to recipe standards, and fulfilment tasks are executed by stores and delivery partners.
 
 \begin{table}[H]
 \centering
