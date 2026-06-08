@@ -159,29 +159,34 @@ The conceptual model focuses on Luckin Coffee's daily operating logic, from cust
   \centering
   \begin{tikzpicture}[
     domain/.style={rectangle, rounded corners=7pt, draw=#1!75!black, fill=#1!10,
-                   text width=3.2cm, minimum height=1.15cm, align=center,
+                   text width=2.75cm, minimum height=1.05cm, align=center,
                    font=\small\bfseries, line width=0.7pt},
-    arrow/.style={-{Stealth[round]}, line width=0.85pt, black!60},
-    note/.style={rectangle, rounded corners=5pt, draw=black!35, fill=lkgray,
-                 text width=10.8cm, align=center, font=\footnotesize}
+    support/.style={rectangle, rounded corners=7pt, draw=#1!70!black, fill=#1!8,
+                    text width=2.75cm, minimum height=0.95cm, align=center,
+                    font=\small\bfseries, line width=0.65pt},
+    arrow/.style={-{Stealth[round]}, line width=0.85pt, black!62},
+    feedbackarrow/.style={-{Stealth[round]}, line width=0.8pt, dashed, black!58},
+    note/.style={rectangle, rounded corners=5pt, draw=black!30, fill=lkgray,
+                 text width=11.4cm, align=center, font=\footnotesize, inner sep=5pt}
   ]
-    \node[domain=lkblue] (customer) {Customer\\and Membership};
-    \node[domain=lkorange, right=0.7cm of customer] (order) {Digital\\Ordering};
-    \node[domain=lkgreen, right=0.7cm of order] (store) {Store\\Fulfilment};
-    \node[domain=lkpurple, below=0.85cm of order] (analytics) {Performance\\Analytics};
-    \node[domain=lkblue, below=0.85cm of customer] (product) {Product\\and Recipe};
-    \node[domain=lkorange, below=0.85cm of store] (supply) {Supply Chain\\Resources};
+    \node[domain=lkblue] (customer) {Customer and\\Membership};
+    \node[domain=lkorange, right=0.75cm of customer] (order) {Digital\\Ordering};
+    \node[domain=lkgreen, right=0.75cm of order] (store) {Store\\Fulfilment};
+    \node[domain=lkpurple, right=0.75cm of store] (analytics) {Performance\\Analytics};
 
-    \draw[arrow] (customer) -- node[above, font=\scriptsize] {places demand} (order);
-    \draw[arrow] (order) -- node[above, font=\scriptsize] {routes tasks} (store);
-    \draw[arrow] (product) -- node[left, font=\scriptsize] {defines menu} (customer);
-    \draw[arrow] (product) -- node[below, font=\scriptsize] {requires materials} (supply);
-    \draw[arrow] (supply) -- node[right, font=\scriptsize] {replenishes} (store);
-    \draw[arrow] (store) -- node[right, font=\scriptsize] {reports results} (analytics);
-    \draw[arrow] (analytics) -- node[left, font=\scriptsize] {improves offers} (customer);
-    \draw[arrow] (analytics) -- node[below, font=\scriptsize] {optimises stock} (supply);
+    \node[support=lkblue, below=1.05cm of order] (product) {Product and\\Recipe};
+    \node[support=lkorange, below=1.05cm of store] (supply) {Supply Chain\\Resources};
 
-    \node[note, below=0.85cm of analytics] {The model is designed around operational flow: customer demand is captured digitally, translated into store fulfilment, supported by products and supplies, and evaluated through performance data.};
+    \draw[arrow] (customer) -- (order);
+    \draw[arrow] (order) -- (store);
+    \draw[arrow] (store) -- (analytics);
+    \draw[arrow] (product) -- (order);
+    \draw[arrow] (product) -- (supply);
+    \draw[arrow] (supply) -- (store);
+    \draw[feedbackarrow] (analytics.south) |- (supply.east);
+    \draw[feedbackarrow] (analytics.north) to[out=120,in=60] (customer.north);
+
+    \node[note, below=1.05cm of $(product)!0.5!(supply)$] {Operational flow: digital demand is converted into store fulfilment; product standards and supply-chain resources support execution; performance analytics feeds back into offers and replenishment decisions.};
   \end{tikzpicture}
   \caption{Scope of the conceptual model for Luckin Coffee.}
 \end{figure}
