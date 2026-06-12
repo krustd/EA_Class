@@ -1,0 +1,351 @@
+% !TEX program = xelatex
+\documentclass[12pt,a4paper]{article}
+
+% =================== PACKAGES ===================
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{setspace}
+\usepackage[final,nopatch=footnote]{microtype}
+\usepackage{newtxtext}
+\usepackage{parskip}
+\usepackage[nottoc]{tocbibind}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, backgrounds, calc, fit, matrix}
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf, margin=0.5cm}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{pdflscape}
+\usepackage{ragged2e}
+\graphicspath{{fig/}}
+
+% =================== PAGE LAYOUT ===================
+\geometry{
+  top=1in,
+  bottom=1in,
+  left=1.05in,
+  right=1.05in,
+  headheight=14pt,
+  headsep=18pt
+}
+\setstretch{1.12}
+\setlength{\emergencystretch}{2em}
+
+% =================== COLOURS ===================
+\definecolor{lkblue}{HTML}{1F5B8F}
+\definecolor{lkcyan}{HTML}{E9F4FB}
+\definecolor{lkgreen}{HTML}{2E7D32}
+\definecolor{lkorange}{HTML}{C46A1A}
+\definecolor{lkpurple}{HTML}{6A4C93}
+\definecolor{lkgray}{HTML}{F4F6F8}
+\definecolor{darkgray}{HTML}{333333}
+
+% =================== HEADER / FOOTER ===================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small IK2015 Enterprise Architecture}
+\fancyhead[R]{\small Seminar 5: Relational Schema \& Zachman Framework}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% =================== SECTION FORMATTING ===================
+\titleformat{\section}[hang]{\Large\bfseries\color{darkgray}}{\thesection}{1em}{}
+\titleformat{\subsection}[hang]{\large\bfseries\color{darkgray}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[hang]{\normalsize\bfseries\color{darkgray}}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+\titlespacing*{\subsubsection}{0pt}{8pt}{2pt}
+
+% =================== HYPERLINK SETUP ===================
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=lkblue,
+  pageanchor=false
+}
+
+% =================== TABLE HELPERS ===================
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.28}
+
+% =================== TITLE AREA ===================
+\title{}
+\author{}
+\date{}
+
+\begin{document}
+
+% ---- Custom Title Page ----
+\thispagestyle{empty}
+\vspace*{1.8cm}
+
+\begin{center}
+  {\normalsize Jiangxi University of Finance and Economics} \\[2.1cm]
+
+  {\LARGE\bfseries Relational Schema \& Zachman Framework Report} \\[1.0cm]
+
+  {\Large Luckin Coffee Inc.} \\[0.25cm]
+  {\normalsize\itshape A Technology-Driven New Retail Coffee Enterprise} \\[2.0cm]
+
+  {\normalsize IK2015: Enterprise Architecture and Database Programming} \\[0.2cm]
+  {\normalsize Seminar 5} \\[2.2cm]
+
+  {\normalsize\textbf{Group 4}} \\[0.45cm]
+  {\normalsize
+    Zhe-Kai Yang~(Krust),\quad
+    Shi-Hang Chen~(Sean),\quad
+    Wei-Yu Cai~(Nosta), \\[0.2cm]
+    Huan-Wen Chen~(Evan),\quad
+    Yuan-Yong Liao~(Foreve)
+  } \\[1.8cm]
+
+  {\normalsize \today}
+\end{center}
+
+\newpage
+\hypersetup{pageanchor=true}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+% =================== BASIC INFORMATION ===================
+\section{Report Basic Information}
+
+\begin{table}[H]
+\centering
+\caption{Basic information of the relational schema and Zachman framework report.}
+\begin{tabularx}{\textwidth}{P{4.2cm}Y}
+\toprule
+\textbf{Item} & \textbf{Information} \\
+\midrule
+Selected enterprise / business & Luckin Coffee Inc.; mobile-first coffee retail, pickup, delivery, partnership-store operation, and packaged coffee business. \\
+Course and seminar & IK2015 Enterprise Architecture and Database Programming; Seminar 5. \\
+Group number & Group 4. \\
+Group members & \parbox[t]{\hsize}{\raggedright Zhe-Kai Yang~(Krust), Shi-Hang Chen~(Sean), Wei-Yu Cai~(Nosta),\\ Huan-Wen Chen~(Evan), Yuan-Yong Liao~(Foreve).} \\
+Main deliverable & Zachman Framework Row 1 (Scope) description for Luckin Coffee and a relational database schema mapping the conceptual model from Seminar 4, complete with primary/foreign keys and relationships. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+This report fulfills the two main requirements of Seminar 5: describing the first row of the Zachman Framework (Scope/Contextual Planner) for our case study, and transforming the conceptual model created in Seminar 4 into a formal relational database schema.
+
+% =================== ZACHMAN FRAMEWORK ROW 1 ===================
+\section{Zachman Framework: Row 1 (Scope/Contextual Planner)}
+
+The Zachman Framework is a schema for enterprise architecture that structures architectural deliverables along six perspectives (rows) and six interrogatives (columns). The first row, \textbf{Scope (Contextual)}, represents the perspective of the **Planner**. It establishes the business context, boundaries, and high-level inventory of elements that are relevant to the enterprise's strategy and operations. 
+
+Below is the detailed description of Row 1 for Luckin Coffee Inc. across the six interrogative columns.
+
+\begin{landscape}
+\begin{table}[p]
+\centering
+\caption{Zachman Framework Row 1 (Scope / Planner) for Luckin Coffee Inc.}
+\footnotesize
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{2.2cm} *{6}{>{\raggedright\arraybackslash}X}}
+\toprule
+& \textbf{DATA} \newline (What?) & \textbf{FUNCTION} \newline (How?) & \textbf{NETWORK} \newline (Where?) & \textbf{PEOPLE} \newline (Who?) & \textbf{TIME} \newline (When?) & \textbf{MOTIVATION} \newline (Why?) \\
+\midrule
+SCOPE \newline (Contextual) \newline \textit{Planner} 
+& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Customers \& Members
+    \item Digital Channels
+    \item Orders \& Items
+    \item Products \& Recipes
+    \item Stores \& Staff
+    \item Raw Materials \& Suppliers
+    \item Performance KPIs
+\end{itemize}\vspace{-0.3cm}
+& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Customer Acquisition
+    \item Mobile Order \& Payment
+    \item Store-level Fulfillment
+    \item R\&D \& Recipe Mgmt
+    \item Supply Chain
+    \item Logistics Handover
+\end{itemize}\vspace{-0.3cm}
+& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Corporate HQ
+    \item Logistics Hubs
+    \item Supplier Origins
+    \item Retail Grid
+    \item Digital Cloud Network
+    \item Consumption Zones
+\end{itemize}\vspace{-0.3cm}
+& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Digital-native Customers
+    \item Baristas \& Store Managers
+    \item Corporate Planners
+    \item Franchisees (Partners)
+    \item Material Suppliers
+    \item Third-party Riders
+\end{itemize}\vspace{-0.3cm}
+& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Real-Time Fulfillment
+    \item Daily Store Hours
+    \item Diurnal Peak Hours
+    \item Weekly Replenishment
+    \item Fast R\&D Cycles
+\end{itemize}\vspace{-0.3cm}
+& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Mobile-First / New Retail
+    \item Affordable Premium
+    \item Rapid Market Penetration
+    \item Strict Standardization
+    \item CLV Maximization
+\end{itemize}\vspace{-0.3cm} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+
+% =================== RELATIONAL DATABASE SCHEMA ===================
+\section{Relational Database Schema Design}
+
+To implement the conceptual model from Seminar 4, we define a relational database schema. The schema maps entities to primary tables, handles 1:1 and 1:N associations with foreign keys, and resolves M:N relationships through bridge tables.
+
+\subsection{Table Definitions and Attributes}
+
+Underlined columns represent the **Primary Key (PK)** of the table. Columns appended with `(FK)` refer to a primary key in another table.
+
+\begin{table}[H]
+\centering
+\caption{Relational Database Schema Table Definitions.}
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}P{3.8cm}Y}
+\toprule
+\textbf{Table Name} & \textbf{Attributes (Primary Keys underlined, Foreign Keys indicated)} \\
+\midrule
+Customers & \underline{CustomerId}, Segment, City, AgeBand \\
+MembershipAccounts & \underline{MemberId}, CustomerId (FK, Unique), PointsBalance, CouponValue, MemberTier, ActivityStatus \\
+DigitalChannels & \underline{ChannelId}, ChannelType, AccessDevice, AppVersion \\
+PromotionCampaigns & \underline{CampaignId}, CampaignType, TargetSegment, ValidPeriod, SubsidyAmount \\
+MemberCampaigns & \underline{MemberId (FK)}, \underline{CampaignId (FK)}, ReceivedDate, UsedStatus \\
+DigitalOrders & \underline{OrderId}, MemberId (FK), ChannelId (FK), OrderChannel, PaymentMethod, QueueStatus, OrderAmount, DeliveryFee, OrderDate, OrderTime \\
+OrderCampaigns & \underline{OrderId (FK)}, \underline{CampaignId (FK)}, AppliedAmount \\
+OrderItems & \underline{OrderId (FK)}, \underline{ItemNr}, ProductId (FK), Quantity, Customization, Discount, ItemPrice \\
+Products & \underline{ProductId}, ProductName, Category, Season, GrossMargin, StandardCost \\
+RecipeStandards & \underline{RecipeId}, ProductId (FK), RecipeVersion, SopStatus, StandardCost, DefectRate \\
+RecipeMaterials & \underline{RecipeId (FK)}, \underline{MaterialId (FK)}, Dosage \\
+RawMaterials & \underline{MaterialId}, SupplierId (FK), MaterialName, MaterialType, Origin, BatchStatus, InventoryValue \\
+Suppliers & \underline{SupplierId}, SupplierName, SupplierType, LeadTime \\
+Stores & \underline{StoreId}, StoreName, OwnershipType, CityTier, LocationType, Revenue, LaborCost \\
+StoreStaff & \underline{StaffId}, StoreId (FK), StaffName, StaffRole, TrainingStatus, WorkingHours, LaborCost, Productivity \\
+StoreMaterials & \underline{StoreId (FK)}, \underline{MaterialId (FK)}, StockLevel, StockoutRate \\
+FulfilmentTasks & \underline{TaskId}, OrderId (FK), StoreId (FK), PartnerId (FK, Nullable), TaskType, PrepTime, WaitingTime, CompletionRate, Status \\
+DeliveryPartners & \underline{PartnerId}, PartnerName, PartnerType, ServiceArea, DeliveryFee, ComplaintRate \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Conceptual to Relational Mapping Logic}
+
+The transition from the conceptual model in Seminar 4 to the relational database schema relies on standard mapping rules:
+\begin{itemize}
+    \item \textbf{Entity Mapping}: Business objects (e.g., Customers, Products, Stores) map to separate relation tables, with a unique identifier acting as the Primary Key (PK).
+    \item \textbf{1:1 Relationships}: The customer-membership association (D2) is mapped by adding a unique foreign key `CustomerId (FK)` to the `MembershipAccounts` table. This enforces that a member is tied to exactly one customer.
+    \item \textbf{1:N Relationships}: Relationships such as `DigitalOrders -- OrderItem` (F1) and `Store -- StoreStaff` (F4) are represented by placing the parent's primary key (`OrderId` or `StoreId`) as a Foreign Key (FK) in the child table. For order items, the primary key is composite `(OrderId, ItemNr)` to support multiple lines per order.
+    \item \textbf{M:N Relationships}: Relational databases cannot store multi-valued lists directly. Therefore, many-to-many associations are resolved by creating **bridge tables** that contain composite primary keys formed by the primary keys of both participating tables:
+    \begin{itemize}
+        \item `RecipeMaterials` connects `RecipeStandards` and `RawMaterials` (S3) and records the specific `Dosage` of each ingredient in a drink.
+        \item `StoreMaterials` tracks the current inventory level (`StockLevel`) of each raw material within a specific store (S5).
+        \item `MemberCampaigns` records the coupons distributed to members (D4).
+        \item `OrderCampaigns` links promotion campaigns to digital orders to trace which discounts were applied to a specific purchase (D5).
+    \end{itemize}
+\end{itemize}
+
+% =================== MAIN SCHEMA DIAGRAM ===================
+\section{Relational Database Schema Diagram}
+
+\newgeometry{margin=1cm}
+\begin{landscape}
+\thispagestyle{empty}
+\begin{figure}[p]
+\centering
+\begin{minipage}{26cm}
+\centering
+\includegraphics[width=\linewidth,height=17.5cm,keepaspectratio]{schema.pdf}
+\vspace{0.2cm}
+\caption{Relational database schema diagram for Luckin Coffee. The tables are shown as grid structures where the column headers are colored red. Underlined column names indicate Primary Keys (PK). Solid lines with arrows point from the referencing Foreign Key (FK) to the referenced Primary Key (PK).}
+\end{minipage}
+\end{figure}
+\end{landscape}
+\restoregeometry
+
+% =================== BUSINESS SCENARIOS ===================
+\section{Business Scenarios Supported by the Relational Schema}
+
+To demonstrate the completeness of the relational database design, we trace the SQL joining logic for three core retail scenarios.
+
+\subsection{Scenario 1: Mobile Order and Pickup Fulfilment}
+When a customer logs in, uses a coupon, submits a coffee order, and picks it up at a store:
+\begin{itemize}
+    \item \textbf{SQL Joins}: 
+    `Customers` join `MembershipAccounts` on `CustomerId` $\rightarrow$ join `MemberCampaigns` and `PromotionCampaigns` on `MemberId` / `CampaignId` $\rightarrow$ join `DigitalOrders` on `MemberId` $\rightarrow$ join `OrderItems` and `Products` on `OrderId` / `ProductId` $\rightarrow$ join `FulfilmentTasks` on `OrderId` $\rightarrow$ join `Stores` on `StoreId`.
+    \item \textbf{Data Flow}: Traces customer acquisition, coupon application, beverage customization, barista preparation time, and store collection.
+\end{itemize}
+
+\subsection{Scenario 2: R\&D Product Launch and Margin Auditing}
+When R\&D releases a new beverage series and corporate analysts evaluate actual gross margins vs. standard ingredient costs:
+\begin{itemize}
+    \item \textbf{SQL Joins}: 
+    `Products` join `RecipeStandards` on `ProductId` $\rightarrow$ join `RecipeMaterials` on `RecipeId` $\rightarrow$ join `RawMaterials` on `MaterialId` $\rightarrow$ join `Suppliers` on `SupplierId`. 
+    Additionally, join `Products` to `OrderItems` on `ProductId` to pull actual transaction discounts.
+    \item \textbf{Data Flow}: Allows the system to compare the standard cost (sum of ingredient dosages $\times$ raw material purchase cost) against the actual net revenue (item price minus custom discounts) to audit gross margins.
+\end{itemize}
+
+\subsection{Scenario 3: Store Inventory Replenishment}
+When a store's stock of coffee beans falls below the safety threshold, triggering an automated replenishment order:
+\begin{itemize}
+    \item \textbf{SQL Joins}: 
+    `Stores` join `StoreMaterials` on `StoreId` $\rightarrow$ join `RawMaterials` on `MaterialId` $\rightarrow$ join `Suppliers` on `SupplierId`.
+    \item \textbf{Data Flow}: The system queries `StoreMaterials` where `StockLevel` $<$ safety threshold, aggregates required quantities, groups them by `SupplierId`, and submits purchase orders to suppliers.
+\end{itemize}
+
+% =================== CONCLUSION ===================
+\section{Conclusion}
+
+This report successfully mapped the strategic and conceptual architecture of Luckin Coffee to a relational database implementation. 
+
+First, describing Row 1 of the Zachman Framework established the strategic context by outlining what data is critical, how processes operate, where nodes are located, who the stakeholders are, when events occur, and why specific strategies are chosen. 
+
+Second, the relational database design translated the conceptual objects from Seminar 4 into 18 primary and bridge tables. By defining primary keys, foreign keys, and structural mapping rules, the database schema supports critical business operations, including mobile ordering, recipe control, inventory management, and promotional auditing. The schema diagram visually establishes the structural integrity of the database, providing a robust blueprint for enterprise architecture and database programming.
+
+\begingroup
+\small
+\setlength{\itemsep}{0pt}
+\begin{thebibliography}{9}
+
+\bibitem{zachman1987framework}
+Zachman, J. A. (1987).
+\emph{A Framework for Information Systems Architecture}.
+IBM Systems Journal, 26(3), 276--292.
+
+\bibitem{luckin2025results}
+Luckin Coffee Inc. (2026).
+\emph{Luckin Coffee Announces Fourth Quarter and Fiscal Year 2025 Financial Results}.
+\href{https://investor.luckincoffee.com/news-releases/news-release-details/luckin-coffee-announces-fourth-quarter-and-fiscal-year-2025/}{Luckin Coffee Investor Relations}.
+
+\bibitem{luckin2025annual}
+Luckin Coffee Inc. (2026).
+\emph{Form 20-F Annual Report for the Fiscal Year Ended December 31, 2025}.
+\href{https://www.sec.gov/Archives/edgar/data/1767582/000110465926035712/lk-20251231x20f.htm}{U.S. Securities and Exchange Commission}.
+
+\bibitem{elmasri2015db}
+Elmasri, R., \& Navathe, S. B. (2015).
+\emph{Fundamentals of Database Systems} (7th ed.).
+Pearson.
+
+\end{thebibliography}
+\endgroup
+
+\end{document}
