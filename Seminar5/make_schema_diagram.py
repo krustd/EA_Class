@@ -24,7 +24,9 @@ ROW_H = 0.38
 HEAD_H = 0.52
 
 
-def draw_diagram(path, title, table_specs, connectors, size=(18, 10), xlim=(0, 18), ylim=(0, 10)):
+def draw_diagram(path, title, table_specs, connectors, relation_notes=None, size=(18, 10), xlim=(0, 18), ylim=(0, 10)):
+    if relation_notes is None:
+        relation_notes = []
     fig, ax = plt.subplots(figsize=size)
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
@@ -83,7 +85,7 @@ def draw_diagram(path, title, table_specs, connectors, size=(18, 10), xlim=(0, 1
             "bottom": (x + W / 2, y - h),
         }
 
-    def connect(src, dst, start="right", end="left", via=None, label=None):
+    def connect(src, dst, start="right", end="left", via=None, label=None, label_pos=None):
         points = [nodes[src][start]]
         if via:
             points.extend(via)
@@ -101,18 +103,31 @@ def draw_diagram(path, title, table_specs, connectors, size=(18, 10), xlim=(0, 1
             zorder=2,
         ))
         if label:
-            mid = points[len(points) // 2]
-            ax.text(mid[0], mid[1] + 0.12, label, fontsize=8.5, color=LINE,
-                    ha="center", va="bottom", zorder=6,
-                    bbox=dict(facecolor="white", edgecolor="none", pad=0.5, alpha=0.85))
+            if label_pos:
+                mid = label_pos
+            elif via:
+                mid = via[len(via) // 2]
+            else:
+                a, b = points[0], points[-1]
+                mid = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+            ax.text(mid[0], mid[1] + 0.12, label, fontsize=10.5, color="black",
+                    fontweight="bold", ha="center", va="bottom", zorder=6,
+                    bbox=dict(facecolor="white", edgecolor="#555555", linewidth=0.45,
+                              boxstyle="round,pad=0.14", alpha=0.98))
 
     for spec in table_specs:
         table(*spec)
     for spec in connectors:
         connect(*spec)
 
-    ax.text((xlim[0] + xlim[1]) / 2, ylim[0] + 0.12,
-            "Underlined attributes are primary keys. FK marks foreign-key references.",
+    for x, y, text in relation_notes:
+        ax.text(x, y, text, fontsize=9.4, color="#222222", ha="center", va="center",
+                zorder=6,
+                bbox=dict(facecolor="#FFF7D6", edgecolor="#D2A000", linewidth=0.6,
+                          boxstyle="round,pad=0.22", alpha=0.95))
+
+    ax.text((xlim[0] + xlim[1]) / 2, ylim[0] - 0.03,
+            "Underlined attributes are primary keys. FK arrows are labeled with relationship cardinality.",
             ha="center", va="center", fontsize=10.5, style="italic")
 
     fig.savefig(path, format="pdf", bbox_inches="tight")
@@ -139,18 +154,23 @@ operations_tables = [
 ]
 
 operations_connectors = [
-    ("MembershipAccounts", "Customers", "left", "right"),
-    ("MembershipAccounts", "DigitalOrders"),
-    ("DigitalChannels", "DigitalOrders", "right", "bottom", [(7.35, 5.05)]),
-    ("MembershipAccounts", "MemberCampaigns", "bottom", "top"),
-    ("PromotionCampaigns", "MemberCampaigns"),
-    ("DigitalOrders", "OrderCampaigns", "bottom", "top"),
-    ("MemberCampaigns", "OrderCampaigns"),
-    ("DigitalOrders", "OrderItems"),
-    ("DigitalOrders", "FulfilmentTasks", "right", "left", [(11.75, 6.2)]),
-    ("OrderItems", "Products"),
-    ("FulfilmentTasks", "Stores"),
-    ("FulfilmentTasks", "DeliveryPartners", "right", "left", [(14.65, 3.2)]),
+    ("MembershipAccounts", "Customers", "left", "right", None, "1:1", (3.65, 7.25)),
+    ("MembershipAccounts", "DigitalOrders", "right", "left", None, "1:N", (7.15, 7.35)),
+    ("DigitalChannels", "DigitalOrders", "right", "bottom", [(7.35, 5.05)], "1:N", (6.45, 5.15)),
+    ("MembershipAccounts", "MemberCampaigns", "bottom", "top", None, "1:N", (4.95, 4.82)),
+    ("PromotionCampaigns", "MemberCampaigns", "right", "left", None, "1:N", (4.15, 2.25)),
+    ("DigitalOrders", "OrderCampaigns", "bottom", "top", None, "1:N", (8.95, 4.65)),
+    ("MemberCampaigns", "OrderCampaigns", "right", "left", None, "1:N", (7.25, 2.45)),
+    ("DigitalOrders", "OrderItems", "right", "left", None, "1:N", (11.2, 7.35)),
+    ("DigitalOrders", "FulfilmentTasks", "right", "left", [(11.75, 6.2)], "1:N", (11.65, 6.3)),
+    ("OrderItems", "Products", "right", "left", None, "N:1", (15.1, 7.35)),
+    ("FulfilmentTasks", "Stores", "right", "left", None, "N:1", (15.15, 4.75)),
+    ("FulfilmentTasks", "DeliveryPartners", "right", "left", [(14.65, 3.2)], "N:1", (14.8, 3.25)),
+]
+
+operations_notes = [
+    (6.35, 0.74, "M:N resolved by MemberCampaigns\n(Members ↔ Campaigns)"),
+    (9.9, 0.74, "M:N resolved by OrderCampaigns\n(Orders ↔ Campaigns)"),
 ]
 
 supply_tables = [
@@ -167,12 +187,17 @@ supply_tables = [
 ]
 
 supply_connectors = [
-    ("Products", "RecipeStandards"),
-    ("RecipeStandards", "RecipeMaterials"),
-    ("RecipeMaterials", "RawMaterials", "bottom", "top"),
-    ("Stores", "StoreMaterials"),
-    ("StoreMaterials", "RawMaterials"),
-    ("RawMaterials", "Suppliers"),
+    ("Products", "RecipeStandards", "right", "left", None, "1:N", (4.35, 7.15)),
+    ("RecipeStandards", "RecipeMaterials", "right", "left", None, "1:N", (8.55, 7.15)),
+    ("RecipeMaterials", "RawMaterials", "bottom", "top", None, "N:1", (10.8, 6.1)),
+    ("Stores", "StoreMaterials", "right", "left", None, "1:N", (4.35, 3.1)),
+    ("StoreMaterials", "RawMaterials", "right", "left", None, "N:1", (8.55, 3.1)),
+    ("RawMaterials", "Suppliers", "right", "left", None, "N:1", (13.2, 4.85)),
+]
+
+supply_notes = [
+    (7.55, 1.2, "M:N resolved by RecipeMaterials\n(Recipes ↔ Materials)"),
+    (7.55, 0.63, "M:N resolved by StoreMaterials\n(Stores ↔ Materials)"),
 ]
 
 
@@ -182,6 +207,7 @@ def main():
         "Luckin Coffee Relational Data Model: Customer, Order and Fulfilment",
         operations_tables,
         operations_connectors,
+        operations_notes,
         size=(21, 10.5),
         xlim=(0, 19.8),
         ylim=(0, 10),
@@ -191,6 +217,7 @@ def main():
         "Luckin Coffee Relational Data Model: Product, Recipe and Supply",
         supply_tables,
         supply_connectors,
+        supply_notes,
         size=(18, 10),
         xlim=(0, 17.8),
         ylim=(0, 10),
