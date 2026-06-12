@@ -12,6 +12,7 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{longtable}
 \usepackage{setspace}
 \usepackage[final,nopatch=footnote]{microtype}
 \usepackage{newtxtext}
@@ -25,6 +26,7 @@
 \usepackage{xcolor}
 \usepackage{pdflscape}
 \usepackage{ragged2e}
+\usepackage{makecell}
 \graphicspath{{fig/}}
 
 % =================== PAGE LAYOUT ===================
@@ -37,7 +39,7 @@
   headsep=18pt
 }
 \setstretch{1.12}
-\setlength{\emergencystretch}{2em}
+\setlength{\emergencystretch}{3em}
 
 % =================== COLOURS ===================
 \definecolor{lkblue}{HTML}{1F5B8F}
@@ -52,7 +54,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small IK2015 Enterprise Architecture}
-\fancyhead[R]{\small Seminar 5: Relational Schema \& Zachman Framework}
+\fancyhead[R]{\small Seminar 5: Zachman Framework \& Relational Data Model}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -76,7 +78,11 @@
 % =================== TABLE HELPERS ===================
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
 \newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
-\renewcommand{\arraystretch}{1.28}
+\renewcommand{\arraystretch}{1.22}
+\newcommand{\pk}[1]{\underline{#1}}
+\newcommand{\fk}{\textsuperscript{FK}}
+\newcommand{\pkfk}{\textsuperscript{PK, FK}}
+\newcommand{\nullable}{\textsuperscript{nullable}}
 
 % =================== TITLE AREA ===================
 \title{}
@@ -92,7 +98,8 @@
 \begin{center}
   {\normalsize Jiangxi University of Finance and Economics} \\[2.1cm]
 
-  {\LARGE\bfseries Relational Schema \& Zachman Framework Report} \\[1.0cm]
+  {\LARGE\bfseries Zachman Framework and Relational Data Model} \\[0.15cm]
+  {\LARGE\bfseries Report} \\[1.0cm]
 
   {\Large Luckin Coffee Inc.} \\[0.25cm]
   {\normalsize\itshape A Technology-Driven New Retail Coffee Enterprise} \\[2.0cm]
@@ -123,8 +130,8 @@
 
 \begin{table}[H]
 \centering
-\caption{Basic information of the relational schema and Zachman framework report.}
-\begin{tabularx}{\textwidth}{P{4.2cm}Y}
+\caption{Basic information of the Seminar 5 report.}
+\begin{tabularx}{\textwidth}{P{4.25cm}Y}
 \toprule
 \textbf{Item} & \textbf{Information} \\
 \midrule
@@ -132,139 +139,213 @@ Selected enterprise / business & Luckin Coffee Inc.; mobile-first coffee retail,
 Course and seminar & IK2015 Enterprise Architecture and Database Programming; Seminar 5. \\
 Group number & Group 4. \\
 Group members & \parbox[t]{\hsize}{\raggedright Zhe-Kai Yang~(Krust), Shi-Hang Chen~(Sean), Wei-Yu Cai~(Nosta),\\ Huan-Wen Chen~(Evan), Yuan-Yong Liao~(Foreve).} \\
-Main deliverable & Zachman Framework Row 1 (Scope) description for Luckin Coffee and a relational database schema mapping the conceptual model from Seminar 4, complete with primary/foreign keys and relationships. \\
+Main deliverable & A Row 1 Scope description of the Zachman Framework for Luckin Coffee and a relational data model transformed from the Seminar 4 conceptual model. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-This report fulfills the two main requirements of Seminar 5: describing the first row of the Zachman Framework (Scope/Contextual Planner) for our case study, and transforming the conceptual model created in Seminar 4 into a formal relational database schema.
+This report follows the Seminar 5 instruction sheet. It first fills in the first row of the Zachman Framework for the selected case-study business, and then transforms the conceptual model developed in Seminar 4 into a relational data model. The transformation identifies relations, primary keys, foreign keys, bridge tables, and integrity rules that make the conceptual model implementable in a database.
 
 % =================== ZACHMAN FRAMEWORK ROW 1 ===================
-\section{Zachman Framework: Row 1 (Scope/Contextual Planner)}
+\section{Zachman Framework: Row 1 Scope}
 
-The Zachman Framework is a schema for enterprise architecture that structures architectural deliverables along six perspectives (rows) and six interrogatives (columns). The first row, \textbf{Scope (Contextual)}, represents the perspective of the **Planner**. It establishes the business context, boundaries, and high-level inventory of elements that are relevant to the enterprise's strategy and operations. 
+The Zachman Framework is a classification scheme for enterprise architecture. It organizes architectural descriptions by two dimensions: stakeholder perspectives and basic interrogatives. In this report, only Row 1 is required. Row 1 is the \textbf{Scope} or \textbf{Contextual} perspective of the planner. It does not describe detailed system implementation; instead, it lists the high-level business things, processes, locations, organizations, events, and goals that define the enterprise boundary.
 
-Below is the detailed description of Row 1 for Luckin Coffee Inc. across the six interrogative columns.
+For Luckin Coffee, the Row 1 view is useful because the company combines digital ordering, physical store fulfilment, standardized recipes, supply resources, and performance feedback. The following table describes this scope across the six Zachman columns.
 
 \begin{landscape}
 \begin{table}[p]
 \centering
-\caption{Zachman Framework Row 1 (Scope / Planner) for Luckin Coffee Inc.}
+\caption{Zachman Framework Row 1 Scope for Luckin Coffee Inc.}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{2.2cm} *{6}{>{\raggedright\arraybackslash}X}}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{2.15cm} *{6}{>{\raggedright\arraybackslash}X}}
 \toprule
 & \textbf{DATA} \newline (What?) & \textbf{FUNCTION} \newline (How?) & \textbf{NETWORK} \newline (Where?) & \textbf{PEOPLE} \newline (Who?) & \textbf{TIME} \newline (When?) & \textbf{MOTIVATION} \newline (Why?) \\
 \midrule
-SCOPE \newline (Contextual) \newline \textit{Planner} 
-& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
-    \item Customers \& Members
-    \item Digital Channels
-    \item Orders \& Items
-    \item Products \& Recipes
-    \item Stores \& Staff
-    \item Raw Materials \& Suppliers
-    \item Performance KPIs
-\end{itemize}\vspace{-0.3cm}
-& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
-    \item Customer Acquisition
-    \item Mobile Order \& Payment
-    \item Store-level Fulfillment
-    \item R\&D \& Recipe Mgmt
-    \item Supply Chain
-    \item Logistics Handover
-\end{itemize}\vspace{-0.3cm}
-& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
-    \item Corporate HQ
-    \item Logistics Hubs
-    \item Supplier Origins
-    \item Retail Grid
-    \item Digital Cloud Network
-    \item Consumption Zones
-\end{itemize}\vspace{-0.3cm}
-& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
-    \item Digital-native Customers
-    \item Baristas \& Store Managers
-    \item Corporate Planners
-    \item Franchisees (Partners)
-    \item Material Suppliers
-    \item Third-party Riders
-\end{itemize}\vspace{-0.3cm}
-& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
-    \item Real-Time Fulfillment
-    \item Daily Store Hours
-    \item Diurnal Peak Hours
-    \item Weekly Replenishment
-    \item Fast R\&D Cycles
-\end{itemize}\vspace{-0.3cm}
-& \vspace{-0.3cm}\begin{itemize}[leftmargin=*, nosep, label=-]
-    \item Mobile-First / New Retail
-    \item Affordable Premium
-    \item Rapid Market Penetration
-    \item Strict Standardization
-    \item CLV Maximization
-\end{itemize}\vspace{-0.3cm} \\
+SCOPE \newline (Contextual) \newline \textit{Planner}
+& \begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Customers and members
+    \item Digital channels
+    \item Orders and order items
+    \item Products and recipes
+    \item Stores and staff
+    \item Raw materials and suppliers
+    \item Delivery partners
+    \item Operational KPIs
+  \end{itemize}
+& \begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Attract and register customers
+    \item Publish campaigns and coupons
+    \item Accept mobile orders and payments
+    \item Prepare pickup and delivery tasks
+    \item Manage recipes and products
+    \item Replenish store materials
+    \item Monitor service and financial results
+  \end{itemize}
+& \begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Mobile app and mini-program
+    \item Cloud ordering platform
+    \item Headquarters planning units
+    \item Self-operated and partner stores
+    \item City retail locations
+    \item Supplier origins and warehouses
+    \item Delivery service areas
+  \end{itemize}
+& \begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Digital-native customers
+    \item Members and coupon users
+    \item Store managers and baristas
+    \item Product and recipe teams
+    \item Corporate planners
+    \item Franchise or partner-store operators
+    \item Material suppliers and delivery riders
+  \end{itemize}
+& \begin{itemize}[leftmargin=*, nosep, label=-]
+    \item App sessions and campaign periods
+    \item Order date and order time
+    \item Real-time queue and preparation status
+    \item Daily store operating hours
+    \item Morning and lunch peak demand
+    \item Weekly replenishment cycles
+    \item Recipe-version effective dates
+  \end{itemize}
+& \begin{itemize}[leftmargin=*, nosep, label=-]
+    \item Mobile-first new retail strategy
+    \item Fast and standardized fulfilment
+    \item Affordable premium positioning
+    \item Customer lifetime value growth
+    \item Product innovation and margin control
+    \item Supply reliability
+    \item Data-driven operating decisions
+  \end{itemize} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 \end{landscape}
 
-% =================== RELATIONAL DATABASE SCHEMA ===================
-\section{Relational Database Schema Design}
+This Row 1 scope clarifies what must remain connected when the architecture becomes more detailed. For example, the data column identifies the objects that later become database tables, while the function and time columns explain why order status, campaign validity, recipe versions, and replenishment timing must be represented explicitly.
 
-To implement the conceptual model from Seminar 4, we define a relational database schema. The schema maps entities to primary tables, handles 1:1 and 1:N associations with foreign keys, and resolves M:N relationships through bridge tables.
+% =================== CONCEPTUAL MODEL BASIS ===================
+\section{Conceptual Model Used as the Source}
 
-\subsection{Table Definitions and Attributes}
+The relational data model below is transformed from the Seminar 4 conceptual model for Luckin Coffee. The conceptual model described Luckin as an integrated retail platform with demand-side, fulfilment-side, product-side, and resource-side objects. Its main business objects were Customer, Membership Account, Digital Channel, Promotion Campaign, Digital Order, Order Item, Product, Recipe Standard, Raw Material, Supplier, Store, Store Staff, Fulfilment Task, Delivery Partner, and Performance Result.
 
-Underlined columns represent the **Primary Key (PK)** of the table. Columns appended with `(FK)` refer to a primary key in another table.
+The conceptual relationships used for transformation are summarized as follows:
+\begin{itemize}[leftmargin=1.3em]
+  \item \textbf{Demand relationships}: customers use digital channels, customers own membership accounts, members place digital orders, and promotions are distributed to members and applied to orders.
+  \item \textbf{Fulfilment relationships}: digital orders contain order items and create fulfilment tasks; fulfilment tasks are executed by stores and may involve delivery partners.
+  \item \textbf{Product and resource relationships}: order items refer to products; products have recipe standards; recipes consume raw materials; suppliers provide materials; stores hold materials as inventory.
+  \item \textbf{Analytical feedback}: performance results are derived from operational tables such as orders, fulfilment tasks, stores, campaigns, and delivery partners. Because these are calculated KPIs, they are implemented as reporting queries or views rather than as one base transaction table in the core schema.
+\end{itemize}
+
+% =================== RELATIONAL DATA MODEL ===================
+\section{Relational Data Model Design}
+
+The relational model applies standard mapping rules. Each major conceptual object becomes a relation. One-to-many relationships are represented by placing the primary key of the parent relation as a foreign key in the child relation. Many-to-many relationships are resolved using bridge relations with composite primary keys. The model also includes basic domain constraints, such as non-negative monetary values, valid status values, campaign date ranges, and recipe effective dates.
+
+\subsection{Relations, Primary Keys, and Foreign Keys}
+
+In the following table, underlined attributes are primary-key attributes. Attributes marked with FK reference another relation. Composite keys are shown by underlining more than one attribute in the same relation.
+
+\scriptsize
+\begin{longtable}{P{3.45cm}P{12.0cm}}
+\caption{Relational data model transformed from the conceptual model.}\\
+\toprule
+\textbf{Relation} & \textbf{Attributes} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Relation} & \textbf{Attributes} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\textit{Continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+Customers & \pk{CustomerId}, Segment, City, AgeBand \\
+MembershipAccounts & \pk{MemberId}, CustomerId\fk~(Unique), PointsBalance, CouponValue, MemberTier, ActivityStatus \\
+DigitalChannels & \pk{ChannelId}, ChannelType, AccessDevice, AppVersion \\
+PromotionCampaigns & \pk{CampaignId}, CampaignType, TargetSegment, StartDate, EndDate, SubsidyAmount \\
+MemberCampaigns & \pk{MemberId}\pkfk, \pk{CampaignId}\pkfk, ReceivedDate, UsedStatus \\
+DigitalOrders & \pk{OrderId}, MemberId\fk, ChannelId\fk, PaymentMethod, QueueStatus, GrossOrderAmount, CampaignDiscountAmount, ItemDiscountAmount, ActualDeliveryFee, NetPayableAmount, OrderDate, OrderTime \\
+OrderCampaigns & \pk{OrderId}\pkfk, MemberId\fk, \pk{CampaignId}\pkfk, AppliedAmount \\
+Products & \pk{ProductId}, ProductName, Category, Season, GrossMargin, CurrentStandardCost \\
+OrderItems & \pk{OrderId}\pkfk, \pk{ItemNr}, ProductId\fk, Quantity, Customization, LineDiscountAmount, UnitItemPrice \\
+DeliveryPartners & \pk{PartnerId}, PartnerName, PartnerType, ServiceArea, StandardDeliveryFee, ComplaintRate \\
+Stores & \pk{StoreId}, StoreName, OwnershipType, CityTier, LocationType, Revenue, LaborCost \\
+FulfilmentTasks & \pk{TaskId}, OrderId\fk, StoreId\fk, PartnerId\fk\nullable, TaskType, PrepTime, WaitingTime, CompletionRate, Status \\
+StoreStaff & \pk{StaffId}, StoreId\fk, StaffName, StaffRole, TrainingStatus, WorkingHours, LaborCost, Productivity \\
+Suppliers & \pk{SupplierId}, SupplierName, SupplierType, LeadTime \\
+RawMaterials & \pk{MaterialId}, SupplierId\fk, MaterialName, MaterialType, Origin, BatchStatus, InventoryValue \\
+StoreMaterials & \pk{StoreId}\pkfk, \pk{MaterialId}\pkfk, StockLevel, StockoutRate \\
+RecipeStandards & \pk{RecipeId}, ProductId\fk, RecipeVersion, SopStatus, RecipeStandardCost, DefectRate, EffectiveFrom, EffectiveTo \\
+RecipeMaterials & \pk{RecipeId}\pkfk, \pk{MaterialId}\pkfk, DosageAmount, DosageUnit \\
+\end{longtable}
+\normalsize
+
+\subsection{Foreign-Key Structure}
 
 \begin{table}[H]
 \centering
-\caption{Relational Database Schema Table Definitions.}
-\small
-\begin{tabularx}{\textwidth}{>{\bfseries}P{3.8cm}Y}
+\caption{Main foreign-key dependencies in the relational data model.}
+\footnotesize
+\begin{tabularx}{\textwidth}{P{3.35cm}P{3.45cm}Y}
 \toprule
-\textbf{Table Name} & \textbf{Attributes (Primary Keys underlined, Foreign Keys indicated)} \\
+\textbf{Foreign key in relation} & \textbf{References} & \textbf{Meaning} \\
 \midrule
-Customers & \underline{CustomerId}, Segment, City, AgeBand \\
-MembershipAccounts & \underline{MemberId}, CustomerId (FK, Unique), PointsBalance, CouponValue, MemberTier, ActivityStatus \\
-DigitalChannels & \underline{ChannelId}, ChannelType, AccessDevice, AppVersion \\
-PromotionCampaigns & \underline{CampaignId}, CampaignType, TargetSegment, ValidPeriod, SubsidyAmount \\
-MemberCampaigns & \underline{MemberId (FK)}, \underline{CampaignId (FK)}, ReceivedDate, UsedStatus \\
-DigitalOrders & \underline{OrderId}, MemberId (FK), ChannelId (FK), OrderChannel, PaymentMethod, QueueStatus, OrderAmount, DeliveryFee, OrderDate, OrderTime \\
-OrderCampaigns & \underline{OrderId (FK)}, \underline{CampaignId (FK)}, AppliedAmount \\
-OrderItems & \underline{OrderId (FK)}, \underline{ItemNr}, ProductId (FK), Quantity, Customization, Discount, ItemPrice \\
-Products & \underline{ProductId}, ProductName, Category, Season, GrossMargin, StandardCost \\
-RecipeStandards & \underline{RecipeId}, ProductId (FK), RecipeVersion, SopStatus, StandardCost, DefectRate \\
-RecipeMaterials & \underline{RecipeId (FK)}, \underline{MaterialId (FK)}, Dosage \\
-RawMaterials & \underline{MaterialId}, SupplierId (FK), MaterialName, MaterialType, Origin, BatchStatus, InventoryValue \\
-Suppliers & \underline{SupplierId}, SupplierName, SupplierType, LeadTime \\
-Stores & \underline{StoreId}, StoreName, OwnershipType, CityTier, LocationType, Revenue, LaborCost \\
-StoreStaff & \underline{StaffId}, StoreId (FK), StaffName, StaffRole, TrainingStatus, WorkingHours, LaborCost, Productivity \\
-StoreMaterials & \underline{StoreId (FK)}, \underline{MaterialId (FK)}, StockLevel, StockoutRate \\
-FulfilmentTasks & \underline{TaskId}, OrderId (FK), StoreId (FK), PartnerId (FK, Nullable), TaskType, PrepTime, WaitingTime, CompletionRate, Status \\
-DeliveryPartners & \underline{PartnerId}, PartnerName, PartnerType, ServiceArea, DeliveryFee, ComplaintRate \\
+\makecell[l]{MembershipAccounts\\CustomerId} & \makecell[l]{Customers\\CustomerId} & One customer owns one membership account; the unique constraint prevents duplicate membership accounts for the same customer. \\
+\makecell[l]{DigitalOrders\\MemberId} & \makecell[l]{MembershipAccounts\\MemberId} & A member can place many digital orders. \\
+\makecell[l]{DigitalOrders\\ChannelId} & \makecell[l]{DigitalChannels\\ChannelId} & Each order is placed through one recorded digital channel. \\
+\makecell[l]{MemberCampaigns\\MemberId} & \makecell[l]{MembershipAccounts\\MemberId} & A member can receive many campaigns. \\
+\makecell[l]{MemberCampaigns\\CampaignId} & \makecell[l]{PromotionCampaigns\\CampaignId} & A campaign can be distributed to many members. \\
+\makecell[l]{OrderCampaigns\\OrderId, MemberId} & \makecell[l]{DigitalOrders\\OrderId, MemberId} & A campaign usage is attached to a specific order and the member who placed it. \\
+\makecell[l]{OrderCampaigns\\MemberId, CampaignId} & \makecell[l]{MemberCampaigns\\MemberId, CampaignId} & An order can only apply a campaign that was issued to that member. \\
+\makecell[l]{OrderItems\\OrderId} & \makecell[l]{DigitalOrders\\OrderId} & One order can contain multiple product lines. \\
+\makecell[l]{OrderItems\\ProductId} & \makecell[l]{Products\\ProductId} & Each order line sells one product. \\
+\makecell[l]{FulfilmentTasks\\OrderId} & \makecell[l]{DigitalOrders\\OrderId} & One order may create preparation, pickup, delivery, or exception tasks. \\
+\makecell[l]{FulfilmentTasks\\StoreId} & \makecell[l]{Stores\\StoreId} & Each fulfilment task is handled by one store. \\
+\makecell[l]{FulfilmentTasks\\PartnerId} & \makecell[l]{DeliveryPartners\\PartnerId} & Delivery tasks may involve a delivery partner; pickup tasks may leave this value null. \\
+\makecell[l]{StoreStaff\\StoreId} & \makecell[l]{Stores\\StoreId} & One store employs many staff members. \\
+\makecell[l]{RawMaterials\\SupplierId} & \makecell[l]{Suppliers\\SupplierId} & One supplier can provide many materials. \\
+\makecell[l]{StoreMaterials\\StoreId, MaterialId} & \makecell[l]{Stores\\StoreId;\\RawMaterials\\MaterialId} & Store inventory is represented as a bridge between stores and materials. \\
+\makecell[l]{RecipeStandards\\ProductId} & \makecell[l]{Products\\ProductId} & A product can have multiple recipe versions. \\
+\makecell[l]{RecipeMaterials\\RecipeId, MaterialId} & \makecell[l]{RecipeStandards\\RecipeId;\\RawMaterials\\MaterialId} & Recipe ingredients are represented as a bridge between recipes and materials. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Conceptual to Relational Mapping Logic}
+\subsection{Mapping Logic from Conceptual Model to Relations}
 
-The transition from the conceptual model in Seminar 4 to the relational database schema relies on standard mapping rules:
-\begin{itemize}
-    \item \textbf{Entity Mapping}: Business objects (e.g., Customers, Products, Stores) map to separate relation tables, with a unique identifier acting as the Primary Key (PK).
-    \item \textbf{1:1 Relationships}: The customer-membership association (D2) is mapped by adding a unique foreign key `CustomerId (FK)` to the `MembershipAccounts` table. This enforces that a member is tied to exactly one customer.
-    \item \textbf{1:N Relationships}: Relationships such as `DigitalOrders -- OrderItem` (F1) and `Store -- StoreStaff` (F4) are represented by placing the parent's primary key (`OrderId` or `StoreId`) as a Foreign Key (FK) in the child table. For order items, the primary key is composite `(OrderId, ItemNr)` to support multiple lines per order.
-    \item \textbf{M:N Relationships}: Relational databases cannot store multi-valued lists directly. Therefore, many-to-many associations are resolved by creating **bridge tables** that contain composite primary keys formed by the primary keys of both participating tables:
-    \begin{itemize}
-        \item `RecipeMaterials` connects `RecipeStandards` and `RawMaterials` (S3) and records the specific `Dosage` of each ingredient in a drink.
-        \item `StoreMaterials` tracks the current inventory level (`StockLevel`) of each raw material within a specific store (S5).
-        \item `MemberCampaigns` records the coupons distributed to members (D4).
-        \item `OrderCampaigns` links promotion campaigns to digital orders to trace which discounts were applied to a specific purchase (D5).
-    \end{itemize}
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Conceptual-to-relational mapping decisions.}
+\small
+\begin{tabularx}{\textwidth}{P{4.0cm}P{3.2cm}Y}
+\toprule
+\textbf{Conceptual element} & \textbf{Relational result} & \textbf{Reasoning} \\
+\midrule
+Customer and Membership Account & Customers; MembershipAccounts & These objects are separated because demographic segmentation and membership benefits have different attributes. The CustomerId foreign key in MembershipAccounts is unique, representing a one-to-one relationship. \\
+Digital Channel and Digital Order & DigitalChannels; DigitalOrders & Channel information is stored once and referenced by orders. This avoids repeating app, mini-program, device, and version data in every order record. \\
+Promotion Campaign issued to members & MemberCampaigns & The member-campaign relationship is many-to-many, so a bridge relation records which member received which campaign and whether it was used. \\
+Promotion Campaign applied to orders & OrderCampaigns & A second bridge relation records actual campaign use on orders and the discount amount applied. Including MemberId keeps campaign use consistent with member campaign distribution. \\
+Order and Order Item & DigitalOrders; OrderItems & Order-level fields such as payment method, queue status, and net amount are separated from product-line fields such as quantity, customization, discount, and unit price. \\
+Product and Recipe Standard & Products; RecipeStandards & Product catalogue information is separated from recipe versions, SOP status, standard cost, and effective dates. This supports controlled product changes over time. \\
+Recipe Standard and Raw Material & RecipeMaterials & Recipes and materials are many-to-many. The bridge relation records dosage amount and dosage unit for each ingredient. \\
+Store and Raw Material & StoreMaterials & Stores hold many materials, and the same material can be stocked by many stores. The bridge relation records local stock level and stockout rate. \\
+Order fulfilment and delivery & FulfilmentTasks; DeliveryPartners & Fulfilment work is separated from the purchase event, making preparation time, waiting time, completion rate, and delivery complaints measurable. \\
+Performance Result & Reporting views or queries & KPIs such as average order value, campaign redemption rate, store utilization, and stockout rate are derived from operational relations rather than stored as a separate base transaction table. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-% =================== MAIN SCHEMA DIAGRAM ===================
-\section{Relational Database Schema Diagram}
+The model also uses integrity constraints beyond simple key definitions. For example, order amounts must be non-negative, net payable amount equals gross amount minus campaign and item discounts plus actual delivery fee, campaign start date cannot be later than campaign end date, stock level cannot be negative, and recipe effective dates must be ordered correctly. The SQL implementation also uses triggers to ensure that a campaign applied to an order is valid for that order date and does not exceed the campaign subsidy amount.
+
+% =================== SCHEMA DIAGRAMS ===================
+\section{Relational Data Model Diagrams}
+
+The relational data model is shown in two diagrams to keep the schema readable on A4 paper. The first diagram focuses on customer demand, digital orders, campaign use, and fulfilment. The second diagram focuses on products, recipes, materials, store inventory, and suppliers. Together, the two diagrams represent the same complete relational model listed in the relation table above.
 
 \newgeometry{margin=1cm}
 \begin{landscape}
@@ -273,52 +354,97 @@ The transition from the conceptual model in Seminar 4 to the relational database
 \centering
 \begin{minipage}{26cm}
 \centering
-\includegraphics[width=\linewidth,height=17.5cm,keepaspectratio]{schema.pdf}
+\includegraphics[width=\linewidth,height=16.2cm,keepaspectratio]{schema_operations.pdf}
 \vspace{0.2cm}
-\caption{Relational database schema diagram for Luckin Coffee. The tables are shown as grid structures where the column headers are colored red. Underlined column names indicate Primary Keys (PK). Solid lines with arrows point from the referencing Foreign Key (FK) to the referenced Primary Key (PK).}
+\caption{Relational data model diagram for customer, order, campaign, and fulfilment relations. Underlined attributes are primary-key attributes; FK marks foreign-key references.}
 \end{minipage}
 \end{figure}
 \end{landscape}
 \restoregeometry
 
-% =================== BUSINESS SCENARIOS ===================
-\section{Business Scenarios Supported by the Relational Schema}
+\newgeometry{margin=1cm}
+\begin{landscape}
+\thispagestyle{empty}
+\begin{figure}[p]
+\centering
+\begin{minipage}{26cm}
+\centering
+\includegraphics[width=\linewidth,height=16.2cm,keepaspectratio]{schema_supply.pdf}
+\vspace{0.2cm}
+\caption{Relational data model diagram for product, recipe, material, inventory, and supplier relations. Underlined attributes are primary-key attributes; FK marks foreign-key references.}
+\end{minipage}
+\end{figure}
+\end{landscape}
+\restoregeometry
 
-To demonstrate the completeness of the relational database design, we trace the SQL joining logic for three core retail scenarios.
+The diagrams are organized around the same business flow as the conceptual model: customer and membership data feed digital orders; orders connect to items, fulfilment tasks, stores, campaigns, and delivery partners; products connect to recipes; recipes and stores connect to raw materials and suppliers.
+
+% =================== IMPLEMENTATION NOTES ===================
+\section{Implementation Notes for the Database Schema}
+
+The relational model is implemented in the accompanying SQL schema file. The SQL version uses explicit primary-key, foreign-key, unique, check, and trigger rules so that the database structure preserves the business logic of the conceptual model.
+
+\begin{table}[H]
+\centering
+\caption{Examples of integrity rules implemented by the schema.}
+\small
+\begin{tabularx}{\textwidth}{P{4.0cm}Y}
+\toprule
+\textbf{Rule type} & \textbf{Example in the Luckin Coffee schema} \\
+\midrule
+Entity integrity & Every base relation has a primary key, such as CustomerId, OrderId, ProductId, StoreId, or MaterialId. \\
+Referential integrity & DigitalOrders.MemberId must match an existing MembershipAccounts.MemberId; OrderItems.ProductId must match an existing Products.ProductId. \\
+One-to-one control & MembershipAccounts.CustomerId is unique, so one customer cannot have multiple membership account rows in this schema. \\
+Bridge-table control & MemberCampaigns, OrderCampaigns, StoreMaterials, and RecipeMaterials use composite primary keys to represent many-to-many relationships. \\
+Domain validity & Status and type fields are restricted to allowed values, such as queue status, activity status, task type, ownership type, and batch status. \\
+Business arithmetic & NetPayableAmount is constrained to equal GrossOrderAmount minus discounts plus ActualDeliveryFee. \\
+Time validity & PromotionCampaigns require StartDate to be earlier than or equal to EndDate; RecipeStandards require a valid effective-date range. \\
+Cross-table rule & OrderCampaigns triggers check that a campaign is valid for the order date and that the applied amount does not exceed allowed campaign or order values. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =================== BUSINESS SCENARIOS ===================
+\section{Business Scenarios Supported by the Relational Model}
 
 \subsection{Scenario 1: Mobile Order and Pickup Fulfilment}
-When a customer logs in, uses a coupon, submits a coffee order, and picks it up at a store:
-\begin{itemize}
-    \item \textbf{SQL Joins}: 
-    `Customers` join `MembershipAccounts` on `CustomerId` $\rightarrow$ join `MemberCampaigns` and `PromotionCampaigns` on `MemberId` / `CampaignId` $\rightarrow$ join `DigitalOrders` on `MemberId` $\rightarrow$ join `OrderItems` and `Products` on `OrderId` / `ProductId` $\rightarrow$ join `FulfilmentTasks` on `OrderId` $\rightarrow$ join `Stores` on `StoreId`.
-    \item \textbf{Data Flow}: Traces customer acquisition, coupon application, beverage customization, barista preparation time, and store collection.
+
+When a customer logs in, receives a coupon, submits a coffee order, and picks it up at a store, the database can trace the full chain:
+\begin{itemize}[leftmargin=1.3em]
+  \item \textbf{Relations joined}: Customers $\rightarrow$ MembershipAccounts $\rightarrow$ MemberCampaigns $\rightarrow$ PromotionCampaigns $\rightarrow$ DigitalOrders $\rightarrow$ OrderCampaigns $\rightarrow$ OrderItems $\rightarrow$ Products $\rightarrow$ FulfilmentTasks $\rightarrow$ Stores.
+  \item \textbf{Business value}: The chain shows who bought the drink, which digital channel was used, which coupon was distributed and applied, which product lines were ordered, how long fulfilment took, and which store completed the task.
 \end{itemize}
 
-\subsection{Scenario 2: R\&D Product Launch and Margin Auditing}
-When R\&D releases a new beverage series and corporate analysts evaluate actual gross margins vs. standard ingredient costs:
-\begin{itemize}
-    \item \textbf{SQL Joins}: 
-    `Products` join `RecipeStandards` on `ProductId` $\rightarrow$ join `RecipeMaterials` on `RecipeId` $\rightarrow$ join `RawMaterials` on `MaterialId` $\rightarrow$ join `Suppliers` on `SupplierId`. 
-    Additionally, join `Products` to `OrderItems` on `ProductId` to pull actual transaction discounts.
-    \item \textbf{Data Flow}: Allows the system to compare the standard cost (sum of ingredient dosages $\times$ raw material purchase cost) against the actual net revenue (item price minus custom discounts) to audit gross margins.
+\subsection{Scenario 2: Product Launch and Margin Auditing}
+
+When Luckin launches a new beverage, analysts can evaluate recipe cost, selling price, discounts, and margin performance:
+\begin{itemize}[leftmargin=1.3em]
+  \item \textbf{Relations joined}: Products $\rightarrow$ RecipeStandards $\rightarrow$ RecipeMaterials $\rightarrow$ RawMaterials $\rightarrow$ Suppliers; Products $\rightarrow$ OrderItems $\rightarrow$ DigitalOrders for actual sales and discounts.
+  \item \textbf{Business value}: The chain compares recipe standard cost and ingredient dosage against item revenue and discount behavior, supporting product profitability analysis.
 \end{itemize}
 
 \subsection{Scenario 3: Store Inventory Replenishment}
-When a store's stock of coffee beans falls below the safety threshold, triggering an automated replenishment order:
-\begin{itemize}
-    \item \textbf{SQL Joins}: 
-    `Stores` join `StoreMaterials` on `StoreId` $\rightarrow$ join `RawMaterials` on `MaterialId` $\rightarrow$ join `Suppliers` on `SupplierId`.
-    \item \textbf{Data Flow}: The system queries `StoreMaterials` where `StockLevel` $<$ safety threshold, aggregates required quantities, groups them by `SupplierId`, and submits purchase orders to suppliers.
+
+When a store's stock of coffee beans, milk, syrup, or packaging falls below a safety level, the schema supports replenishment decisions:
+\begin{itemize}[leftmargin=1.3em]
+  \item \textbf{Relations joined}: Stores $\rightarrow$ StoreMaterials $\rightarrow$ RawMaterials $\rightarrow$ Suppliers.
+  \item \textbf{Business value}: The system can identify low stock levels by store and material, group replenishment needs by supplier, and connect stockout patterns to store performance.
+\end{itemize}
+
+\subsection{Scenario 4: Delivery Reliability Monitoring}
+
+When delivery complaints or waiting time increases, managers can inspect the responsible operational links:
+\begin{itemize}[leftmargin=1.3em]
+  \item \textbf{Relations joined}: DigitalOrders $\rightarrow$ FulfilmentTasks $\rightarrow$ Stores and DeliveryPartners.
+  \item \textbf{Business value}: The schema separates store preparation performance from partner delivery performance, helping managers decide whether the bottleneck is queue preparation, store capacity, or external logistics.
 \end{itemize}
 
 % =================== CONCLUSION ===================
 \section{Conclusion}
 
-This report successfully mapped the strategic and conceptual architecture of Luckin Coffee to a relational database implementation. 
+This report completed the two main Seminar 5 tasks for the Luckin Coffee case study. First, the Zachman Framework Row 1 Scope view described the business at a planner level by listing the main data, functions, locations, people, timing concerns, and motivations. This clarified the enterprise boundary before technical design.
 
-First, describing Row 1 of the Zachman Framework established the strategic context by outlining what data is critical, how processes operate, where nodes are located, who the stakeholders are, when events occur, and why specific strategies are chosen. 
-
-Second, the relational database design translated the conceptual objects from Seminar 4 into 18 primary and bridge tables. By defining primary keys, foreign keys, and structural mapping rules, the database schema supports critical business operations, including mobile ordering, recipe control, inventory management, and promotional auditing. The schema diagram visually establishes the structural integrity of the database, providing a robust blueprint for enterprise architecture and database programming.
+Second, the report transformed the Seminar 4 conceptual model into a relational data model. The model contains relations for customers, membership, channels, campaigns, orders, order items, products, recipes, stores, staff, materials, suppliers, fulfilment tasks, and delivery partners. Primary keys, foreign keys, unique constraints, bridge relations, check constraints, and triggers preserve the business relationships identified in the conceptual model. As a result, the schema supports mobile ordering, coupon use, product and recipe management, store fulfilment, inventory replenishment, delivery monitoring, and management reporting.
 
 \begingroup
 \small
@@ -330,15 +456,14 @@ Zachman, J. A. (1987).
 \emph{A Framework for Information Systems Architecture}.
 IBM Systems Journal, 26(3), 276--292.
 
-\bibitem{luckin2025results}
-Luckin Coffee Inc. (2026).
-\emph{Luckin Coffee Announces Fourth Quarter and Fiscal Year 2025 Financial Results}.
-\href{https://investor.luckincoffee.com/news-releases/news-release-details/luckin-coffee-announces-fourth-quarter-and-fiscal-year-2025/}{Luckin Coffee Investor Relations}.
+\bibitem{ylimaeki2005zachman}
+Ylimäki, T., \& Halttunen, V. (2005).
+\emph{Method engineering in practice: A case of applying the Zachman framework in the context of small enterprise architecture oriented projects}.
+Information Knowledge Systems Management, 5(3), 189--209.
 
-\bibitem{luckin2025annual}
-Luckin Coffee Inc. (2026).
-\emph{Form 20-F Annual Report for the Fiscal Year Ended December 31, 2025}.
-\href{https://www.sec.gov/Archives/edgar/data/1767582/000110465926035712/lk-20251231x20f.htm}{U.S. Securities and Exchange Commission}.
+\bibitem{sundgren2013egovernance}
+Sundgren, B. (2013).
+\emph{Methodological and technical perspectives on e-governance}.
 
 \bibitem{elmasri2015db}
 Elmasri, R., \& Navathe, S. B. (2015).
