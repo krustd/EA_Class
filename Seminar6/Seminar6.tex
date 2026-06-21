@@ -150,12 +150,12 @@ Connects to & \begin{itemize}[leftmargin=*, nosep, label=-]
 \end{tabularx}
 \end{table}
 
-This report follows the Seminar 6 instruction sheet. It first presents three Archi\-Mate layered architecture views — Business Layer Model (BLM), Application Layer Model (ALM), and Technology Layer Model (TLM) — that describe the Luckin Coffee enterprise architecture from stakeholder-facing business processes down to infrastructure. It then refines the relational data model from Seminar 5, documenting normalization to Third Normal Form (3NF), a data dictionary, sample data, and the final relational schema.
+This report follows the Seminar 6 instruction sheet. It first presents three Archi\-Mate layered architecture views — Business Layer Model (BLM), Application Layer Model (ALM), and Technology Layer Model (TLM) — that describe the Luckin Coffee enterprise architecture from stakeholder-facing business processes down to a proposed technology deployment view. It then refines the relational data model from Seminar 5, documenting normalization to Third Normal Form (3NF), a data dictionary, sample data, and the final relational schema.
 
 % =================== PART I: ARCHITECTURE MODELS ===================
 \section{ArchiMate Layered Architecture Models}
 
-Enterprise architecture describes an organization through multiple layers of abstraction. Following the ArchiMate modelling standard, this section presents the Luckin Coffee architecture across three layers: the Business Layer (actors, services, processes), the Application Layer (application services, components, data objects), and the Technology Layer (devices, networks, platform software, and infrastructure artifacts). Together, these three views form a complete architecture description from business motivation to physical deployment.
+Enterprise architecture describes an organization through multiple layers of abstraction. Following the ArchiMate modelling standard, this section presents the Luckin Coffee architecture across three layers: the Business Layer (actors, services, processes), the Application Layer (application services, components, data objects), and the Technology Layer (devices, networks, platform software, and infrastructure artifacts). The Business and Application layers are modelled from the observable Luckin business model and digital service pattern. The Technology Layer is a proposed / assumed deployment architecture for Luckin Coffee based on that digital retail business model; it should not be read as a confirmed disclosure of Luckin Coffee's internal production infrastructure.
 
 \subsection{Business Layer Model (BLM)}
 
@@ -192,13 +192,14 @@ The model identifies one core business service: \textbf{Coffee Retail Service}. 
 
 \subsubsection{Business Process: Fulfill Customer Order}
 
-The central business process is \textbf{Fulfill Customer Order}, which decomposes into four sub-processes:
+The central business process is \textbf{Fulfill Customer Order}, which decomposes into five sub-processes. In Luckin's usual digital ordering scenario, payment confirmation happens before store preparation and pickup or delivery:
 
 \begin{enumerate}[leftmargin=1.3em, nosep]
   \item \textbf{Receive Order} --- The customer initiates an order via the mobile app, WeChat mini-program, or other digital channel. The order is captured, validated, and routed to the appropriate store.
+  \item \textbf{Confirm Payment} --- The system confirms that the digital payment has succeeded or that an approved payment method has been authorized before fulfilment starts.
   \item \textbf{Prepare Drink} --- Store staff follow standardized recipes to prepare the ordered beverage. Equipment sensors (IoT) may monitor preparation parameters.
   \item \textbf{Deliver or Pick Up} --- The completed order is either handed to the customer for in-store pickup or handed to a delivery rider for last-mile delivery.
-  \item \textbf{Settle Payment} --- Payment is processed (pre-paid or on-collection), and the transaction is recorded.
+  \item \textbf{Complete Order} --- The fulfilment result is recorded after successful pickup or delivery, and the order status is closed.
 \end{enumerate}
 
 The process is triggered by the business event \textbf{Customer Places Order} and terminates with the end event \textbf{Order Fulfilled}. The business object \textbf{Customer Profile} is accessed by the Customer actor, linking identity and preference data to the service.
@@ -214,16 +215,18 @@ The process is triggered by the business event \textbf{Customer Places Order} an
   ]
   \node[event] (trigger) {Customer Places Order (Trigger)};
   \node[box, below=0.6cm of trigger] (receive) {Receive Order};
-  \node[box, below=0.33cm of receive] (prepare) {Prepare Drink};
+  \node[box, below=0.33cm of receive] (payment) {Confirm Payment};
+  \node[box, below=0.33cm of payment] (prepare) {Prepare Drink};
   \node[box, below=0.33cm of prepare] (deliver) {Deliver or Pick Up};
-  \node[box, below=0.33cm of deliver] (settle) {Settle Payment};
-  \node[event, below=0.6cm of settle] (end) {Order Fulfilled (End)};
+  \node[box, below=0.33cm of deliver] (complete) {Complete Order};
+  \node[event, below=0.6cm of complete] (end) {Order Fulfilled (End)};
 
   \draw[arrow] (trigger) -- (receive);
-  \draw[arrow] (receive) -- (prepare);
+  \draw[arrow] (receive) -- (payment);
+  \draw[arrow] (payment) -- (prepare);
   \draw[arrow] (prepare) -- (deliver);
-  \draw[arrow] (deliver) -- (settle);
-  \draw[arrow] (settle) -- (end);
+  \draw[arrow] (deliver) -- (complete);
+  \draw[arrow] (complete) -- (end);
 \end{tikzpicture}
 \end{center}
 
@@ -234,7 +237,7 @@ The Application Layer describes the software services, application components, a
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{ALM.png}
-\caption{Application Layer Model for Luckin Coffee --- showing customer-facing application interfaces, application services, the Luckin Digital Platform components, and managed data objects.}
+\caption{Application Layer Model for Luckin Coffee --- showing customer-facing application interfaces, application services, a logical Luckin Digital Platform decomposition, and managed data objects.}
 \label{fig:alm}
 \end{figure}
 
@@ -279,7 +282,7 @@ Payment Service & Application Service & Processes digital payments across multip
 
 \subsubsection{Application Components: Luckin Digital Platform}
 
-The platform is decomposed into six internal components, each encapsulating a cohesive set of business logic:
+For modelling purposes, the platform is decomposed into six logical application components, each encapsulating a cohesive set of business logic:
 
 \begin{table}[H]
 \centering
@@ -293,7 +296,7 @@ Customer Management & Customer registration, profile management, membership tier
 Order Management & Order creation and validation, order assignment to stores, status tracking, queue management, and order lifecycle from placement to completion. \\
 Store Fulfillment Management & Store-level preparation workflow, recipe display, equipment integration, task queue, and completion confirmation. \\
 Delivery Management & Rider assignment, delivery route optimization, real-time tracking, estimated time of arrival, and delivery completion recording. \\
-Payment Management & Payment processing, transaction logging, refund handling, settlement with payment providers, and fraud detection. \\
+Payment Management & Payment processing, transaction logging, refund handling, settlement with payment providers, and payment risk-control support. \\
 Analytics \& Reporting & Business intelligence dashboards, sales reports, customer behaviour analysis, campaign effectiveness measurement, and operational KPI computation. \\
 \bottomrule
 \end{tabularx}
@@ -325,18 +328,18 @@ Analytics Data & Reporting views / OLAP store & Analytics \& Reporting \\
 
 \subsection{Technology Layer Model (TLM)}
 
-The Technology Layer describes the physical infrastructure --- devices, networks, platform hosting, system software, and technology artifacts --- on which the application components run. It answers the question: \textit{what hardware, network, and software infrastructure supports the applications?}
+The Technology Layer describes a plausible physical and platform infrastructure --- devices, networks, platform hosting, system software, and technology artifacts --- on which the application components could run. Because Luckin Coffee does not publicly disclose every detail of its internal production infrastructure, this view is treated as a proposed / assumed deployment architecture rather than a verified inventory of actual systems.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{TLM.png}
-\caption{Technology Layer Model for Luckin Coffee --- showing devices, communication networks, the cloud platform, system software, and technology artifacts.}
+\caption{Proposed Technology Layer Model for Luckin Coffee --- showing devices, communication networks, a cloud platform, system software, and technology artifacts in an assumed deployment architecture.}
 \label{fig:tlm}
 \end{figure}
 
 \subsubsection{Device Layer}
 
-Five categories of devices interact with the Luckin platform:
+Five categories of endpoint or infrastructure devices interact with the Luckin platform. Software entry points such as browsers and rider apps are represented as interfaces running on physical devices, rather than as devices themselves:
 
 \begin{table}[H]
 \centering
@@ -347,21 +350,21 @@ Five categories of devices interact with the Luckin platform:
 \textbf{Device} & \textbf{Type} & \textbf{Primary Users / Context} \\
 \midrule
 Client Device & Smartphone / Tablet & Customers for ordering; Store operators for fulfilment tasks. \\
-Web Browser & Web Application & Internal staff (HQ planners, analysts, supply chain managers) for back-office functions. \\
+Office PC / Laptop & Web Browser Interface & Internal staff (HQ planners, analysts, supply chain managers) access back-office functions through a browser running on a workstation. \\
 Store Device & POS, Label Printer & Store staff for order receipt printing, label generation, and in-store point-of-sale operations. \\
 IoT Device & Coffee Machine Sensors & Store equipment; sensors monitor brewing parameters, machine status, and maintenance needs. \\
-Delivery Device & Rider App (Smartphone) & Delivery riders for receiving tasks, route navigation, and delivery confirmation. \\
+Rider Smartphone & Rider App Interface & Delivery riders use a smartphone-based application interface for receiving tasks, route navigation, and delivery confirmation. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsubsection{Communication Network}
 
-All devices connect through a shared communication layer: \textbf{Internet / 4G / 5G / Wi-Fi}. This reflects the reality that Luckin's architecture must support diverse connectivity --- customers on mobile networks, stores on broadband or Wi-Fi, IoT sensors on local wireless, and delivery riders on 4G/5G.
+All devices connect through a shared communication layer: \textbf{Internet / 4G / 5G / Wi-Fi}. This reflects the practical requirement that Luckin's digital retail architecture must support diverse connectivity --- customers on mobile networks, stores on broadband or Wi-Fi, IoT sensors on local wireless, and delivery riders on 4G/5G.
 
 \subsubsection{Technology Platform and System Software}
 
-The core hosting environment is a \textbf{Cloud Platform}. External traffic reaches the platform through a \textbf{Platform Access Interface} that routes requests from the communication network into the cloud infrastructure. The system software stack running on the platform comprises:
+The proposed core hosting environment is a \textbf{Cloud Platform}. External traffic reaches the platform through a \textbf{Platform Access Interface} that routes requests from the communication network into the proposed cloud platform. The following system software elements describe suitable capabilities for this deployment view; product names and technologies are examples, not confirmed Luckin internal implementation details:
 
 \begin{table}[H]
 \centering
@@ -371,10 +374,10 @@ The core hosting environment is a \textbf{Cloud Platform}. External traffic reac
 \toprule
 \textbf{System Software} & \textbf{Function} \\
 \midrule
-Application Hosting \& Orchestration & Container orchestration (e.g., Kubernetes), service deployment, scaling, and health monitoring. \\
+Application Hosting \& Orchestration & Container or virtual-machine based service hosting, deployment, scaling, and health monitoring; Kubernetes is one possible implementation choice. \\
 API Gateway (Load Balancer) & Request routing, rate limiting, authentication, and load distribution across application servers. \\
 Application Servers (Business Logic) & Runtime environment for the six application components of the Luckin Digital Platform. \\
-Data Services (DBMS / Cache / Files) & Relational database management, in-memory caching (e.g., Redis), and file/blob storage. \\
+Data Services (DBMS / Cache / Files) & Relational database management, optional in-memory caching, and file/blob storage; Redis-like caching is one possible implementation choice. \\
 Message Queue (Async Event Bus) & Asynchronous messaging for order events, payment callbacks, delivery status updates, and analytics ingestion. \\
 File Services & Static asset serving (product images, promotional banners), log archival, and report file generation. \\
 \bottomrule
@@ -383,7 +386,7 @@ File Services & Static asset serving (product images, promotional banners), log 
 
 \subsubsection{Technology Artifacts}
 
-The concrete infrastructure artifacts deployed on the cloud platform:
+The concrete infrastructure artifacts in the proposed cloud deployment are:
 
 \begin{table}[H]
 \centering
@@ -393,11 +396,11 @@ The concrete infrastructure artifacts deployed on the cloud platform:
 \toprule
 \textbf{Artifact} & \textbf{Technology} & \textbf{Purpose} \\
 \midrule
-Compute & Containers / VMs & Runs the application servers and orchestration layer; auto-scales with demand (peak morning/lunch hours). \\
-Database & MySQL / MongoDB & MySQL for transactional data (orders, customers, inventory); MongoDB for semi-structured analytics and log data. \\
+Compute & Containers / VMs & Runs the application servers and hosting layer; can scale with demand during peak morning/lunch hours. \\
+Database & Relational DB / Optional NoSQL Store & Transactional data such as orders, customers, and inventory should be stored in a relational database; semi-structured analytics or log data could use a NoSQL or file-based store. \\
 Storage & Object / Block & Object storage for images, files, backups; block storage for database volumes. \\
-Backup \& DR & Cross-Region & Disaster recovery with cross-region replication; point-in-time recovery for transactional data. \\
-Monitoring \& Security & Logs / Metrics / WAF & Centralized logging, performance metrics dashboards, alerting, and Web Application Firewall for security. \\
+Backup \& DR & Backup / Replication Strategy & Disaster recovery should include backup, replication, and point-in-time recovery mechanisms appropriate to the deployment scale. \\
+Monitoring \& Security & Logs / Metrics / Security Gateway & Centralized logging, performance metrics dashboards, alerting, and gateway-level security controls such as a WAF where required. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -418,11 +421,12 @@ A single flat table \texttt{Customer\_Orders} that contains all order-related da
 \begin{table}[H]
 \centering
 \caption{UNF table --- Customer\_Orders (repeating groups highlighted).}
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{P{2.2cm}P{2.4cm}P{2.2cm}P{1.6cm}P{3.2cm}P{1.8cm}P{1.6cm}}
+\begin{tabularx}{\textwidth}{P{1.35cm}P{1.75cm}P{1.9cm}P{1.45cm}Y P{2.05cm}P{0.75cm}}
 \toprule
-\textbf{Order\_ID} & \textbf{Customer\_Name} & \textbf{Customer\_Phone} & \textbf{Order\_Date} & \textbf{Store\_Name, City} & \textbf{\{Product\_Name\}} & \textbf{\{Qty\}} \\
+\textbf{Order ID} & \textbf{Customer Name} & \textbf{Customer Phone} & \textbf{Order Date} & \textbf{Store, City} & \textbf{\{Product Name\}} & \textbf{\{Qty\}} \\
 \midrule
 1001 & Zhang Wei & 138xxxx1234 & 2025-06-01 & Store A, Beijing & Latte, Croissant & 1, 2 \\
 1002 & Li Na   & 139xxxx5678 & 2025-06-01 & Store B, Shanghai & Americano         & 1 \\
@@ -439,11 +443,12 @@ Eliminate repeating groups by ensuring each cell contains exactly one atomic val
 \begin{table}[H]
 \centering
 \caption{1NF table --- each product line is a separate row.}
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{P{1.5cm}P{2.0cm}P{2.0cm}P{1.8cm}P{2.2cm}P{1.8cm}P{1.2cm}P{1.2cm}}
+\begin{tabularx}{\textwidth}{P{1.05cm}P{1.65cm}P{1.85cm}P{1.45cm}Y P{1.55cm}P{0.65cm}P{0.85cm}}
 \toprule
-\textbf{OrdID} & \textbf{CustName} & \textbf{CustPhone} & \textbf{OrdDate} & \textbf{StoreName, City} & \textbf{ProdName} & \textbf{Qty} & \textbf{Price} \\
+\textbf{OrdID} & \textbf{Cust. Name} & \textbf{Cust. Phone} & \textbf{Ord. Date} & \textbf{Store, City} & \textbf{Product} & \textbf{Qty} & \textbf{Price} \\
 \midrule
 1001 & Zhang Wei & 138xxxx1234 & 2025-06-01 & Store A, Beijing & Latte     & 1 & 15.0 \\
 1001 & Zhang Wei & 138xxxx1234 & 2025-06-01 & Store A, Beijing & Croissant & 2 & 8.0  \\
@@ -461,34 +466,37 @@ Remove partial dependencies --- non-key attributes that depend on only part of t
 \begin{table}[H]
 \centering
 \caption{2NF tables --- Orders and OrderItems separated.}
-\small
-\begin{minipage}[t]{0.48\linewidth}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{minipage}[t]{0.78\linewidth}
 \centering
 \textbf{Orders}
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular}{P{1.3cm}P{1.5cm}P{1.5cm}P{1.5cm}}
+\begin{tabularx}{\linewidth}{P{1.4cm}P{2.2cm}P{2.4cm}Y}
 \toprule
-\pk{OrdID} & CustName & CustPhone & OrdDate \\
+\pk{OrdID} & Customer Name & Customer Phone & Order Date \\
 \midrule
 1001 & Zhang Wei & 138xxxx1234 & 2025-06-01 \\
 1002 & Li Na   & 139xxxx5678 & 2025-06-01 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\linewidth}
+
+\vspace{0.35cm}
+
+\begin{minipage}[t]{0.70\linewidth}
 \centering
 \textbf{OrderItems}
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular}{P{1.3cm}P{1.8cm}P{0.8cm}P{1.0cm}}
+\begin{tabularx}{\linewidth}{P{1.8cm}Y P{0.8cm}P{1.0cm}}
 \toprule
-\pk{OrdID}\pkfk & \pk{ProdName} & Qty & Price \\
+\shortstack[l]{\pk{OrdID}\\PK, FK} & \pk{Product Name} & Qty & Price \\
 \midrule
 1001 & Latte     & 1 & 15.0 \\
 1001 & Croissant & 2 & 8.0  \\
 1002 & Americano & 1 & 12.0 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{minipage}
 \end{table}
 
@@ -520,7 +528,7 @@ Remove transitive dependencies --- non-key attributes that depend on other non-k
 \textbf{Phones}
 \begin{tabular}{P{1.3cm}P{1.5cm}}
 \toprule
-\pk{CustID}\pkfk & Phone \\
+\shortstack[l]{\pk{CustID}\\PK, FK} & Phone \\
 \midrule
 1 & 138xxxx1234 \\
 2 & 139xxxx5678 \\
@@ -561,7 +569,7 @@ Remove transitive dependencies --- non-key attributes that depend on other non-k
 \textbf{OrderItems}
 \begin{tabular}{P{1.3cm}P{1.3cm}P{1.0cm}P{1.0cm}}
 \toprule
-\pk{OrdID}\pkfk & \pk{ProdID}\pkfk & Qty & Price \\
+\shortstack[l]{\pk{OrdID}\\PK, FK} & \shortstack[l]{\pk{ProdID}\\PK, FK} & Qty & Price \\
 \midrule
 1001 & 101 & 1 & 15.0 \\
 1001 & 201 & 2 & 8.0  \\
@@ -587,17 +595,16 @@ Remove transitive dependencies --- non-key attributes that depend on other non-k
 \end{minipage}
 \end{table}
 
-\textbf{Note on derived attributes and deliberate denormalization.}
-The final schema in Table~19 includes attributes such as \texttt{Subtotal} (in OrderItems), \texttt{Total\_Amount}, \texttt{Discount\_Amount}, and \texttt{Net\_Amount} (in DigitalOrders). In a strict normalization-only context, these are \textbf{derived attributes}: \texttt{Subtotal} = Quantity $\times$ Unit\_Price, and \texttt{Net\_Amount} = Total\_Amount $-$ Discount\_Amount. Strictly speaking, derived attributes violate the non-redundancy principle of 3NF and should be computed on the fly.
-
-However, in a high-throughput retail platform like Luckin, computing these values at query time across millions of orders would impose unacceptable latency. The schema therefore retains these fields as a \textbf{deliberate denormalization} for read performance, transaction logging (the stored value reflects the state \emph{at the time of order}, not the current product price), and auditability. This is an explicit, well-understood trade-off between normalization purity and operational efficiency, common in production OLTP systems. The denormalized fields are protected by triggers that ensure computed values remain consistent with their source columns.
-
 \subsection{Data Dictionary}
 
 The data dictionary defines every attribute in the normalized schema with its data type, constraints, and business meaning.
 
-\renewcommand{\arraystretch}{1.22}
-\begin{longtable}{P{2.6cm}P{2.2cm}P{2.8cm}P{6.2cm}}
+\begin{landscape}
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{longtable}{P{4.0cm}P{3.0cm}P{5.0cm}P{10.2cm}}
 \caption{Data dictionary for the core Luckin Coffee schema.}\\
 \toprule
 \textbf{Table / Attribute} & \textbf{Data Type} & \textbf{Constraints} & \textbf{Description} \\
@@ -754,6 +761,8 @@ The data dictionary defines every attribute in the normalized schema with its da
 \quad Feedback\_Date & DATETIME & NOT NULL & Timestamp of feedback submission. \\
 \bottomrule
 \end{longtable}
+\endgroup
+\end{landscape}
 
 \subsection{Sample Data}
 
@@ -956,84 +965,16 @@ Coupon--Promotion Consistency & MembershipAccounts.Coupon\_Value is a summary of
 \end{tabularx}
 \end{table}
 
-% =================== PART III: BUSINESS SCENARIOS ===================
-\section{Business Scenarios Supported by the Refined Schema}
-
-The refined schema supports all business scenarios documented in the Seminar 5 report, and adds new scenarios enabled by the Campaigns, Promotions, Inventory, and Feedback tables introduced in the ArchiMate models.
-
-\subsection{Scenario 1: Mobile Order and Pickup with Promotions}
-
-When a customer opens the app, browses available promotions, places a coffee order with a coupon applied, and picks it up:
-
-\begin{itemize}[leftmargin=1.3em]
-  \item \textbf{Relations joined}: Customers $\rightarrow$ MembershipAccounts $\rightarrow$ MemberPromotions $\rightarrow$ Promotions $\rightarrow$ Campaigns $\rightarrow$ DigitalOrders $\rightarrow$ OrderItems $\rightarrow$ Products $\rightarrow$ Payments $\rightarrow$ FulfilmentTasks $\rightarrow$ Stores.
-  \item \textbf{Business value}: The schema traces the full promotional journey --- which campaign issued the coupon, whether the member used it, which products it applied to, and whether fulfilment was timely. This enables campaign ROI analysis.
-\end{itemize}
-
-\subsection{Scenario 2: Store-Level Inventory Replenishment}
-
-When a store's inventory of a product or material falls below its threshold:
-
-\begin{itemize}[leftmargin=1.3em]
-  \item \textbf{Relations joined}: Stores $\rightarrow$ Inventory $\rightarrow$ Products; Stores $\rightarrow$ StoreMaterials $\rightarrow$ RawMaterials $\rightarrow$ Suppliers.
-  \item \textbf{Business value}: The system can identify low-stock items by store, group replenishment needs by supplier, and trigger automatic purchase orders. Inventory data also feeds demand forecasting models.
-\end{itemize}
-
-\subsection{Scenario 3: Customer Feedback and Service Improvement}
-
-When a customer submits a rating and comment after order completion:
-
-\begin{itemize}[leftmargin=1.3em]
-  \item \textbf{Relations joined}: Feedback $\rightarrow$ Customers $\rightarrow$ DigitalOrders $\rightarrow$ Stores $\rightarrow$ FulfilmentTasks.
-  \item \textbf{Business value}: Low ratings can be correlated with specific stores, order types, fulfilment delays, or product quality issues. This enables data-driven service improvement at the store and process level.
-\end{itemize}
-
-\subsection{Scenario 4: Campaign Performance Analysis}
-
-When the marketing team evaluates a campaign's effectiveness:
-
-\begin{itemize}[leftmargin=1.3em]
-  \item \textbf{Relations joined}: Campaigns $\rightarrow$ Promotions $\rightarrow$ MemberPromotions $\rightarrow$ MembershipAccounts $\rightarrow$ DigitalOrders $\rightarrow$ OrderItems $\rightarrow$ Products.
-  \item \textbf{Business value}: Analysts can compute redemption rates, incremental revenue per campaign, and customer segment responsiveness, enabling data-driven marketing budget allocation.
-\end{itemize}
-
-% =================== PART IV: ARCHITECTURE-DATABASE ALIGNMENT ===================
-\section{Alignment Between Architecture Layers and Database Schema}
-
-A key deliverable of Seminar 6 is demonstrating how the ArchiMate layered architecture models map to the relational database design. The following table traces key entities from business concept through application data object to database table:
-
-\begin{table}[H]
-\centering
-\caption{Vertical traceability: business concept $\rightarrow$ application data $\rightarrow$ database table.}
-\small
-\begin{tabularx}{\textwidth}{P{3.2cm}P{3.5cm}P{3.5cm}Y}
-\toprule
-\textbf{Business Concept (BLM)} & \textbf{Data Object (ALM)} & \textbf{Database Table} & \textbf{How the Table Realizes the Concept} \\
-\midrule
-Customer (Business Actor) & Customer \& Member Data & Customers, MembershipAccounts & Stores customer identity, contact details, membership tier, and points balance. \\
-Fulfill Customer Order (Business Process) & Order \& Inventory Data & DigitalOrders, OrderItems, FulfilmentTasks & Captures every order, its line items, and the fulfilment workflow from preparation to delivery. \\
-Coffee Retail Service (Business Service) & Product \& Menu Data & Products, RecipeStandards, RecipeMaterials & Defines the product catalogue, standard recipes, and ingredient composition. \\
-Supplier (Business Partner) & (via Product Data) & Suppliers, RawMaterials & Records supplier identity, contact, rating, and the materials they provide. \\
-Store Operator (Business Role) & (via Order Data) & Stores, Employees, Inventory & Represents store locations, staff assignments, and local inventory levels. \\
-Settle Payment (Sub-process) & Payment Data & Payments & Records every payment transaction, method, and status for each order. \\
-Customer Feedback (implied) & Customer \& Member Data & Feedback & Captures post-order ratings and comments linked to customers and stores. \\
-Campaigns \& Promotions (implied) & Customer \& Member Data & Campaigns, Promotions, MemberPromotions & Manages marketing campaigns, discount promotions, issuance to members, and redemption tracking. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-This alignment ensures that the database schema is not an isolated technical artifact --- it is the persistent data layer that supports every business process described in the Business Layer Model and every application component described in the Application Layer Model.
-
 % =================== CONCLUSION ===================
 \section{Conclusion}
 
 This report completed the Seminar 6 tasks for the Luckin Coffee case study in two parts.
 
-First, it presented three ArchiMate layered architecture diagrams --- Business Layer Model (BLM), Application Layer Model (ALM), and Technology Layer Model (TLM) --- that describe the enterprise from stakeholder-facing processes down to cloud infrastructure. The BLM identified the core business actors (Customer, Store Operator, Supplier), the Coffee Retail Service, and the Fulfill Customer Order process. The ALM mapped these to six application services, the Luckin Digital Platform with six internal components, and six managed data objects. The TLM detailed the device ecosystem, communication network, cloud platform, system software stack, and technology artifacts that host the platform. The three layers are vertically integrated, ensuring traceability from business requirement to infrastructure deployment.
+First, it presented three ArchiMate layered architecture diagrams --- Business Layer Model (BLM), Application Layer Model (ALM), and Technology Layer Model (TLM) --- that describe the enterprise from stakeholder-facing processes down to a proposed technology deployment view. The BLM identified the core business actors (Customer, Store Operator, Supplier), the Coffee Retail Service, and the Fulfill Customer Order process. The ALM mapped these to six application services, a logical Luckin Digital Platform decomposition, and six managed data objects. The TLM detailed the device ecosystem, communication network, cloud platform, system software stack, and technology artifacts as an assumed architecture, not as a confirmed disclosure of Luckin Coffee's internal infrastructure. The three layers are vertically integrated, ensuring traceability from business requirement to deployment design.
 
 Second, the report refined the relational database schema from Seminar 5. It documented the normalization process from UNF to 3NF, produced a comprehensive data dictionary defining every attribute with types and constraints, provided representative sample data, and presented the complete refined schema with 22 relations. The schema now includes new entities (Campaigns, Promotions, Inventory, Feedback) identified through the ArchiMate modelling process, and enforces integrity rules covering entity integrity, referential integrity, domain validity, business arithmetic, and time validity.
 
-The alignment section demonstrated how every business concept in the BLM traces through an application data object in the ALM to a concrete database table, confirming that the schema fully supports the business architecture. This integrated approach --- ArchiMate models for architecture description and a normalized relational schema for data persistence --- provides a complete foundation for implementing the Luckin Coffee digital platform.
+This integrated approach --- ArchiMate models for architecture description and a normalized relational schema for data persistence --- provides a complete foundation for implementing the Luckin Coffee digital platform.
 
 \begingroup
 \small
