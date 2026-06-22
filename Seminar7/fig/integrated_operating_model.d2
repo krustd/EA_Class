@@ -1,0 +1,32 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 300
+  }
+}
+
+direction: right
+
+customer: "Customers\nmembers, students,\noffice workers" {
+  shape: person
+}
+channels: "Digital Channels\nmobile app,\nWeChat mini program"
+orders: "Digital Orders\npayment, coupon,\npickup/delivery"
+stores: "Stores\nself-operated &\npartnership stores"
+fulfil: "Fulfilment\nprepare, hand over,\ndeliver"
+analytics: "Data Feedback\nratings, sales,\nqueue, inventory"
+supply: "Supply Chain\nsuppliers, roasting,\nwarehouses"
+strategy: "Management Control\nBSC, EFQM,\nZachman, EA models"
+
+customer -> channels: "browse / order"
+channels -> orders: "capture transaction"
+orders -> stores: "route task"
+stores -> fulfil: "execute service"
+fulfil -> customer: "coffee / beverage"
+supply -> stores: "materials & equipment"
+orders -> analytics: "transaction data"
+fulfil -> analytics: "service data"
+analytics -> strategy: "KPIs & evidence"
+strategy -> channels: "campaigns"
+strategy -> supply: "planning"
+strategy -> stores: "standards"

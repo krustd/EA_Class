@@ -1,0 +1,28 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 300
+  }
+}
+
+direction: right
+
+Customer -> MembershipAccount: "owns 1:1"
+MembershipAccount -> DigitalOrder: "places 1:N"
+DigitalChannel -> DigitalOrder: "supports 1:N"
+PromotionCampaign -> MemberCampaign: "targets"
+MembershipAccount -> MemberCampaign: "receives"
+PromotionCampaign -> OrderCampaign: "applied by"
+DigitalOrder -> OrderCampaign: "uses"
+DigitalOrder -> OrderItem: "contains 1:N"
+Product -> OrderItem: "ordered as"
+Product -> RecipeStandard: "has 1:N"
+RecipeStandard -> RecipeMaterial: "requires"
+RawMaterial -> RecipeMaterial: "used in"
+Supplier -> RawMaterial: "provides 1:N"
+Store -> FulfilmentTask: "executes 1:N"
+DigitalOrder -> FulfilmentTask: "creates 1:N"
+DeliveryPartner -> FulfilmentTask: "supports optional"
+Store -> StoreStaff: "employs 1:N"
+Store -> StoreMaterial: "holds"
+RawMaterial -> StoreMaterial: "stocked as"

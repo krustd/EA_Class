@@ -1,0 +1,73 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 300
+  }
+}
+
+direction: right
+
+demand: {
+  label: "Demand and Digital Access"
+  direction: down
+
+  customer: "Customer\nSegment, City, AgeBand\nCLV, Repeat Purchase"
+  member: "Membership Account\nTier, Status\nPoints, Coupons"
+  channel: "Digital Channel\nApp / WeChat\nDevice, Version"
+  campaign: "Promotion Campaign\nTarget Segment\nValid Period"
+}
+
+order_core: {
+  label: "Order and Fulfilment Core"
+  direction: down
+
+  order: "Digital Order\nPayment, Queue Status\nAmount, Delivery Fee"
+  item: "Order Item\nProduct Category\nQuantity, Item Price"
+  task: "Fulfilment Task\nPrepare / Pickup / Delivery\nPrep Time, Status"
+}
+
+store_delivery: {
+  label: "Store and Service Execution"
+  direction: down
+
+  store: "Store\nOwnership, City Tier\nRevenue, Utilisation"
+  staff: "Store Staff\nRole, Training\nHours, Productivity"
+  partner: "Delivery Partner\nService Area\nFee, Complaint Rate"
+}
+
+product_supply: {
+  label: "Product and Supply Resources"
+  direction: down
+
+  product: "Product\nCategory, Season\nName, Gross Margin"
+  recipe: "Recipe Standard\nVersion, SOP Status\nStandard Cost"
+  material: "Raw Material\nType, Origin, Batch\nInventory, Stockout"
+  supplier: "Supplier\nType, Lead Time\nCost, Quality Pass"
+}
+
+analytics: "Performance Analytics\nSales, Quality, Complaints\nForecast, Margin, Stockout"
+
+demand.customer -> demand.member: "owns 1:1"
+demand.member -> order_core.order: "places 1:N"
+demand.channel -> order_core.order: "supports 1:N"
+demand.campaign -> demand.member: "targets M:N"
+demand.campaign -> order_core.order: "applied to M:N"
+
+order_core.order -> order_core.item: "contains 1:N"
+order_core.order -> order_core.task: "creates 1:N"
+order_core.item -> product_supply.product: "refers to N:1"
+
+store_delivery.store -> order_core.task: "executes 1:N"
+store_delivery.partner -> order_core.task: "supports optional"
+store_delivery.store -> store_delivery.staff: "employs 1:N"
+
+product_supply.product -> product_supply.recipe: "defined by 1:N"
+product_supply.recipe -> product_supply.material: "consumes M:N"
+product_supply.supplier -> product_supply.material: "provides 1:N"
+store_delivery.store -> product_supply.material: "stocks M:N"
+
+order_core.order -> analytics: "transaction data"
+order_core.task -> analytics: "service data"
+store_delivery.store -> analytics: "operation data"
+analytics -> demand.campaign: "improves offers"
+analytics -> product_supply.material: "supports replenishment"
