@@ -50,6 +50,11 @@ Customer Places Order (Trigger)
          │
          ▼
 ┌─────────────────┐
+│ Confirm Payment │ ← Business Process
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
 │  Prepare Drink   │ ← Business Process
 └────────┬────────┘
          │
@@ -60,7 +65,7 @@ Customer Places Order (Trigger)
          │
          ▼
 ┌─────────────────┐
-│  Settle Payment  │ ← Business Process
+│ Complete Order   │ ← Business Process
 └────────┬────────┘
          │
          ▼
@@ -140,21 +145,23 @@ Customer Places Order (Trigger)
 
 **Purpose**: Describes the technology infrastructure — devices, networks, platforms, and software
 
+> The Technology Layer Model is a proposed / assumed deployment architecture based on Luckin Coffee's digital retail business model. It is not a confirmed disclosure of Luckin Coffee's internal production infrastructure.
+
 **Device Layer**:
 
 | Device | Type | User |
 |--------|------|------|
 | Client Devices | Smartphone/Tablet | Customer / Store |
-| Web Browser | Web App | Admin / Internal |
+| Office PC / Laptop | Web Browser Interface | Admin / Internal |
 | Store Devices | POS, Label Printer | Store Staff |
 | IoT Devices | Coffee Machine Sensors | Store Equipment |
-| Delivery Device | Rider App | Delivery Staff |
+| Rider Smartphone | Rider App Interface | Delivery Staff |
 
 **Communication Network**:
 - Internet / 4G / 5G / Wi-Fi
 
 **Technology Platform**:
-- **Cloud Platform** — hosts all application services
+- **Cloud Platform** — proposed hosting environment for application services
 
 **Platform Access Interface**:
 - Entry point for all devices to access cloud services
@@ -163,10 +170,10 @@ Customer Places Order (Trigger)
 
 | Component | Function |
 |-----------|----------|
-| Application Hosting & Orchestration | Container orchestration, deployment |
+| Application Hosting & Orchestration | Container or VM-based hosting, deployment, scaling |
 | API Gateway (Load Balancer) | Routes requests, balances load |
 | Application Servers (Business Logic) | Runs business logic |
-| Data Services (DBMS/Cache/Files) | Database, caching, file storage |
+| Data Services (DBMS/Cache/Files) | Database, optional caching, file storage |
 | Message Queue (Async Event Bus) | Asynchronous messaging |
 | File Services | File storage and retrieval |
 
@@ -175,10 +182,10 @@ Customer Places Order (Trigger)
 | Artifact | Technology |
 |----------|------------|
 | Compute | Containers / VMs |
-| Database | MySQL / MongoDB |
+| Database | Relational DB / Optional NoSQL Store |
 | Storage | Object / Block |
-| Backup & DR | Cross-Region |
-| Monitoring & Security | Logs / Metrics / WAF |
+| Backup & DR | Backup / Replication Strategy |
+| Monitoring & Security | Logs / Metrics / Security Gateway |
 
 ---
 
@@ -187,7 +194,7 @@ Customer Places Order (Trigger)
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    BUSINESS LAYER                            │
-│  Customer Places Order → Receive → Prepare → Deliver → Pay  │
+│ Customer Places Order → Receive → Confirm Pay → Prepare → Complete │
 └─────────────────────────────┬───────────────────────────────┘
                               │ triggers
                               ▼
@@ -201,7 +208,7 @@ Customer Places Order (Trigger)
 ┌─────────────────────────────────────────────────────────────┐
 │                   TECHNOLOGY LAYER                           │
 │  Devices → Network → Cloud Platform → System Software       │
-│  (Compute: Containers, DB: MySQL/MongoDB, Storage: Object)  │
+│  (Compute: Containers/VMs, DB: Relational/NoSQL, Storage)   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -209,12 +216,12 @@ Customer Places Order (Trigger)
 
 | Business Concept | Application Component | Technology Artifact |
 |------------------|----------------------|---------------------|
-| Customer Profile | Customer Management | Customer & Member Data (MySQL) |
-| Order Process | Order Management | Order & Inventory Data (MySQL) |
-| Store Operations | Store Fulfillment Management | Store data (MySQL) |
-| Delivery Tracking | Delivery Management | Delivery Data (MySQL) |
-| Payment Processing | Payment Management | Payment Data (MySQL) |
-| Business Reports | Analytics & Reporting | Analytics Data (MongoDB/Files) |
+| Customer Profile | Customer Management | Customer & Member Data |
+| Order Process | Order Management | Order & Inventory Data |
+| Store Operations | Store Fulfillment Management | Store data |
+| Delivery Tracking | Delivery Management | Delivery Data |
+| Payment Processing | Payment Management | Payment Data |
+| Business Reports | Analytics & Reporting | Analytics Data / Files |
 
 ---
 

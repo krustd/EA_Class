@@ -1,198 +1,265 @@
 from pathlib import Path
 
+code = r'''
+from pathlib import Path
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Rectangle
+from matplotlib.patches import Rectangle, FancyArrowPatch
+from matplotlib.lines import Line2D
 
-OUT = Path(__file__).with_name("fig2_conceptual_model_clean.pdf")
+OUT_DIR = Path("/mnt/data")
+PNG = OUT_DIR / "luckin_conceptual_model_recreated.png"
+PDF = OUT_DIR / "luckin_conceptual_model_recreated.pdf"
 
 plt.rcParams.update({
-    "font.family": "serif",
-    "font.serif": ["Times New Roman", "Times", "DejaVu Serif"],
-    "pdf.fonttype": 42,
-    "ps.fonttype": 42,
+    "font.family": "DejaVu Sans",
+    "font.size": 9,
+    "axes.unicode_minus": False,
 })
 
-fig, ax = plt.subplots(figsize=(16.2, 9.4))
-ax.set_xlim(0, 16.2)
-ax.set_ylim(0, 9.4)
+BLUE = "#2563eb"
+RED = "#dc2626"
+BLACK = "#111827"
+GRAY = "#6b7280"
+BOX = "#ffffff"
+EDGE = "#111827"
+
+fig, ax = plt.subplots(figsize=(18, 13), dpi=180)
+ax.set_xlim(0, 18)
+ax.set_ylim(0, 13)
 ax.axis("off")
 
-colors = {
-    "demand": ("#DDEAF3", "#2B6F9E"),
-    "fulfil": ("#E4F0E4", "#3B7D3A"),
-    "resource": ("#F7E9DC", "#C96C22"),
-    "analytics": ("#ECE6F3", "#6B4C8A"),
-    "line": "#333333",
-    "panel": "#F7F8FA",
-    "panel_edge": "#C8CDD3",
-}
 
-W, H = 1.92, 0.78
+def draw_rich_text_line(ax, x, y, parts, size=9):
+    """Draw a line made of colored segments in data coordinates."""
+    fig = ax.figure
+    renderer = fig.canvas.get_renderer()
+    cur_x = x
+    for text, color, weight in parts:
+        t = ax.text(cur_x, y, text, fontsize=size, color=color, fontweight=weight,
+                    ha="left", va="center")
+        fig.canvas.draw_idle()
+        bbox = t.get_window_extent(renderer=renderer)
+        # convert pixel width to data-width
+        p0 = ax.transData.transform((cur_x, y))
+        p1 = (p0[0] + bbox.width, p0[1])
+        cur_x = ax.transData.inverted().transform(p1)[0]
 
-panels = {
-    "demand": (0.55, 5.15, 7.55, 3.55, "A. Demand and membership relationships"),
-    "fulfil": (8.55, 5.15, 7.55, 3.55, "B. Order fulfilment relationships"),
-    "supply": (0.55, 1.15, 7.55, 3.55, "C. Product and supply relationships"),
-    "analytics": (8.55, 1.15, 7.55, 3.55, "D. Analytical feedback relationships"),
-}
 
-for x, y, w, h, title in panels.values():
-    ax.add_patch(FancyBboxPatch(
-        (x, y), w, h,
-        boxstyle="round,pad=0.10,rounding_size=0.14",
-        linewidth=0.9,
-        edgecolor=colors["panel_edge"],
-        facecolor=colors["panel"],
-        zorder=0,
-    ))
-    ax.text(x + 0.16, y + h - 0.20, title, fontsize=11.0, fontweight="bold", va="top", color="#222222", zorder=5)
+def box(ax, key, x, y, w, h, title, kind, attrs):
+    rect = Rectangle((x, y), w, h, facecolor=BOX, edgecolor=EDGE, linewidth=1.2)
+    ax.add_patch(rect)
+    ax.text(x + w/2, y + h - 0.18, title, ha="center", va="top",
+            fontsize=10, fontweight="bold", color=BLACK)
+    ax.text(x + w/2, y + h - 0.45, f"({kind})", ha="center", va="top",
+            fontsize=9, color=BLACK)
 
-nodes = {}
+    yy = y + h - 0.95
+    for role, name in attrs:
+        if role == "x":
+            parts = [("x  ", BLACK, "normal"), (name, BLUE, "normal")]
+        elif role == ".sum":
+            parts = [(".sum  ", RED, "normal"), (name, BLACK, "normal")]
+        elif role == ".count":
+            parts = [(".count  ", RED, "normal"), (name, BLACK, "normal")]
+        elif role == ".estimated":
+            parts = [(".estimated  ", BLUE, "normal"), (name, BLACK, "normal")]
+        else:
+            parts = [(name, BLACK, "normal")]
+        draw_rich_text_line(ax, x + 0.18, yy, parts, size=8.7)
+        yy -= 0.28
 
-def add_node(key, x, y, category, title, example):
-    fill, edge = colors[category]
-    nodes[key] = (x, y)
-    ax.add_patch(FancyBboxPatch(
-        (x - W / 2, y - H / 2), W, H,
-        boxstyle="round,pad=0.08,rounding_size=0.10",
-        linewidth=1.05,
-        edgecolor=edge,
-        facecolor=fill,
-        zorder=3,
-    ))
-    ax.text(x, y + 0.19, title, ha="center", va="center", fontsize=9.4, fontweight="bold", color="#111111", zorder=4)
-    ax.text(x, y - 0.02, f"({example})", ha="center", va="center", fontsize=6.9, color="#222222", zorder=4)
-    ax.text(x, y - 0.25, "CV / SV / AV / EP", ha="center", va="center", fontsize=6.2, color="#444444", zorder=4)
+    boxes[key] = (x, y, w, h)
+
 
 def anchor(key, side):
-    x, y = nodes[key]
-    if side == "r":
-        return x + W / 2, y
-    if side == "l":
-        return x - W / 2, y
-    if side == "t":
-        return x, y + H / 2
-    if side == "b":
-        return x, y - H / 2
-    return x, y
+    x, y, w, h = boxes[key]
+    if side == "left":
+        return (x, y + h/2)
+    if side == "right":
+        return (x + w, y + h/2)
+    if side == "top":
+        return (x + w/2, y + h)
+    if side == "bottom":
+        return (x + w/2, y)
+    raise ValueError(side)
 
-def draw_label(x, y, rel, card):
-    ax.text(
-        x, y, f"{rel}  {card}",
-        ha="center",
-        va="center",
-        fontsize=7.4,
-        fontweight="bold",
-        bbox=dict(boxstyle="round,pad=0.12", facecolor="white", edgecolor="#CCCCCC", linewidth=0.25, alpha=0.96),
-        zorder=8,
-    )
 
-def arrow(a, aside, b, bside, rel, card, dashed=False, rad=0, label_shift=(0, 0)):
-    p1, p2 = anchor(a, aside), anchor(b, bside)
-    ax.add_patch(FancyArrowPatch(
-        p1, p2,
-        arrowstyle="-|>",
-        mutation_scale=10.5,
-        linewidth=1.0,
-        color=colors["line"],
-        linestyle=(0, (4, 3)) if dashed else "solid",
+def arrow_between(a, aside, b, bside, label="", dashed=True, rad=0.0, lw=1.2):
+    start = anchor(a, aside)
+    end = anchor(b, bside)
+    style = "->"
+    patch = FancyArrowPatch(
+        start, end,
+        arrowstyle=style,
+        mutation_scale=11,
+        linewidth=lw,
+        color=BLACK,
+        linestyle=(0, (3, 3)) if dashed else "solid",
         connectionstyle=f"arc3,rad={rad}",
-        shrinkA=3,
-        shrinkB=3,
-        zorder=2,
-    ))
-    draw_label((p1[0] + p2[0]) / 2 + label_shift[0], (p1[1] + p2[1]) / 2 + label_shift[1], rel, card)
+        shrinkA=4,
+        shrinkB=4,
+    )
+    ax.add_patch(patch)
+    if label:
+        mx = (start[0] + end[0]) / 2
+        my = (start[1] + end[1]) / 2
+        ax.text(mx, my + 0.16, label, fontsize=8.8, ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.5))
 
-def poly_arrow(points, rel, card, dashed=False, label_index=0, label_shift=(0, 0)):
-    style = (0, (4, 3)) if dashed else "solid"
-    for i in range(len(points) - 1):
-        ax.add_patch(FancyArrowPatch(
-            points[i], points[i + 1],
-            arrowstyle="-|>" if i == len(points) - 2 else "-",
-            mutation_scale=10.5,
-            linewidth=1.0,
-            color=colors["line"],
-            linestyle=style,
-            shrinkA=0,
-            shrinkB=3 if i == len(points) - 2 else 0,
-            zorder=2,
-        ))
-    p1, p2 = points[label_index], points[label_index + 1]
-    draw_label((p1[0] + p2[0]) / 2 + label_shift[0], (p1[1] + p2[1]) / 2 + label_shift[1], rel, card)
 
-# Panel A
-add_node("A_channel", 1.55, 7.25, "demand", "Digital Channel", "app, mini-program")
-add_node("A_customer", 3.75, 7.25, "demand", "Customer", "member, commuter")
-add_node("A_member", 5.95, 7.25, "demand", "Membership Account", "points, coupons")
-add_node("A_promo", 3.75, 6.05, "resource", "Promotion Campaign", "coupon, offer")
-add_node("A_order", 5.95, 6.05, "analytics", "Digital Order", "pickup, delivery")
-arrow("A_channel", "r", "A_customer", "l", "D1", "1:N")
-arrow("A_customer", "r", "A_member", "l", "D2", "1:1")
-arrow("A_member", "b", "A_order", "t", "D3", "1:N", label_shift=(0.38, 0.05))
-arrow("A_promo", "t", "A_member", "b", "D4", "M:N", label_shift=(-0.48, 0.18))
-arrow("A_promo", "r", "A_order", "l", "D5", "M:N", label_shift=(0, -0.18))
+def elbow_arrow(points, label="", dashed=True):
+    # draw segmented polyline, arrow on final segment
+    for i in range(len(points) - 2):
+        ax.add_line(Line2D([points[i][0], points[i+1][0]],
+                           [points[i][1], points[i+1][1]],
+                           color=BLACK, linewidth=1.15,
+                           linestyle=(0, (3, 3)) if dashed else "solid"))
+    patch = FancyArrowPatch(points[-2], points[-1], arrowstyle="->", mutation_scale=11,
+                            linewidth=1.15, color=BLACK,
+                            linestyle=(0, (3, 3)) if dashed else "solid",
+                            shrinkA=0, shrinkB=4)
+    ax.add_patch(patch)
+    if label:
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+        ax.text(sum(xs)/len(xs), sum(ys)/len(ys)+0.14, label, fontsize=8.8,
+                ha="center", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.5))
 
-# Panel B
-add_node("B_order", 9.85, 7.25, "analytics", "Digital Order", "pickup, delivery")
-add_node("B_task", 12.15, 7.25, "fulfil", "Fulfilment Task", "prepare, handover")
-add_node("B_store", 14.45, 7.25, "fulfil", "Store", "self-operated, partner")
-add_node("B_item", 9.85, 6.05, "analytics", "Order Item", "drink line, add-on")
-add_node("B_staff", 14.45, 6.05, "fulfil", "Store Staff", "barista, manager")
-add_node("B_delivery", 12.15, 6.05, "resource", "Delivery Partner", "courier, platform")
-arrow("B_order", "r", "B_task", "l", "F2", "1:N")
-arrow("B_task", "r", "B_store", "l", "F3", "N:1")
-arrow("B_order", "b", "B_item", "t", "F1", "1:N")
-arrow("B_store", "b", "B_staff", "t", "F4", "1:N")
-poly_arrow([anchor("B_store", "b"), (14.45, 5.55), (12.15, 5.55), anchor("B_delivery", "b")], "F5", "1:N", label_index=1)
 
-# Panel C
-add_node("C_item", 1.55, 3.40, "analytics", "Order Item", "drink line, add-on")
-add_node("C_product", 3.75, 3.40, "demand", "Product", "coffee, light food")
-add_node("C_recipe", 5.95, 3.40, "demand", "Recipe Standard", "dosage, SOP")
-add_node("C_material", 5.95, 2.20, "resource", "Raw Material", "beans, milk")
-add_node("C_supplier", 3.75, 2.20, "resource", "Supplier", "farm, vendor")
-add_node("C_store", 1.55, 2.20, "fulfil", "Store", "inventory location")
-arrow("C_item", "r", "C_product", "l", "S1", "N:1")
-arrow("C_product", "r", "C_recipe", "l", "S2", "1:N")
-arrow("C_recipe", "b", "C_material", "t", "S3", "M:N")
-arrow("C_supplier", "r", "C_material", "l", "S4", "1:N")
-arrow("C_material", "l", "C_store", "r", "S5", "M:N")
-
-# Panel D
-add_node("D_order", 9.85, 3.40, "analytics", "Digital Order", "revenue, order value")
-add_node("D_store", 12.15, 3.40, "fulfil", "Store", "margin, stockout")
-add_node("D_delivery", 14.45, 3.40, "resource", "Delivery Partner", "time, cost")
-add_node("D_perf", 12.15, 2.20, "analytics", "Performance Result", "KPI dashboard")
-add_node("D_promo", 14.45, 2.20, "resource", "Promotion Campaign", "future targeting")
-arrow("D_order", "b", "D_perf", "l", "A1", "1:N", dashed=True, rad=-0.12, label_shift=(-0.36, -0.12))
-arrow("D_store", "b", "D_perf", "t", "A2", "1:N", dashed=True, label_shift=(0, 0.10))
-arrow("D_delivery", "b", "D_perf", "r", "A3", "1:N", dashed=True, rad=0.12, label_shift=(0.36, -0.12))
-arrow("D_perf", "r", "D_promo", "l", "A4", "1:N", dashed=True)
+# Title
+ax.text(0.45, 12.65, "LUCKIN COFFEE – Conceptual Model", fontsize=16,
+        fontweight="bold", ha="left", va="top", color=BLACK)
 
 # Legend
-legend_y = 0.78
-ax.text(0.65, legend_y, "Legend:", ha="left", va="center", fontsize=9.6, fontweight="bold")
-legend_items = [
-    ("demand", "Demand/customer"),
-    ("analytics", "Transaction/analytics"),
-    ("fulfil", "Fulfilment"),
-    ("resource", "Resource/partner"),
+legend_x, legend_y = 0.45, 12.12
+ax.text(legend_x, legend_y, "LEGEND:", fontsize=10.5, fontweight="bold", ha="left", va="top")
+legend_lines = [
+    ("one-to-many relationship", "<-"),
+    ("many-to-one relationship", "->"),
+    ("one-to-one relationship", "<->"),
+    ("many-to-many relationship", "<->"),
+    ("reading direction", "-->"),
 ]
-for i, (cat, label) in enumerate(legend_items):
-    fill, edge = colors[cat]
-    x = 1.55 + i * 2.25
-    ax.add_patch(Rectangle((x, legend_y - 0.10), 0.22, 0.16, facecolor=fill, edgecolor=edge, linewidth=0.8))
-    ax.text(x + 0.30, legend_y - 0.02, label, ha="left", va="center", fontsize=8.2)
+yy = legend_y - 0.45
+for txt, _ in legend_lines:
+    ax.add_line(Line2D([legend_x, legend_x+1.55], [yy, yy], color=BLACK, linewidth=1.0,
+                       linestyle=(0, (3, 3)) if txt == "reading direction" else "solid"))
+    ax.text(legend_x + 1.85, yy, txt, fontsize=9.2, va="center", ha="left")
+    yy -= 0.28
 
-ax.text(10.75, legend_y, "IDs: D demand | F fulfilment | S supply | A analytics", ha="left", va="center", fontsize=8.2)
-ax.text(10.75, legend_y - 0.32, "Multiplicity: 1:1, 1:N, N:1, M:N", ha="left", va="center", fontsize=8.2)
-ax.plot([13.55, 14.00], [legend_y - 0.32, legend_y - 0.32], color=colors["line"], lw=1.0)
-ax.text(14.08, legend_y - 0.32, "operational", ha="left", va="center", fontsize=8.2)
-ax.plot([15.00, 15.45], [legend_y - 0.32, legend_y - 0.32], color=colors["line"], lw=1.0, linestyle=(0, (4, 3)))
-ax.text(15.53, legend_y - 0.32, "feedback", ha="left", va="center", fontsize=8.2)
+draw_rich_text_line(ax, legend_x, 10.45, [("x ", BLUE, "normal"), ("variable", BLUE, "normal"),
+                     (": indicates that the variable has a classifying role", BLACK, "normal")], size=8.7)
+draw_rich_text_line(ax, legend_x, 10.20, [(".count ", RED, "normal"),
+                     (": indicates that the Object objects are counted", BLACK, "normal")], size=8.7)
+draw_rich_text_line(ax, legend_x, 9.95, [(".sum ", RED, "normal"),
+                     (": indicates that the Variable is summarised", BLACK, "normal")], size=8.7)
+draw_rich_text_line(ax, legend_x, 9.70, [(".estimated ", BLUE, "normal"),
+                     (": indicates that the Variable is estimated", BLACK, "normal")], size=8.7)
 
-ax.text(8.10, 0.34, "Each repeated boundary object represents the same business object in a different relationship group; CV/SV/AV/EP follow the seminar notation.", ha="center", va="center", fontsize=8.7, color="#333333")
+boxes = {}
 
-fig.tight_layout(pad=0.2)
-fig.savefig(OUT, format="pdf", bbox_inches="tight")
-print(OUT)
+# Nodes
+box(ax, "customer", 0.45, 7.85, 3.0, 1.75, "Customer", "Actor",
+    [("x", "Segment"), ("x", "City"), ("x", "AgeBand"),
+     (".estimated", "CLV"), (".estimated", "RepeatPurchRate")])
+
+box(ax, "member", 5.1, 7.85, 2.85, 1.75, "MembershipAccount", "Utility",
+    [("x", "MemberTier"), ("x", "ActivityStatus"),
+     (".sum", "PointsBalance"), (".sum", "CouponValue"), (".count", "Account")])
+
+box(ax, "campaign", 9.0, 7.85, 3.05, 1.75, "PromotionCampaign", "Event",
+    [("x", "CampaignType"), ("x", "TargetSegment"), ("x", "ValidPeriod"),
+     (".sum", "SubsidyAmount"), (".estimated", "RedemptionRate")])
+
+box(ax, "channel", 13.35, 7.85, 3.0, 1.75, "DigitalChannel", "Interface",
+    [("x", "ChannelType"), ("x", "AccessDevice"), ("x", "AppVersion"),
+     (".sum", "PaymentAmount"), (".estimated", "ConversionRate")])
+
+box(ax, "system", 12.9, 10.55, 3.95, 2.35, "LuckinCoffeeSystem", "Utility",
+    [("", "- Country"), ("", "- Currency"), ("", "- CompulsoryEdBegAge"),
+     ("", "- CompulsoryEdEndAge"), ("", "- CompulsoryEdLength"),
+     ("", "- AcadYearBegMonth"), ("", "- AcadYearEndMonth")])
+
+box(ax, "order", 13.35, 4.65, 3.0, 2.15, "DigitalOrder", "Transaction",
+    [("x", "OrderChannel"), ("x", "PaymentMethod"), ("x", "QueueStatus"),
+     (".sum", "OrderAmount"), (".sum", "DeliveryFee"),
+     (".estimated", "AOV"), (".count", "Order")])
+
+box(ax, "task", 6.15, 4.85, 3.05, 1.7, "FulfilmentTask", "Event",
+    [("x", "TaskType"), (".sum", "PrepTime"),
+     (".sum", "WaitingTime"), (".estimated", "CompletionRate")])
+
+box(ax, "store", 6.25, 2.4, 3.15, 1.75, "Store", "Establishment",
+    [("x", "OwnershipType"), ("x", "CityTier"), ("x", "LocationType"),
+     (".sum", "Revenue"), (".estimated", "UtilisationRate")])
+
+box(ax, "partner", 10.05, 3.55, 2.75, 1.5, "DeliveryPartner", "Provider",
+    [("x", "ServiceArea"), ("x", "PartnerType"),
+     (".sum", "DeliveryFee"), (".estimated", "ComplaintRate")])
+
+box(ax, "staff", 13.85, 1.85, 2.65, 1.65, "StoreStaff", "Actor",
+    [("x", "StaffRole"), ("x", "TrainingStatus"),
+     (".sum", "LabourCost"), (".sum", "WorkingHours"),
+     (".estimated", "Productivity")])
+
+box(ax, "raw", 5.7, 0.85, 3.15, 1.75, "RawMaterial", "Resource",
+    [("x", "MaterialType"), ("x", "Origin"), ("x", "BatchStatus"),
+     (".sum", "InventoryValue"), (".estimated", "StockoutRate")])
+
+box(ax, "supplier", 10.2, 0.85, 2.85, 1.5, "Supplier", "Provider",
+    [("x", "SupplierType"), ("x", "LeadTime"),
+     (".sum", "PurchaseCost"), (".estimated", "QualityPassRate")])
+
+box(ax, "recipe", 0.45, 1.05, 3.0, 1.65, "RecipeStandard", "Utility",
+    [("x", "RecipeVersion"), ("x", "SOPStatus"),
+     (".sum", "StandardCost"), (".estimated", "DefectRate")])
+
+box(ax, "product", 0.45, 3.7, 2.75, 1.45, "Product", "Commodity",
+    [("x", "Category"), ("x", "Season"),
+     (".estimated", "GrossMargin")])
+
+box(ax, "item", 0.45, 5.45, 2.75, 1.35, "OrderItem", "Transaction",
+    [("x", "ProductCategory"), (".sum", "ItemPrice"),
+     (".estimated", "ItemShare")])
+
+# Relationships
+arrow_between("customer", "right", "member", "left", "Owned by")
+arrow_between("member", "right", "campaign", "left", "Targets")
+arrow_between("campaign", "right", "channel", "left", "Applied to")
+arrow_between("channel", "top", "system", "bottom", "BelongsTo", dashed=False)
+arrow_between("channel", "bottom", "order", "top", "Via")
+
+arrow_between("member", "bottom", "task", "top", "Placed by")
+arrow_between("order", "left", "task", "right", "Fulfils", dashed=False)
+arrow_between("partner", "right", "order", "left", "Assigned to")
+arrow_between("store", "top", "task", "bottom", "Executed at")
+
+arrow_between("item", "right", "task", "left", "Belongs to", dashed=False)
+arrow_between("item", "bottom", "product", "top", "Refers to")
+arrow_between("recipe", "top", "product", "bottom", "Defined by", dashed=False)
+arrow_between("recipe", "right", "raw", "left", "Consumes", dashed=False)
+arrow_between("raw", "top", "store", "bottom", "Stocked at")
+arrow_between("supplier", "left", "raw", "right", "Provided by")
+# Optional relation implied by layout: staff operates store
+elbow_arrow([(15.15, 3.5), (15.15, 4.1), (9.4, 4.1)], label="", dashed=True)
+
+# Light visual grouping / reading guide
+ax.text(0.55, 0.35, "Reading direction: Customer & Membership → Campaign & Channel → Order → Fulfilment → Store / Material / Supplier",
+        fontsize=9.5, color=GRAY, ha="left", va="center")
+
+plt.tight_layout()
+fig.savefig(PNG, bbox_inches="tight", pad_inches=0.15)
+fig.savefig(PDF, bbox_inches="tight", pad_inches=0.15)
+plt.close(fig)
+
+# Also export this exact script
+SCRIPT = OUT_DIR / "draw_luckin_conceptual_model.py"
+SCRIPT.write_text(code if "code" in globals() else "", encoding="utf-8")
+print(f"Saved:\n- {PNG}\n- {PDF}\n- {SCRIPT}")
+'''
+
+# Write script and execute it
+script_path = Path("/mnt/data/draw_luckin_conceptual_model.py")
+script_path.write_text(code, encoding="utf-8")
+exec(compile(code, str(script_path), "exec"))
+print(f"Script saved: {script_path}")
