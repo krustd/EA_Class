@@ -1,0 +1,78 @@
+digraph integrated_operating_model {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    margin=0.04,
+    pad=0.18,
+    nodesep=0.50,
+    ranksep=0.85,
+    splines=polyline,
+    outputorder=edgesfirst
+  ];
+
+  node [
+    shape=rect,
+    style="rounded,filled",
+    color="#1F5B8F",
+    fillcolor="#F4F6F8",
+    penwidth=1.5,
+    fontname="Helvetica",
+    fontsize=13,
+    margin="0.12,0.08"
+  ];
+
+  edge [
+    color="#333333",
+    fontname="Helvetica",
+    fontsize=10,
+    arrowsize=0.75,
+    penwidth=1.2
+  ];
+
+  customer [
+    label="Customers\nmembers, students,\noffice workers",
+    shape=oval,
+    fillcolor="#E9F4FB"
+  ];
+  channels [label="Digital Channels\nmobile app,\nWeChat mini program"];
+  orders [label="Digital Orders\npayment, coupon,\npickup/delivery"];
+  stores [label="Stores\nself-operated &\npartnership stores"];
+  fulfil [label="Fulfilment\nprepare, hand over,\ndeliver"];
+
+  supply [
+    label="Supply Chain\nsuppliers, roasting,\nwarehouses",
+    fillcolor="#FFF8E1",
+    color="#C46A1A"
+  ];
+  analytics [
+    label="Data Feedback\nratings, sales,\nqueue, inventory",
+    fillcolor="#E9F4FB"
+  ];
+  strategy [
+    label="Management Control\nBSC, EFQM,\nZachman, EA models",
+    fillcolor="#FBE9E7",
+    color="#6A4C93"
+  ];
+
+  { rank=same; customer; channels; orders; }
+  { rank=same; strategy; analytics; stores; }
+  { rank=same; supply; fulfil; }
+
+  customer -> channels [label="browse / order"];
+  channels -> orders [label="capture transaction"];
+  orders -> stores [label="route task"];
+  stores -> fulfil [label="execute service"];
+  fulfil -> customer [label="coffee / beverage", constraint=false];
+
+  supply -> stores [label="materials & equipment", constraint=false];
+  orders -> analytics [label="transaction data"];
+  fulfil -> analytics [label="service data"];
+  analytics -> strategy [label="KPIs & evidence"];
+  strategy -> channels [label="campaigns", constraint=false];
+  strategy -> supply [label="planning"];
+  strategy -> stores [label="standards", constraint=false];
+
+  strategy -> analytics [style=invis, weight=20];
+  analytics -> stores [style=invis, weight=20];
+  supply -> fulfil [style=invis, weight=20];
+}
