@@ -218,7 +218,7 @@ Architecture relevance & The business depends on the alignment of strategy, proc
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.82\textwidth]{fig_growth.png}
-  \caption{Store-count and revenue-growth evidence reused from the Seminar 1 case background.}
+  \caption{Store-count and revenue-growth evidence drawn from the Seminar 1 case background analysis.}
 \end{figure}
 
 % =================== BUSINESS ANALYSIS ===================
@@ -233,7 +233,7 @@ Luckin operates through a broad stakeholder ecosystem. The main stakeholders are
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.82\textwidth]{fig_stakeholders.png}
-  \caption{Stakeholder map reused from the Seminar 1 report.}
+  \caption{Stakeholder map adapted from the Seminar 1 analysis.}
 \end{figure}
 
 Key partners are especially important because Luckin's business model is not fully vertically owned. Coffee beans, dairy products, fruit ingredients, packaging materials, equipment, delivery capacity, payment interfaces, and digital ecosystem access all depend on partner relationships. At the same time, Luckin has strengthened its own supply-chain assets, including roasting centers and processing facilities, to improve product consistency and scalability~\cite{luckin_noncoffee_2026}.
@@ -431,7 +431,7 @@ Self-operated store product sales, freshly brewed drink sales, other products, e
 % =================== EFQM ===================
 \section{EFQM Excellence Model Evaluation}
 
-EFQM is a quality-management approach that evaluates an organization through enablers and results. For Luckin, the model helps connect strategic ambition with daily execution and measurable outcomes.
+EFQM is a quality-management approach that evaluates an organization through enablers and results. For Luckin, the model helps connect strategic ambition with daily execution and measurable outcomes. This report applies the classic nine-criterion EFQM Excellence Model as required by the seminar instruction.
 
 \begin{figure}[H]
   \centering
@@ -609,7 +609,7 @@ DigitalChannels & \pk{ChannelId}, ChannelType, AccessDevice, AppVersion \\
 PromotionCampaigns & \pk{CampaignId}, CampaignType, TargetSegment, StartDate, EndDate, SubsidyAmount \\
 MemberCampaigns & \pk{MemberId}\pkfk, \pk{CampaignId}\pkfk, ReceivedDate, UsedStatus \\
 DigitalOrders & \pk{OrderId}, MemberId\fk, ChannelId\fk, PaymentMethod, QueueStatus, GrossOrderAmount, CampaignDiscountAmount, ItemDiscountAmount, ActualDeliveryFee, NetPayableAmount, OrderDate, OrderTime \\
-OrderCampaigns & \pk{OrderId}\pkfk, MemberId\fk, \pk{CampaignId}\pkfk, AppliedAmount \\
+OrderCampaigns & \pk{OrderId}\pkfk, \pk{CampaignId}\pkfk, AppliedAmount \\
 Products & \pk{ProductId}, ProductName, Category, Season, GrossMargin, CurrentStandardCost \\
 OrderItems & \pk{OrderId}\pkfk, \pk{ItemNr}, ProductId\fk, Quantity, Customization, LineDiscountAmount, UnitItemPrice \\
 DeliveryPartners & \pk{PartnerId}, PartnerName, PartnerType, ServiceArea, StandardDeliveryFee, ComplaintRate \\
@@ -638,6 +638,8 @@ Relationship constraint & Many-to-many relationships such as promotions-to-membe
 Domain constraint & Monetary values, quantities, stock levels, preparation times, and delivery fees should be non-negative. \\
 Temporal constraint & Campaigns and recipe standards require valid start and end dates; an order can apply only a campaign valid at order time. \\
 Status constraint & Queue status, task status, activity status, training status, and batch status should come from controlled value lists. \\
+\midrule
+Analytical attributes & Fields such as \texttt{Store.Revenue}, \texttt{Store.LaborCost}, \texttt{Product.GrossMargin}, \texttt{DeliveryPartner.ComplaintRate}, \texttt{StoreMaterials.StockoutRate}, and \texttt{RecipeStandard.DefectRate} are included for model completeness. In a production implementation they could be stored as periodically refreshed KPI fields or materialized in dedicated analytical tables; here they are retained in the base relations to keep the model compact and traceable to the conceptual diagram. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -654,7 +656,7 @@ The Business Layer Model describes business actors, roles, services, processes, 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{BLM.png}
-\caption{Business Layer Model from Seminar 6.}
+\caption{Business Layer Model adapted from the Seminar 6 architecture analysis.}
 \end{figure}
 
 The model identifies the customer as the external actor, Luckin Coffee as the enterprise actor, store operators and suppliers as key roles, and the Coffee Retail Service as the core business service. The central business process is Fulfill Customer Order, which includes receiving the order, confirming payment, preparing the drink, delivering or handing over the product, and completing the order.
@@ -666,7 +668,7 @@ The Application Layer Model explains how customer-facing and internal software s
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{ALM.png}
-\caption{Application Layer Model from Seminar 6.}
+\caption{Application Layer Model adapted from the Seminar 6 architecture analysis.}
 \end{figure}
 
 The key application interfaces are the mobile app and WeChat mini-program. The logical application services include menu browsing, promotion, order management, payment confirmation, fulfilment coordination, customer profile management, inventory support, and analytics. Data objects include customer profiles, orders, products, store information, recipe standards, campaign records, and performance results.
@@ -678,7 +680,7 @@ The Technology Layer Model is a proposed architecture view. It should be read as
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{TLM.png}
-\caption{Technology Layer Model from Seminar 6.}
+\caption{Technology Layer Model adapted from the Seminar 6 architecture analysis.}
 \end{figure}
 
 This layer includes customer devices, store terminals, network connections, cloud services, databases, monitoring, and integration with external payment and delivery platforms. It is important because Luckin's customer promise depends on low-friction mobile ordering and reliable store fulfilment. If the technology layer fails, the customer-facing service and store process also fail.
